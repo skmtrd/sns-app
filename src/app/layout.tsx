@@ -1,5 +1,6 @@
 import {
   ClerkProvider,
+  RedirectToSignIn,
   SignInButton,
   SignedIn,
   SignedOut,
@@ -15,9 +16,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body>
-          <SignedOut>
-            <SignInButton />
-          </SignedOut>
+          <SignedOut></SignedOut>
           <SignedIn>
             <UserButton />
           </SignedIn>
