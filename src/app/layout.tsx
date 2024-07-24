@@ -7,6 +7,9 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import "./globals.css";
+import SideBar from "@/components/layout/SideBar";
+import RightSideBar from "@/components/layout/RightSideBar";
+
 export default function RootLayout({
   children,
 }: {
@@ -18,9 +21,10 @@ export default function RootLayout({
         <body>
           <SignedOut></SignedOut>
           <SignedIn>
-            <UserButton />
+            <SideBar></SideBar>
+            {children}
+            <RightSideBar></RightSideBar>
           </SignedIn>
-          {children}
         </body>
       </html>
     </ClerkProvider>
