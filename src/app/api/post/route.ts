@@ -1,25 +1,20 @@
-import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 import prisma from "../../../../lib/prisma";
-import { auth } from "@clerk/nextjs/server";
 import { getOrCreateTagIds } from "../../../utils/getOrCreateTagIds";
-
-//postgrelに接続する
-const dbConnect = async () => {
-  try {
-    const prisma = new PrismaClient();
-    await prisma.$connect();
-    console.log("success");
-  } catch (error) {
-    console.log(error);
-  }
-};
+import { dbConnect } from "@/utils/dbConnect";
+import { auth } from "@clerk/nextjs/server";
 
 export const GET = async (req: Request, res: NextResponse) => {
   try {
     dbConnect();
-    
-  } catch (error) {}
+
+    const posts = await prisma.post.findMany();
+    return NextResponse.json({ message: "success", posts }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ message: "failed" });
+  } finally {
+    await prisma.$disconnect();
+  }
 };
 
 export const POST = async (req: Request, res: NextResponse) => {
@@ -32,6 +27,7 @@ export const POST = async (req: Request, res: NextResponse) => {
 
     //clerkのuserIdからUserテーブルのuserIdを取得
     const { userId } = auth();
+
     const user = await prisma.user.findUnique({
       where: { clerkId: userId ?? undefined },
     });
@@ -53,9 +49,10 @@ export const POST = async (req: Request, res: NextResponse) => {
       },
     });
 
-    await prisma.$disconnect();
     return NextResponse.json({ message: "success", newPost }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ message: "failed" });
+  } finally {
+    await prisma.$disconnect();
   }
 };
