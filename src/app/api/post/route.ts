@@ -18,6 +18,7 @@ const dbConnect = async () => {
 export const GET = async (req: Request, res: NextResponse) => {
   try {
     dbConnect();
+    
   } catch (error) {}
 };
 
