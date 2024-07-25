@@ -1,7 +1,5 @@
-import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 import prisma from "../../../../lib/prisma";
-import { auth } from "@clerk/nextjs/server";
 import { getOrCreateTagIds } from "../../../utils/getOrCreateTagIds";
 import { dbConnect } from "@/utils/dbConnect";
 
