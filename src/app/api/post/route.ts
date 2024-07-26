@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import prisma from "../../../../lib/prisma";
-import { getOrCreateTagIds } from "../../../../lib/getOrCreateTagIds";
 import { dbConnect } from "../../../../lib/dbConnect";
 import { auth } from "@clerk/nextjs/server";
 
@@ -24,7 +23,7 @@ export const POST = async (req: Request, res: NextResponse) => {
     const { content } = await req.json();
     //clerkのuserIdからUserテーブルのuserIdを取得
     // const { userId } = auth();
-    const userId = "user_2jjkSfZ9UtV3upYwwNBdCbHw45D";
+    const userId = process.env.clerkId;
 
     const user = await prisma.user.findUnique({
       where: { clerkId: userId ?? undefined },

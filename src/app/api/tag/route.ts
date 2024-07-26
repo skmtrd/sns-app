@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { dbConnect } from "../../../../lib/dbConnect";
 import prisma from "../../../../lib/prisma";
 import { auth } from "@clerk/nextjs/server";
+import { CreateTag } from "../../../../lib/createTag";
 
 export const GET = async (req: Request, res: NextResponse) => {
   try {
@@ -15,11 +16,27 @@ export const GET = async (req: Request, res: NextResponse) => {
   }
 };
 
+export const POST = async (req: Request, res: NextResponse) => {
+  try {
+    const { tagName } = await req.json();
+
+    dbConnect();
+
+    const newTag = CreateTag(tagName);
+
+    return NextResponse.json({ message: "success", newTag }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ message: "failed" });
+  } finally {
+    await prisma.$disconnect();
+  }
+};
+
 export const PUT = async (req: Request, res: NextResponse) => {
   try {
     dbConnect();
     // const userId = auth();
-    const userId = "user_2jjkSfZ9UtV3upYwwNBdCbHw45D";
+    const userId = process.env.clerkId;
 
     const { tagName } = await req.json();
 
