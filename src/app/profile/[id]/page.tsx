@@ -14,12 +14,17 @@ const ProfilePage = async () => {
   const tags = await fetchTags();
   return (
     <div>
-      <h1>Profile</h1>
-      <ul>
+      <h1 className="text-2xl">Profile</h1>
+      <div className="flex gap-10">
         {tags.map((tag) => (
-          <li key={tag.id}>{tag.name}</li>
+          <div
+            className="bg-blue-500 flex justify-center items-center rounded-xl text-white p-2"
+            key={tag.id}
+          >
+            {tag.name}
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
