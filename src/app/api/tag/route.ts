@@ -16,15 +16,16 @@ export const GET = async (req: Request, res: NextResponse) => {
   }
 };
 
+
 export const POST = async (req: Request, res: NextResponse) => {
   try {
-    const { tagName } = await req.json();
+    const { name } = await req.json();
 
     dbConnect();
 
-    const newTag = CreateTag(tagName);
+    CreateTag(name);
 
-    return NextResponse.json({ message: "success", newTag }, { status: 200 });
+    return NextResponse.json({ message: "success" }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ message: "failed" });
   } finally {
