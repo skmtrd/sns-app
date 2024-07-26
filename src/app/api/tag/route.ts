@@ -4,6 +4,12 @@ import prisma from "../../../../lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { CreateTag } from "../../../../lib/createTag";
 
+//このファイルはTagのCRU操作をしている。
+
+
+
+
+
 export const GET = async (req: Request, res: NextResponse) => {
   try {
     dbConnect();
