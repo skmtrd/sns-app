@@ -1,4 +1,4 @@
-import prisma from "../../lib/prisma";
+import prisma from "./prisma";
 import { Prisma } from "@prisma/client";
 
 //tagがTagテーブルに存在するかを確認
