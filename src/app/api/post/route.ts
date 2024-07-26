@@ -21,12 +21,10 @@ export const POST = async (req: Request, res: NextResponse) => {
   try {
     dbConnect();
 
-    const { content, tags } = await req.json();
-    //Tagテーブルのtagのidを返す
-    const tagIds = await getOrCreateTagIds(tags);
-
+    const { content } = await req.json();
     //clerkのuserIdからUserテーブルのuserIdを取得
-    const { userId } = auth();
+    // const { userId } = auth();
+    const userId = "user_2jjkSfZ9UtV3upYwwNBdCbHw45D";
 
     const user = await prisma.user.findUnique({
       where: { clerkId: userId ?? undefined },
@@ -39,13 +37,9 @@ export const POST = async (req: Request, res: NextResponse) => {
         author: {
           connect: { id: user.id },
         },
-        tags: {
-          connect: tagIds,
-        },
       },
       include: {
         author: true,
-        tags: true,
       },
     });
 
