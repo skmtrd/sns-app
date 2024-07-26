@@ -13,6 +13,37 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// model User {
+//   id        String   @id @default(cuid())
+//   clerkId   String   @unique
+//   name      String
+//   email     String   @unique
+//   posts     Post[]
+//   tags      Tag[]
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+// model Post {
+//   id        String   @id @default(cuid())
+//   content   String
+//   author    User     @relation(fields: [authorId], references: [id])
+//   authorId  String
+//   tags      Tag[]
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
+
+// model Tag {
+//   id        String   @id @default(cuid())
+//   name      String
+//   users     User[]
+//   posts     Post[]
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@unique([name])
+// }
 model User {
   id        String   @id @default(cuid())
   clerkId   String   @unique
@@ -29,18 +60,14 @@ model Post {
   content   String
   author    User     @relation(fields: [authorId], references: [id])
   authorId  String
-  tags      Tag[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Tag {
   id        String   @id @default(cuid())
-  name      String
+  name      String   @unique
   users     User[]
-  posts     Post[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@unique([name])
 }
