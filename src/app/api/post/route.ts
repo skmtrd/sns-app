@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "../../../../lib/prisma";
-import { getOrCreateTagIds } from "../../../utils/getOrCreateTagIds";
-import { dbConnect } from "@/utils/dbConnect";
+import { getOrCreateTagIds } from "../../../../lib/getOrCreateTagIds";
+import { dbConnect } from "../../../../lib/dbConnect";
 import { auth } from "@clerk/nextjs/server";
 
 export const GET = async (req: Request, res: NextResponse) => {
