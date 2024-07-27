@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import prisma from "../../../../lib/prisma";
-import { getOrCreateTagIds } from "../../../../lib/getOrCreateTagIds";
 import { dbConnect } from "../../../../lib/dbConnect";
 import { auth } from "@clerk/nextjs/server";
 
@@ -21,12 +20,10 @@ export const POST = async (req: Request, res: NextResponse) => {
   try {
     dbConnect();
 
-    const { content, tags } = await req.json();
-    //Tagテーブルのtagのidを返す
-    const tagIds = await getOrCreateTagIds(tags);
-
+    const { content } = await req.json();
     //clerkのuserIdからUserテーブルのuserIdを取得
-    const { userId } = auth();
+    // const { userId } = auth();
+    const userId = process.env.clerkId;
 
     const user = await prisma.user.findUnique({
       where: { clerkId: userId ?? undefined },
@@ -39,13 +36,9 @@ export const POST = async (req: Request, res: NextResponse) => {
         author: {
           connect: { id: user.id },
         },
-        tags: {
-          connect: tagIds,
-        },
       },
       include: {
         author: true,
-        tags: true,
       },
     });
 
