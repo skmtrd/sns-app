@@ -1,11 +1,15 @@
 import {
   ClerkProvider,
+  RedirectToSignIn,
   SignInButton,
   SignedIn,
   SignedOut,
   UserButton,
 } from "@clerk/nextjs";
 import "./globals.css";
+import SideBar from "@/components/layout/SideBar";
+import RightSideBar from "@/components/layout/RightSideBar";
+
 export default function RootLayout({
   children,
 }: {
@@ -16,12 +20,13 @@ export default function RootLayout({
       <html lang="en">
         <body>
           <SignedOut>
-            <SignInButton />
+            <SignInButton></SignInButton>
           </SignedOut>
           <SignedIn>
-            <UserButton />
+            <SideBar></SideBar>
+            {children}
+            <RightSideBar></RightSideBar>
           </SignedIn>
-          {children}
         </body>
       </html>
     </ClerkProvider>
