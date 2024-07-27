@@ -14,7 +14,7 @@ const ProfileEditPage = () => {
       <header className="bg-white border-b border-gray-200 p-4 flex justify-between items-center">
         <h2 className="text-xl font-bold">プロフィール編集</h2>
       </header>
-      <main className="flex-1 overflow-y-auto p-6">
+      <main className="flex-1 overflow-y-auto p-6 bg-gray-100">
         <form className="bg-white rounded-lg shadow p-6">
           <div className="mb-4">
             <label
