@@ -17,13 +17,7 @@ const ProfilePage = async () => {
       <header className="bg-white border-b border-gray-200 p-4 flex justify-between items-center">
         <h2 className="text-xl font-bold">プロフィール</h2>
         <div className="flex items-center">
-          <div className="relative mr-4">
-            {/* <input
-              type="text"
-              placeholder="検索"
-              className="bg-gray-100 rounded-full py-2 px-4 pl-10"
-            /> */}
-          </div>
+          <div className="relative mr-4"></div>
         </div>
       </header>
       <main className="flex-1 overflow-y-auto p-6">
@@ -39,84 +33,6 @@ const ProfilePage = async () => {
             enthusiast.
           </p>
           <div className="flex flex-wrap mb-4">
-            <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mr-2 mb-2 hover:bg-blue-300">
-              JavaScript
-            </span>
-            <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mr-2 mb-2 hover:bg-blue-300">
-              JavaScript
-            </span>
-            <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mr-2 mb-2 hover:bg-blue-300">
-              JavaScript
-            </span>
-            <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mr-2 mb-2 hover:bg-blue-300">
-              JavaScript
-            </span>
-            <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mr-2 mb-2 hover:bg-blue-300">
-              JavaScript
-            </span>
-            <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mr-2 mb-2 hover:bg-blue-300">
-              JavaScript
-            </span>
-            <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mr-2 mb-2 hover:bg-blue-300">
-              JavaScript
-            </span>
-            <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mr-2 mb-2 hover:bg-blue-300">
-              JavaScript
-            </span>
-            <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mr-2 mb-2 hover:bg-blue-300">
-              JavaScript
-            </span>
-            <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mr-2 mb-2 hover:bg-blue-300">
-              JavaScript
-            </span>
-            <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mr-2 mb-2 hover:bg-blue-300">
-              JavaScript
-            </span>
-            <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mr-2 mb-2 hover:bg-blue-300">
-              JavaScript
-            </span>
-            <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mr-2 mb-2 hover:bg-blue-300">
-              JavaScript
-            </span>
-            <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mr-2 mb-2 hover:bg-blue-300">
-              JavaScript
-            </span>
-            <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mr-2 mb-2 hover:bg-blue-300">
-              JavaScript
-            </span>
-            <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mr-2 mb-2 hover:bg-blue-300">
-              JavaScript
-            </span>
-            <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mr-2 mb-2 hover:bg-blue-300">
-              JavaScript
-            </span>
-            <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mr-2 mb-2 hover:bg-blue-300">
-              JavaScript
-            </span>
-            <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mr-2 mb-2 hover:bg-blue-300">
-              JavaScript
-            </span>
-            <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mr-2 mb-2 hover:bg-blue-300">
-              JavaScript
-            </span>
-            <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mr-2 mb-2 hover:bg-blue-300">
-              JavaScript
-            </span>
-            <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mr-2 mb-2 hover:bg-blue-300">
-              JavaScript
-            </span>
-            <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mr-2 mb-2 hover:bg-blue-300">
-              JavaScript
-            </span>
-            <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mr-2 mb-2 hover:bg-blue-300">
-              JavaScript
-            </span>
-            <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mr-2 mb-2 hover:bg-blue-300">
-              JavaScript
-            </span>
-            <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mr-2 mb-2 hover:bg-blue-300">
-              JavaScript
-            </span>
             <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full mr-2 mb-2 hover:bg-blue-300">
               JavaScript
             </span>
