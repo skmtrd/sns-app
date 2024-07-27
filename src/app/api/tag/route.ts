@@ -1,14 +1,10 @@
+//このファイルはTagのCRU操作をしている。
+
 import { NextResponse } from "next/server";
 import { dbConnect } from "../../../../lib/dbConnect";
 import prisma from "../../../../lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { CreateTag } from "../../../../lib/createTag";
-
-//このファイルはTagのCRU操作をしている。
-
-
-
-
 
 export const GET = async (req: Request, res: NextResponse) => {
   try {
@@ -22,14 +18,13 @@ export const GET = async (req: Request, res: NextResponse) => {
   }
 };
 
-
 export const POST = async (req: Request, res: NextResponse) => {
   try {
-    const { name } = await req.json();
+    const { tagName } = await req.json();
 
     dbConnect();
 
-    CreateTag(name);
+    CreateTag(tagName);
 
     return NextResponse.json({ message: "success" }, { status: 200 });
   } catch (error) {
@@ -62,7 +57,9 @@ export const PUT = async (req: Request, res: NextResponse) => {
       { status: 200 }
     );
   } catch (error) {
-    return NextResponse.json({ message: "failed" });
+    return 
+    
+    NextResponse.json({ message: "failed" });
   } finally {
     await prisma.$disconnect();
   }
