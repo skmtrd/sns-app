@@ -9,12 +9,15 @@ import {
 import "./globals.css";
 import SideBar from "@/components/layout/SideBar";
 import RightSideBar from "@/components/layout/RightSideBar";
+import { auth } from "@clerk/nextjs/server";
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { userId } = auth();
+
   return (
     <ClerkProvider>
       <html lang="en">
@@ -23,7 +26,7 @@ export default function RootLayout({
             <SignInButton></SignInButton>
           </SignedOut>
           <SignedIn>
-            <SideBar></SideBar>
+            <SideBar userId={userId}></SideBar>
             {children}
             <RightSideBar></RightSideBar>
           </SignedIn>

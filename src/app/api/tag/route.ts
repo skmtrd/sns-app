@@ -58,6 +58,7 @@ export const PUT = async (req: Request, res: NextResponse) => {
     );
   } catch (error) {
     return NextResponse.json({ message: "failed" });
+
   } finally {
     await prisma.$disconnect();
   }
