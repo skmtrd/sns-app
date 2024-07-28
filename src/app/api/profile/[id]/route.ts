@@ -21,11 +21,11 @@ export const PUT = async (req: Request, res: NextResponse) => {
   try {
     const userId = req.url.split("/profile/")[1];
 
-    const { name, introduction } = await req.json();
+    const { name, introduction, id } = await req.json();
 
     await dbConnect();
     const user = await prisma.user.update({
-      data: { name, introduction },
+      data: { name, introduction, id },
       where: { clerkId: userId },
     });
     return NextResponse.json({ Message: "Success", user }, { status: 200 });
