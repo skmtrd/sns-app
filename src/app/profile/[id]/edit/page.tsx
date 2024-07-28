@@ -1,14 +1,53 @@
 "use client";
 
-import React, { useState } from "react";
-
+import React, { useState, useEffect } from "react";
 import RemovableUserTag from "@/components/element/RemovableUserTag";
-import { X, Plus, ChevronDown, ChevronUp } from "lucide-react";
-
+import { Plus, ChevronDown, ChevronUp } from "lucide-react";
 import UserTag from "@/components/element/UserTag";
+
+type Tag = {
+  id: string;
+  name: string;
+};
+
+const fetchTags = async (): Promise<Tag[]> => {
+  const res = await fetch("http://localhost:3000/api/tag", {
+    cache: "no-cache",
+  });
+  const data = await res.json();
+  return data.tags.map((tag: any) => ({ id: tag.id, name: tag.name }));
+};
 
 const ProfileEditPage = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadTags = async () => {
+      try {
+        const fetchedTags = await fetchTags();
+        setTags(fetchedTags);
+      } catch (error) {
+        console.error("Failed to fetch tags:", error);
+        setError("タグの読み込みに失敗しました。");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadTags();
+  }, []);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       <header className="bg-white border-b border-gray-200 p-4 flex justify-between items-center">
@@ -65,9 +104,9 @@ const ProfileEditPage = () => {
               タグ
             </label>
             <div className="mt-2 flex flex-wrap">
-              <RemovableUserTag tagName={"JavaScript"} />
-              <RemovableUserTag tagName={"React"} />
-              <RemovableUserTag tagName={"Node.js"} />
+              <RemovableUserTag tagName="JavaScript" />
+              <RemovableUserTag tagName="React" />
+              <RemovableUserTag tagName="Node.js" />
             </div>
           </div>
           <div>
@@ -98,190 +137,9 @@ const ProfileEditPage = () => {
                   className="w-full px-3 py-2 border rounded-md mb-4"
                 />
                 <div className="flex flex-wrap gap-2">
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"Java"}></UserTag>
-                  <UserTag tagName={"JavaScript"}></UserTag>
+                  {tags.map((tag) => (
+                    <UserTag key={tag.id} tagName={tag.name} />
+                  ))}
                 </div>
               </div>
             </div>

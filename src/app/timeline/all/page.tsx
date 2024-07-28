@@ -2,7 +2,13 @@ import React from "react";
 
 const TimelineAll = () => {
   return (
-    <div className="flex-glow flex-col bg bg-gray-100 w-full items-center flex gap-4 overflow-scroll">
+    <div className="flex-grow flex flex-col bg-gray-100 w-full items-center gap-4 overflow-y-auto">
+      <header className="sticky top-0 z-10 bg-white border-b border-gray-200 p-4 flex justify-between items-center w-full">
+        <h2 className="text-xl font-bold">タイムライン</h2>
+        <div className="flex items-center">
+          <div className="relative mr-4"></div>
+        </div>
+      </header>
       <div className="w-full h-10"></div>
       <div className="bg-white rounded-lg shadow p-4 w-11/12">
         <div className="flex justify-between items-start mb-2">
