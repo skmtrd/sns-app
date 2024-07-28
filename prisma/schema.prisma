@@ -19,6 +19,7 @@ model User {
   clerkId   String   @unique
   name      String
   email     String   @unique
+  introduction String @db.Text
   posts     Post[]
   tags      Tag[]
   introduction String?  @db.Text 
