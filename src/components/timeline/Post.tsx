@@ -12,8 +12,8 @@ export const Post: React.FC<PostProps> = ({
   tags,
 }) => {
   return (
-    <div className='bg-white rounded-lg shadow p-4 w-11/12'>
-      <div className='flex justify-between items-start mb-2'>
+    <div className='w-11/12 rounded-lg bg-white p-4 shadow'>
+      <div className='mb-2 flex items-start justify-between'>
         <h3 className='font-bold'>{username}</h3>
         {/* 〇〇時間前みたいなのは後で実装 */}
         <p className='text-sm text-gray-500'>{timestamp}</p>
@@ -24,7 +24,7 @@ export const Post: React.FC<PostProps> = ({
           tags.map((tag, index) => (
             <span
               key={index}
-              className='bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mr-2 mb-2'
+              className='mb-2 mr-2 rounded-full bg-blue-100 px-2 py-1 text-xs text-blue-800'
             >
               #{tag}
             </span>

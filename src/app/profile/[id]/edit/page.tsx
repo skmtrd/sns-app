@@ -49,12 +49,12 @@ const ProfileEditPage = () => {
   }
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden">
-      <header className="bg-white border-b border-gray-200 p-4 flex justify-between items-center">
+    <div className="flex flex-1 flex-col overflow-hidden">
+      <header className="flex items-center justify-between border-b border-gray-200 bg-white p-4">
         <h2 className="text-xl font-bold">プロフィール編集</h2>
       </header>
-      <main className="flex-1 overflow-y-auto p-6 bg-gray-100">
-        <form className="bg-white rounded-lg shadow p-6">
+      <main className="flex-1 overflow-y-auto bg-gray-100 p-6">
+        <form className="rounded-lg bg-white p-6 shadow">
           <div className="mb-4">
             <label
               htmlFor="name"
@@ -76,13 +76,13 @@ const ProfileEditPage = () => {
               ユーザーID
             </label>
             <div className="mt-1 flex rounded-md shadow-sm">
-              <span className="inline-flex items-center px-3 rounded-sm border border-gray-300 bg-gray-50 text-gray-500 text-sm">
+              <span className="inline-flex items-center rounded-sm border border-gray-300 bg-gray-50 px-3 text-sm text-gray-500">
                 @
               </span>
               <input
                 type="text"
                 id="username"
-                className="flex-1 block w-full rounded-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                className="block w-full flex-1 rounded-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
               />
             </div>
           </div>
@@ -113,7 +113,7 @@ const ProfileEditPage = () => {
             <button
               type="button"
               onClick={() => setIsDrawerOpen(!isDrawerOpen)}
-              className="w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 flex justify-between items-center"
+              className="flex w-full items-center justify-between rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
             >
               <span className="flex items-center">
                 <Plus size={20} className="mr-2" />
@@ -126,7 +126,7 @@ const ProfileEditPage = () => {
               )}
             </button>
             <div
-              className={`mt-2 bg-white border border-gray-200 rounded-md overflow-scroll transition-all duration-300 ease-in-out ${
+              className={`mt-2 overflow-scroll rounded-md border border-gray-200 bg-white transition-all duration-300 ease-in-out ${
                 isDrawerOpen ? "max-h-64" : "max-h-0"
               }`}
             >
@@ -134,7 +134,7 @@ const ProfileEditPage = () => {
                 <input
                   type="text"
                   placeholder="タグを検索"
-                  className="w-full px-3 py-2 border rounded-md mb-4"
+                  className="mb-4 w-full rounded-md border px-3 py-2"
                 />
                 <div className="flex flex-wrap gap-2">
                   {tags.map((tag) => (
@@ -145,7 +145,7 @@ const ProfileEditPage = () => {
             </div>
           </div>
         </form>
-        <button className="px-4 py-2 mt-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+        <button className="mt-2 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
           保存
         </button>
       </main>

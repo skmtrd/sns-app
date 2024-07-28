@@ -22,9 +22,9 @@ const SideBar: React.FC<Props> = ({ userId }) => {
   ];
 
   return (
-    <div className="w-20 md:w-80 bg-white p-4 border-r border-gray-200 transition-all duration-300 ease-in-out">
+    <div className="w-20 border-r border-gray-200 bg-white p-4 transition-all duration-300 ease-in-out md:w-80">
       <Link href={"/timeline/all"}>
-        <h1 className="text-2xl font-bold text-blue-600 mb-4 hidden md:block">
+        <h1 className="mb-4 hidden text-2xl font-bold text-blue-600 md:block">
           INIAD SNS
         </h1>
       </Link>
@@ -32,12 +32,12 @@ const SideBar: React.FC<Props> = ({ userId }) => {
         <Link
           key={page}
           href={page}
-          className="w-full flex items-center justify-center md:justify-start p-2 mb-2 rounded hover:text-blue-600 font-bold"
+          className="mb-2 flex w-full items-center justify-center rounded p-2 font-bold hover:text-blue-600 md:justify-start"
         >
-          <div className="w-10 h-10 flex items-center justify-center">
+          <div className="flex size-10 items-center justify-center">
             <Icon size={24} />
           </div>
-          <span className="hidden md:inline md:ml-3">{label}</span>
+          <span className="hidden md:ml-3 md:inline">{label}</span>
         </Link>
       ))}
     </div>
