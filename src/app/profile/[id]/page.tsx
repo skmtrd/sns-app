@@ -3,6 +3,7 @@
 import { Tag } from "./edit/page";
 import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 type UserInfo = {
   id: number;
@@ -43,7 +44,13 @@ const ProfilePage = () => {
     fetchUserInfo();
   }, [pathname]);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading)
+    return (
+      <div className="flex h-svh w-full flex-1 grow flex-col items-center justify-center gap-4 bg-gray-100">
+        <Loader2 size="64" className="animate-spin text-blue-600" />
+        ロード中...
+      </div>
+    );
   if (error) return <div>{error}</div>;
 
   return (
