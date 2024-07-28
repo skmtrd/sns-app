@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import prisma from "./prisma";
+import prisma from "../prisma";
 import { Prisma } from "@prisma/client";
-import { checkExitingTag } from "./checkExitingTag";
+import {checkTagExits}  from "./checkExitingTag";
 
 //tagNameがTagテーブルに存在するかを確認
 //存在する場合はエラーメッセージを返す
@@ -9,7 +9,7 @@ import { checkExitingTag } from "./checkExitingTag";
 export const CreateTag = async (
   tagName: string
 ): Promise<{ message: string }> => {
-  if (await checkExitingTag(tagName)) return { message: "already exit tag" };
+  if (await checkTagExits(tagName)) return { message: "already exit tag" };
   else {
     await prisma.tag.create({
       data: { name: tagName },
