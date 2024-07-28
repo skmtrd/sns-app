@@ -12,8 +12,7 @@ export const PUT = async (req: Request, res: NextResponse) => {
     await prisma.user.update({
       where: { clerkId: clerkId },
       data: {
-        tags: { connect: { name: tagName } },
-      },
+        tags: { connect: { name: tagName } },      },
       include: {
         tags: true,
       },
