@@ -43,7 +43,7 @@ const ProfileEditPage = () => {
               <input
                 type="text"
                 id="username"
-                className="flex-1 block w-full rounded-none rounded-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                className="flex-1 block w-full rounded-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
               />
             </div>
           </div>
@@ -56,7 +56,7 @@ const ProfileEditPage = () => {
             </label>
             <textarea
               id="bio"
-              rows="3"
+              rows={3}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
             ></textarea>
           </div>
