@@ -1,32 +1,49 @@
+"use client";
 import { Post } from "@/components/timeline/Post";
+import { Loader2 } from "lucide-react";
 import React from "react";
+import useSWR from "swr";
+import { z } from "zod";
+
+const postSchema = z.object({
+  author: z.object({
+    name: z.string(),
+  }),
+  createdAt: z.string(),
+  content: z.string(),
+});
 
 const TimelineAll = () => {
-  // today is 2024-07-29
-  const posts = [
-    {
-      username: "団長",
-      timestamp: "2024-07-29T01:30:00",
-      content: "星が取れない",
-      tags: ["sss", "aaa"],
-    },
-    {
-      username: "サカモトそうや",
-      timestamp: "2024-07-25T01:30:00",
-      content: "content",
-      tags: ["#sss"],
-    },
-  ];
+  const fetcher = (url: string) => fetch(url).then((res) => res.json());
+  const { data, error, isLoading } = useSWR("/api/post", fetcher, {
+    revalidateOnFocus: true,
+  });
+
+  if (isLoading) {
+    return (
+      <div className='flex h-svh w-full flex-1 grow flex-col items-center justify-center gap-4 bg-gray-100'>
+        <Loader2 size='64' className='animate-spin text-blue-600' />
+        ロード中...
+      </div>
+    );
+  }
+  if (error) {
+    return <div>Error</div>;
+  }
+
+  const posts = postSchema.array().parse(data.posts);
+
   return (
     <div className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'>
       <div className='h-10 w-full'></div>
       {posts.map((post, index) => (
         <Post
           key={index}
-          username={post.username}
-          timestamp={post.timestamp}
+          username={post.author.name}
+          timestamp={post.createdAt}
           content={post.content}
-          tags={post.tags}
+          // 後で実装
+          tags={[]}
         />
       ))}
     </div>
