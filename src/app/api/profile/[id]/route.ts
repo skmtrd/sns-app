@@ -9,6 +9,8 @@ export const GET = async (req: Request, res: NextResponse) => {
   try {
     await dbConnect();
 
+    const userId = req.url.split("/profile/")[1];
+
     const user = await prisma.user.findUnique({
       where: { clerkId: userId },
       include: { tags: true },
