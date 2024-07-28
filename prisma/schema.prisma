@@ -21,6 +21,7 @@ model User {
   email     String   @unique
   posts     Post[]
   tags      Tag[]
+  introduction String?  @db.Text 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

@@ -10,18 +10,19 @@ export default async function Home() {
       <h1 className="text-4xl font-bold mb-4">Welcome to MySNS</h1>
       {userId ? (
         <>
-          <p className="mb-4">You are signed in!</p>
+          <p className="mb-4">You are signssssssssed in!</p>
           <Link
             href={`/profile/${userId}`}
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4"
           >
             View Profile
+            <UserButton></UserButton>
           </Link>
           <SignOutButton />
         </>
       ) : (
         <>
-          <p className="mb-4">Please sign in to continue</p>
+          <p className="mb-4">Please sisssssssgn in to continue</p>
           <SignInButton />
         </>
       )}
