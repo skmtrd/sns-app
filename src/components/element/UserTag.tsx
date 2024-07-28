@@ -7,7 +7,7 @@ type Props = {
 const UserTag: React.FC<Props> = ({ tagName }) => {
   return (
     <div>
-      <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded-full hover:bg-blue-300 inline-flex items-center ">
+      <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-sm text-blue-800 hover:bg-blue-300 ">
         <span className="mr-1">{tagName}</span>
       </span>
     </div>

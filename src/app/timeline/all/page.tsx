@@ -17,8 +17,8 @@ const TimelineAll = () => {
     },
   ];
   return (
-    <div className='flex-glow flex-col bg bg-gray-100 w-full items-center flex gap-4 overflow-scroll'>
-      <div className='w-full h-10'></div>
+    <div className='flex-glow bg flex w-full flex-col items-center gap-4 overflow-scroll bg-gray-100'>
+      <div className='h-10 w-full'></div>
       {posts.map((post, index) => (
         <Post
           key={index}

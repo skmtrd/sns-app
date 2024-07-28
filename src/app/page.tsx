@@ -6,14 +6,14 @@ export default async function Home() {
   const { userId } = auth();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2">
-      <h1 className="text-4xl font-bold mb-4">Welcome to MySNS</h1>
+    <div className="flex min-h-screen flex-col items-center justify-center py-2">
+      <h1 className="mb-4 text-4xl font-bold">Welcome to MySNS</h1>
       {userId ? (
         <>
           <p className="mb-4">You are signssssssssed in!</p>
           <Link
             href={`/profile/${userId}`}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4"
+            className="mb-4 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
           >
             View Profile
             <UserButton></UserButton>
