@@ -17,6 +17,7 @@ model User {
   id        String   @id @default(cuid())
   clerkId   String   @unique
   name      String
+  introduction    String @db.Text
   email     String   @unique
   posts     Post[]
   tags      Tag[]
