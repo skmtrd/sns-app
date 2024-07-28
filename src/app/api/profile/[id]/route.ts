@@ -8,7 +8,10 @@ export const GET = async (req: Request, res: NextResponse) => {
   try {
     const userId = req.url.split("/profile/")[1];
     await dbConnect();
-    const user = await prisma.user.findUnique({ where: { clerkId: userId } });
+    const user = await prisma.user.findUnique({
+      where: { clerkId: userId },
+      include: { tags: true },
+    });
     return NextResponse.json({ Message: "Success", user }, { status: 200 });
   } catch (err) {
     return NextResponse.json({ Message: "Error", err }, { status: 500 });
