@@ -57,8 +57,8 @@ export const PUT = async (req: Request, res: NextResponse) => {
       { status: 200 }
     );
   } catch (error) {
-    return 
-    
+    return;
+
     NextResponse.json({ message: "failed" });
   } finally {
     await prisma.$disconnect();
