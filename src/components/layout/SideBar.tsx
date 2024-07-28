@@ -20,11 +20,14 @@ const SideBar: React.FC<Props> = ({ userId }) => {
     { page: "/question", label: "質問スペース", icon: HelpCircle },
     { page: `/profile/${userId}`, label: "プロフィール", icon: User },
   ];
+
   return (
     <div className="w-20 md:w-80 bg-white p-4 border-r border-gray-200 transition-all duration-300 ease-in-out">
-      <h1 className="text-2xl font-bold text-blue-600 mb-4 hidden md:block">
-        INIAD SNS
-      </h1>
+      <Link href={"/timeline/all"}>
+        <h1 className="text-2xl font-bold text-blue-600 mb-4 hidden md:block">
+          INIAD SNS
+        </h1>
+      </Link>
       {navItems.map(({ page, label, icon: Icon }) => (
         <Link
           key={page}
