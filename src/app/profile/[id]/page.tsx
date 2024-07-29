@@ -31,8 +31,7 @@ const ProfilePage = () => {
           cache: "no-cache",
         });
         const data = await res.json();
-        console.log(data);
-        setUserInfo(data.user);
+        setUserInfo(data.data);
       } catch (error) {
         console.error("Failed to fetch user info:", error);
         setError("ユーザー情報の読み込みに失敗しました。");
@@ -81,7 +80,7 @@ const ProfilePage = () => {
             ))}
           </div>
         </div>
-        <button className="mt-2 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+        <button className="mt-2 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50/50">
           編集
         </button>
       </main>
