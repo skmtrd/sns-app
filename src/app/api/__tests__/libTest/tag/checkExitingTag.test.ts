@@ -1,5 +1,5 @@
 import { expect, test, describe } from "@jest/globals";
-import { checkTagExits } from "../../lib/tag/checkExitingTag";
+import { checkTagExits } from "../../../lib/tag/checkExitingTag";
 import "@testing-library/jest-dom";
 
 describe("checkTagExits test", () => {
