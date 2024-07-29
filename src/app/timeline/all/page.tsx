@@ -1,11 +1,13 @@
 "use client";
+import AddPost from "@/components/timeline/AddPost";
 import { Post } from "@/components/timeline/Post";
+import console from "console";
 import { Loader2 } from "lucide-react";
 import React from "react";
 import useSWR from "swr";
 import { z } from "zod";
 
-const postSchema = z.object({
+export const postSchema = z.object({
   author: z.object({
     name: z.string(),
   }),
@@ -16,6 +18,7 @@ const postSchema = z.object({
 const TimelineAll = () => {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
   const { data, error, isLoading } = useSWR("/api/post", fetcher, {
+    refreshInterval: 20000,
     revalidateOnFocus: true,
   });
 
@@ -31,21 +34,24 @@ const TimelineAll = () => {
     return <div>Error</div>;
   }
 
-  const posts = postSchema.array().parse(data.posts);
+  const posts = postSchema.array().parse(data.data.reverse());
 
   return (
     <div className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'>
       <div className='h-10 w-full'></div>
-      {posts.map((post, index) => (
-        <Post
-          key={index}
-          username={post.author.name}
-          timestamp={post.createdAt}
-          content={post.content}
-          // 後で実装
-          tags={[]}
-        />
-      ))}
+      <AddPost />
+      <div className='flex w-full grow flex-col items-center gap-y-4 border-t-2 p-3'>
+        {posts.reverse().map((post, index) => (
+          <Post
+            key={index}
+            username={post.author.name}
+            timestamp={post.createdAt}
+            content={post.content}
+            // 後で実装
+            tags={[]}
+          />
+        ))}
+      </div>
     </div>
   );
 };
