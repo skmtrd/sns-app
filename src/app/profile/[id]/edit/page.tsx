@@ -63,7 +63,12 @@ const ProfileEditPage = () => {
           cache: "no-cache",
         });
         const data = await res.json();
-        setNotOwnedTags(data.data);
+
+        const notOwnedTags = data.data.filter(
+          (tag: Tag) => !ownedTags.map((tag) => tag.name).includes(tag.name)
+        );
+
+        setNotOwnedTags(notOwnedTags);
       } catch (error) {
         console.error("Failed to fetch tags:", error);
         setError("タグの読み込みに失敗しました。");
@@ -71,7 +76,7 @@ const ProfileEditPage = () => {
     };
 
     fetchTags();
-  }, []);
+  }, [ownedTags]);
 
   const handleSubmit = async () => {
     const name = nameRef.current?.value;
@@ -103,6 +108,12 @@ const ProfileEditPage = () => {
       console.error("Failed to update user info:", error);
       setError("ユーザー情報の更新に失敗しました。");
     }
+  };
+
+  const handleAddTag = (tagName: string) => {
+    const newTags = notOwnedTags.filter((tag) => tag.name !== tagName);
+    setNotOwnedTags(newTags);
+    setOwnedTags([...ownedTags, { id: "", name: tagName }]);
   };
 
   if (isLoading)
@@ -207,7 +218,9 @@ const ProfileEditPage = () => {
                 />
                 <div className="flex flex-wrap gap-2">
                   {notOwnedTags.map((tag) => (
-                    <UserTag key={tag.id} tagName={tag.name}></UserTag>
+                    <div key={tag.id} onClick={() => handleAddTag(tag.name)}>
+                      <UserTag tagName={tag.name}></UserTag>
+                    </div>
                   ))}
                 </div>
               </div>

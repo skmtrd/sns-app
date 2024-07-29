@@ -27,12 +27,12 @@ const ProfilePage = () => {
     const fetchUserInfo = async () => {
       try {
         const userId = pathname.split("/profile/")[1];
-        console.log(userId);
         const res = await fetch(`http://localhost:3000/api/profile/${userId}`, {
           cache: "no-cache",
         });
         const data = await res.json();
         setUserInfo(data.data);
+        console.log(data.data);
       } catch (error) {
         console.error("Failed to fetch user info:", error);
         setError("ユーザー情報の読み込みに失敗しました。");
