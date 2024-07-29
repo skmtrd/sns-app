@@ -3,6 +3,7 @@ import prisma from "../../../../../lib/prisma";
 import { dbConnect } from "../../../../../lib/dbConnect";
 import { checkUserIdExists } from "../../../../../lib/user/checkUserIdExists";
 import { auth } from "@clerk/nextjs/server";
+import { apiRes } from "../../types";
 
 //ブログの詳細記事取得API
 export const GET = async (req: Request, res: NextResponse) => {
@@ -16,9 +17,15 @@ export const GET = async (req: Request, res: NextResponse) => {
       include: { tags: true },
     });
 
-    return NextResponse.json({ Message: "Success", user }, { status: 200 });
+    return NextResponse.json<apiRes>(
+      { message: "Success", data: user },
+      { status: 200 }
+    );
   } catch (err) {
-    return NextResponse.json({ Message: "Error", err }, { status: 500 });
+    return NextResponse.json<apiRes>(
+      { message: "Error", data: err },
+      { status: 500 }
+    );
   } finally {
     await prisma.$disconnect();
   }
@@ -35,18 +42,27 @@ export const PUT = async (req: Request, res: NextResponse) => {
     //存在したら、エラーメッセージを返す
     const isUserIdExists = await checkUserIdExists(id);
     if (isUserIdExists)
-      return NextResponse.json(
-        { message: "userId already  exits", isUserIdExists },
+      return NextResponse.json<apiRes>(
+        { message: "userId already  exits" },
         { status: 400 }
       );
+      //userIdが存在しなければ、新しいプロフィールを作成する
+    else {
+      const user = await prisma.user.update({
+        data: { name, introduction, id },
+        where: { clerkId: userId },
+      });
 
-    const user = await prisma.user.update({
-      data: { name, introduction, id },
-      where: { clerkId: userId },
-    });
-    return NextResponse.json({ Message: "Success", user }, { status: 200 });
+      return NextResponse.json<apiRes>(
+        { message: "Success", data: user },
+        { status: 200 }
+      );
+    }
   } catch (err) {
-    return NextResponse.json({ Message: "Error", err }, { status: 500 });
+    return NextResponse.json<apiRes>(
+      { message: "Error", data: err },
+      { status: 500 }
+    );
   } finally {
     await prisma.$disconnect();
   }

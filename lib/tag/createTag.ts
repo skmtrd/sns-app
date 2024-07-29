@@ -1,7 +1,5 @@
-import { NextResponse } from "next/server";
 import prisma from "../prisma";
-import { Prisma } from "@prisma/client";
-import {checkTagExits}  from "./checkExitingTag";
+import { checkTagExits } from "./checkExitingTag";
 
 //tagNameがTagテーブルに存在するかを確認
 //存在する場合はエラーメッセージを返す
