@@ -2,6 +2,7 @@
 
 import { NextResponse } from "next/server";
 import prisma from "../prisma";
+import { dbConnect } from "../dbConnect";
 
 export const checkUserIdExists = async (
   newUserId: string

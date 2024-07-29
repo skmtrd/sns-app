@@ -7,7 +7,7 @@ describe("createTag test", () => {
     expect(await CreateTag("testtag1")).toStrictEqual({
       message: "already exit tag",
     });
-    expect(await CreateTag("riku")).toStrictEqual({
+    expect(await CreateTag("testtag2")).toStrictEqual({
       message: "create success",
     });
   });
