@@ -5,8 +5,8 @@ import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Loader2 } from "lucide-react";
 
-type UserInfo = {
-  id: number;
+export type UserInfo = {
+  id: string;
   clerkId: string;
   name: string;
   email: string;

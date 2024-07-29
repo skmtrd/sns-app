@@ -1,52 +1,67 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
+import { usePathname } from "next/navigation";
 import RemovableUserTag from "@/components/element/RemovableUserTag";
 import { Plus, ChevronDown, ChevronUp } from "lucide-react";
-import UserTag from "@/components/element/UserTag";
+import { Loader2 } from "lucide-react";
+import { UserInfo } from "../page";
+import { set } from "zod";
 
 export type Tag = {
   id: string;
   name: string;
 };
 
-const fetchTags = async (): Promise<Tag[]> => {
-  const res = await fetch("http://localhost:3000/api/tag", {
-    cache: "no-cache",
-  });
-  const data = await res.json();
-  return data.tags.map((tag: any) => ({ id: tag.id, name: tag.name }));
-};
-
 const ProfileEditPage = () => {
+  const nameRef = React.createRef<HTMLInputElement>();
+  const userIdRef = React.createRef<HTMLInputElement>();
+  const introRef = React.createRef<HTMLTextAreaElement>();
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [tags, setTags] = useState<Tag[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [ownedTags, setOwnedTags] = useState<Tag[]>([]);
+  const [notOwnedTags, setNotOwnedTags] = useState<Tag[]>([]);
+  const pathname = usePathname();
 
   useEffect(() => {
-    const loadTags = async () => {
+    const fetchUserInfo = async () => {
       try {
-        const fetchedTags = await fetchTags();
-        setTags(fetchedTags);
+        const userId = pathname.split("/profile/")[1].split("/edit")[0];
+        const res = await fetch(`http://localhost:3000/api/profile/${userId}`, {
+          cache: "no-cache",
+        });
+        const data = await res.json();
+        setUserInfo(data.data);
+        setOwnedTags(data.data.tags);
       } catch (error) {
-        console.error("Failed to fetch tags:", error);
-        setError("タグの読み込みに失敗しました。");
+        console.error("Failed to fetch user info:", error);
+        setError("ユーザー情報の読み込みに失敗しました。");
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadTags();
-  }, []);
+    fetchUserInfo();
+  }, [pathname]);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  useEffect(() => {
+    if (nameRef.current && userIdRef.current && introRef.current && userInfo) {
+      nameRef.current.value = userInfo.name;
+      userIdRef.current.value = userInfo.id;
+      introRef.current.value = userInfo.introduction;
+    }
+  }, [userInfo, nameRef, userIdRef, introRef]);
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  if (isLoading)
+    return (
+      <div className="flex h-svh w-full flex-1 grow flex-col items-center justify-center gap-4 bg-gray-100">
+        <Loader2 size="64" className="animate-spin text-blue-600" />
+        ロード中...
+      </div>
+    );
+  if (error) return <div>{error}</div>;
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
@@ -63,9 +78,10 @@ const ProfileEditPage = () => {
               名前
             </label>
             <input
+              ref={nameRef}
               type="text"
               id="name"
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50/50"
             />
           </div>
           <div className="mb-4">
@@ -80,6 +96,7 @@ const ProfileEditPage = () => {
                 @
               </span>
               <input
+                ref={userIdRef}
                 type="text"
                 id="username"
                 className="flex-1 block w-full rounded-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
@@ -94,6 +111,7 @@ const ProfileEditPage = () => {
               自己紹介
             </label>
             <textarea
+              ref={introRef}
               id="bio"
               rows={3}
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
@@ -104,9 +122,9 @@ const ProfileEditPage = () => {
               タグ
             </label>
             <div className="mt-2 flex flex-wrap">
-              <RemovableUserTag tagName="JavaScript" />
-              <RemovableUserTag tagName="React" />
-              <RemovableUserTag tagName="Node.js" />
+              {ownedTags.map((tag) => (
+                <RemovableUserTag key={tag.id} tagName={tag.name} />
+              ))}
             </div>
           </div>
           <div>
@@ -137,9 +155,9 @@ const ProfileEditPage = () => {
                   className="w-full px-3 py-2 border rounded-md mb-4"
                 />
                 <div className="flex flex-wrap gap-2">
-                  {tags.map((tag) => (
+                  {/* {tags.map((tag) => (
                     <UserTag key={tag.id} tagName={tag.name} />
-                  ))}
+                  ))} */}
                 </div>
               </div>
             </div>
