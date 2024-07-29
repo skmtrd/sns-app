@@ -1,4 +1,4 @@
-import { config } from 'dotenv'
-import path from 'path'
+const { config } = require("dotenv");
+const path = require("path");
 
-config({ path: path.resolve(__dirname, '.env.test') })
+config({ path: path.resolve(__dirname, ".env.test") });
