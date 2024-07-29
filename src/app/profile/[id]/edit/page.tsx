@@ -79,6 +79,15 @@ const ProfileEditPage = () => {
     const introduction = introRef.current?.value;
     const userId = pathname.split("/profile/")[1].split("/")[0];
 
+    if (
+      name === userInfo?.name &&
+      newId === userInfo?.id &&
+      introduction === userInfo?.introduction
+    ) {
+      router.push(`/profile/${userId}`);
+      return;
+    }
+
     try {
       console.log({ name, introduction, newId });
       const res = await fetch(`http://localhost:3000/api/profile/${userId}`, {
