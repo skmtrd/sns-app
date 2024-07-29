@@ -1,5 +1,4 @@
-import React from "react";
-
+import Link from "next/link";
 import {
   Home,
   BookOpen,
@@ -10,28 +9,36 @@ import {
   TrendingUp,
 } from "lucide-react";
 
-const SideBar = () => {
+type Props = {
+  userId: string;
+};
+
+const SideBar: React.FC<Props> = ({ userId }) => {
   const navItems = [
-    { page: "timeline", label: "タイムライン", icon: Home },
-    { page: "tasks", label: "課題共有", icon: BookOpen },
-    { page: "qa", label: "質問スペース", icon: HelpCircle },
-    { page: "profile", label: "プロフィール", icon: User },
+    { page: "/timeline/all", label: "タイムライン", icon: Home },
+    { page: "/assiignment", label: "課題共有", icon: BookOpen },
+    { page: "/question", label: "質問スペース", icon: HelpCircle },
+    { page: `/profile/${userId}`, label: "プロフィール", icon: User },
   ];
+
   return (
-    <div className="w-20 md:w-80 bg-white p-4 border-r border-gray-200 transition-all duration-300 ease-in-out">
-      <h1 className="text-2xl font-bold text-blue-600 mb-4 hidden md:block">
-        INIAD SNS
-      </h1>
+    <div className="w-20 border-r border-gray-200 bg-white p-4 transition-all duration-300 ease-in-out md:w-80">
+      <Link href={"/timeline/all"}>
+        <h1 className="mb-4 hidden text-2xl font-bold text-blue-600 md:block">
+          INIAD SNS
+        </h1>
+      </Link>
       {navItems.map(({ page, label, icon: Icon }) => (
-        <button
+        <Link
           key={page}
-          className="w-full flex items-center justify-center md:justify-start p-2 mb-2 rounded hover:text-blue-600 font-bold"
+          href={page}
+          className="mb-2 flex w-full items-center justify-center rounded p-2 font-bold hover:text-blue-600 md:justify-start"
         >
-          <div className="w-10 h-10 flex items-center justify-center">
+          <div className="flex size-10 items-center justify-center">
             <Icon size={24} />
           </div>
-          <span className="hidden md:inline md:ml-3">{label}</span>
-        </button>
+          <span className="hidden md:ml-3 md:inline">{label}</span>
+        </Link>
       ))}
     </div>
   );
