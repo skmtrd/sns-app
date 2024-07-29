@@ -44,7 +44,7 @@ export const PUT = async (req: Request, res: NextResponse) => {
     if (isUserIdExists)
       return NextResponse.json<apiRes>(
         { message: "userId already  exits" },
-        { status: 400 }
+        { status: 404 }
       );
     //userIdが存在しなければ、新しいプロフィールを作成する
     else {
