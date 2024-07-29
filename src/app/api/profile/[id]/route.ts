@@ -5,7 +5,7 @@ import { checkUserIdExists } from "../../lib/user/checkUserIdExists";
 import { auth } from "@clerk/nextjs/server";
 import { apiRes } from "../../types";
 
-//ブログの詳細記事取得API
+
 export const GET = async (req: Request, res: NextResponse) => {
   try {
     await dbConnect();
