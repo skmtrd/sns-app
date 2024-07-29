@@ -3,10 +3,11 @@
 import React, { useState, useEffect, use } from "react";
 import { usePathname } from "next/navigation";
 import RemovableUserTag from "@/components/element/RemovableUserTag";
-import { Plus, ChevronDown, ChevronUp } from "lucide-react";
+import { Plus, ChevronDown, ChevronUp, User2Icon, Router } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import { UserInfo } from "../page";
-import { set } from "zod";
+import { useRouter } from "next/navigation";
+import UserTag from "@/components/element/UserTag";
 
 export type Tag = {
   id: string;
@@ -24,6 +25,7 @@ const ProfileEditPage = () => {
   const [ownedTags, setOwnedTags] = useState<Tag[]>([]);
   const [notOwnedTags, setNotOwnedTags] = useState<Tag[]>([]);
   const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -53,6 +55,46 @@ const ProfileEditPage = () => {
       introRef.current.value = userInfo.introduction;
     }
   }, [userInfo, nameRef, userIdRef, introRef]);
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const res = await fetch("http://localhost:3000/api/tag", {
+          cache: "no-cache",
+        });
+        const data = await res.json();
+        setNotOwnedTags(data.data);
+      } catch (error) {
+        console.error("Failed to fetch tags:", error);
+        setError("タグの読み込みに失敗しました。");
+      }
+    };
+
+    fetchTags();
+  }, []);
+
+  const handleSubmit = async () => {
+    const name = nameRef.current?.value;
+    const newId = userIdRef.current?.value;
+    const introduction = introRef.current?.value;
+    const userId = pathname.split("/profile/")[1].split("/")[0];
+
+    try {
+      console.log({ name, introduction, newId });
+      const res = await fetch(`http://localhost:3000/api/profile/${userId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, introduction, id: newId }),
+      });
+      const data = await res.json();
+      router.push(`/profile/${userId}`);
+    } catch (error) {
+      console.error("Failed to update user info:", error);
+      setError("ユーザー情報の更新に失敗しました。");
+    }
+  };
 
   if (isLoading)
     return (
@@ -155,15 +197,18 @@ const ProfileEditPage = () => {
                   className="w-full px-3 py-2 border rounded-md mb-4"
                 />
                 <div className="flex flex-wrap gap-2">
-                  {/* {tags.map((tag) => (
-                    <UserTag key={tag.id} tagName={tag.name} />
-                  ))} */}
+                  {notOwnedTags.map((tag) => (
+                    <UserTag key={tag.id} tagName={tag.name}></UserTag>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
         </form>
-        <button className="px-4 py-2 mt-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+        <button
+          className="px-4 py-2 mt-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+          onClick={handleSubmit}
+        >
           保存
         </button>
       </main>

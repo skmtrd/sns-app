@@ -2,9 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "../../lib/prisma";
 import { dbConnect } from "../../lib/dbConnect";
 import { checkUserIdExists } from "../../lib/user/checkUserIdExists";
-import { auth } from "@clerk/nextjs/server";
 import { apiRes } from "../../types";
-
 
 export const GET = async (req: Request, res: NextResponse) => {
   try {
@@ -43,7 +41,7 @@ export const PUT = async (req: Request, res: NextResponse) => {
     const isUserIdExists = await checkUserIdExists(id);
     if (isUserIdExists)
       return NextResponse.json<apiRes>(
-        { message: "userId already  exits" },
+        { message: "userId already exits" },
         { status: 404 }
       );
     //userIdが存在しなければ、新しいプロフィールを作成する
