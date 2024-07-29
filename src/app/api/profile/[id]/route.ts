@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import prisma from "../../../../../lib/prisma";
-import { dbConnect } from "../../../../../lib/dbConnect";
-import { checkUserIdExists } from "../../../../../lib/user/checkUserIdExists";
+import prisma from "../../lib/prisma";
+import { dbConnect } from "../../lib/dbConnect";
+import { checkUserIdExists } from "../../lib/user/checkUserIdExists";
 import { auth } from "@clerk/nextjs/server";
 import { apiRes } from "../../types";
 
-//ブログの詳細記事取得API
+
 export const GET = async (req: Request, res: NextResponse) => {
   try {
     await dbConnect();
@@ -44,9 +44,9 @@ export const PUT = async (req: Request, res: NextResponse) => {
     if (isUserIdExists)
       return NextResponse.json<apiRes>(
         { message: "userId already  exits" },
-        { status: 400 }
+        { status: 404 }
       );
-      //userIdが存在しなければ、新しいプロフィールを作成する
+    //userIdが存在しなければ、新しいプロフィールを作成する
     else {
       const user = await prisma.user.update({
         data: { name, introduction, id },
