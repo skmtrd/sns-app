@@ -4,6 +4,7 @@ import { Tag } from "./edit/page";
 import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import Link from "next/link";
 
 export type UserInfo = {
   id: string;
@@ -80,9 +81,11 @@ const ProfilePage = () => {
             ))}
           </div>
         </div>
-        <button className="mt-2 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50/50">
-          編集
-        </button>
+        <Link href={`${pathname}/edit`}>
+          <button className="mt-2 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50/50">
+            編集
+          </button>
+        </Link>
       </main>
     </div>
   );
