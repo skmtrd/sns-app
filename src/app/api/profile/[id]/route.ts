@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import prisma from "../../../../../lib/prisma";
-import { dbConnect } from "../../../../../lib/dbConnect";
-import { checkUserIdExists } from "../../../../../lib/user/checkUserIdExists";
+import prisma from "../../lib/prisma";
+import { dbConnect } from "../../lib/dbConnect";
+import { checkUserIdExists } from "../../lib/user/checkUserIdExists";
 import { auth } from "@clerk/nextjs/server";
 import { apiRes } from "../../types";
 
@@ -46,7 +46,7 @@ export const PUT = async (req: Request, res: NextResponse) => {
         { message: "userId already  exits" },
         { status: 400 }
       );
-      //userIdが存在しなければ、新しいプロフィールを作成する
+    //userIdが存在しなければ、新しいプロフィールを作成する
     else {
       const user = await prisma.user.update({
         data: { name, introduction, id },

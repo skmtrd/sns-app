@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import prisma from "../../../../lib/prisma";
-import { dbConnect } from "../../../../lib/dbConnect";
+import prisma from "../lib/prisma";
+import { dbConnect } from "../lib/dbConnect";
 import { auth } from "@clerk/nextjs/server";
 import { error } from "console";
 import { apiRes } from "../types";

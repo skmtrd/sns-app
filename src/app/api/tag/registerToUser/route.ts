@@ -1,8 +1,8 @@
 //このファイルはTagをUserに登録する
 
 import { NextResponse } from "next/server";
-import { dbConnect } from "../../../../../lib/dbConnect";
-import prisma from "../../../../../lib/prisma";
+import { dbConnect } from "../../lib/dbConnect";
+import prisma from "../../lib/prisma";
 import { apiRes } from "../../types";
 
 export const PUT = async (req: Request, res: NextResponse) => {

@@ -1,10 +1,10 @@
 //このファイルはTagのCRU操作をしている。
 
 import { NextResponse } from "next/server";
-import { dbConnect } from "../../../../lib/dbConnect";
-import prisma from "../../../../lib/prisma";
+import { dbConnect } from "../lib/dbConnect";
+import prisma from "../lib/prisma";
 import { auth } from "@clerk/nextjs/server";
-import { CreateTag } from "../../../../lib/tag/createTag";
+import { CreateTag } from "../lib/tag/createTag";
 import { apiRes } from "../types";
 
 export const GET = async (req: Request, res: NextResponse) => {
