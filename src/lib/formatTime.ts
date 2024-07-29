@@ -21,11 +21,14 @@ export const formatTime = (timestamp: string): string => {
   } else if (diff.month > 0) {
     return `${month}月${day}日`;
   } else if (diff.day > 0) {
+    if (diff.day === 1) {
+      return "昨日";
+    }
     return `${day}日`;
   } else if (diff.hour > 0) {
-    return `${hour}時間前`;
+    return `${diff.hour}時間前`;
   } else if (diff.minute > 0) {
-    return `${minute}分前`;
+    return `${diff.minute}分前`;
   } else {
     return "たった今";
   }
