@@ -1,5 +1,5 @@
 "use client";
-import AddPost from "@/components/timeline/AddPost";
+import { AddPost } from "@/components/timeline/AddPost";
 import { Post } from "@/components/timeline/Post";
 import console from "console";
 import { Loader2 } from "lucide-react";
