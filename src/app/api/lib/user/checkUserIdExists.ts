@@ -2,8 +2,11 @@
 
 import { NextResponse } from "next/server";
 import prisma from "../prisma";
+import { dbConnect } from "../dbConnect";
 
-export const checkUserIdExists = async (newUserId: string) => {
+export const checkUserIdExists = async (
+  newUserId: string
+): Promise<boolean> => {
   try {
     //prismaでdbを操作しているのに
     //データベース接続していないのは、この関数の呼び出し元で接続しているから
