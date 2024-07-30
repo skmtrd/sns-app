@@ -15,9 +15,9 @@ export type Tag = {
 };
 
 const ProfileEditPage = () => {
-  const nameRef = React.createRef<HTMLInputElement>();
-  const userIdRef = React.createRef<HTMLInputElement>();
-  const introRef = React.createRef<HTMLTextAreaElement>();
+  const nameRef = React.useRef<HTMLInputElement>();
+  const userIdRef = React.useRef<HTMLInputElement>();
+  const introRef = React.useRef<HTMLTextAreaElement>();
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -65,7 +65,8 @@ const ProfileEditPage = () => {
         const data = await res.json();
 
         const notOwnedTags = data.data.filter(
-          (tag: Tag) => !ownedTags.map((tag) => tag.name).includes(tag.name)
+          (tag: Tag) =>
+            !userInfo?.tags.some((ownedTag: Tag) => ownedTag.name === tag.name)
         );
 
         setNotOwnedTags(notOwnedTags);
@@ -76,33 +77,52 @@ const ProfileEditPage = () => {
     };
 
     fetchTags();
-  }, [ownedTags]);
+  }, [userInfo]);
 
   const handleSubmit = async () => {
     const name = nameRef.current?.value;
     const newId = userIdRef.current?.value;
     const introduction = introRef.current?.value;
     const userId = pathname.split("/profile/")[1].split("/")[0];
+    console.log(userId);
 
-    if (
-      name === userInfo?.name &&
-      newId === userInfo?.id &&
-      introduction === userInfo?.introduction
-    ) {
-      router.push(`/profile/${userId}`);
-      return;
-    }
+    // if (
+    //   name === userInfo?.name &&
+    //   newId === userInfo?.id &&
+    //   introduction === userInfo?.introduction
+    // ) {
+    //   router.push(`/profile/${userId}`);
+    //   return;
+    // }
 
     try {
       console.log({ name, introduction, newId });
-      const res = await fetch(`http://localhost:3000/api/profile/${userId}`, {
+      console.log("やあ");
+      const userInfoRes = await fetch(
+        `http://localhost:3000/api/profile/${userId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name, introduction, id: newId }),
+        }
+      );
+
+      const tagRes = await fetch("http://localhost:3000/api/tag", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name, introduction, id: newId }),
+        body: JSON.stringify({
+          tagNames: ownedTags.map((tag) => tag.name),
+          clerkId: userId,
+        }),
       });
-      const data = await res.json();
+
+      const tagData = await tagRes.json();
+      console.log("Tag update response:", tagData);
+
       router.push(`/profile/${userId}`);
     } catch (error) {
       console.error("Failed to update user info:", error);
@@ -114,6 +134,12 @@ const ProfileEditPage = () => {
     const newTags = notOwnedTags.filter((tag) => tag.name !== tagName);
     setNotOwnedTags(newTags);
     setOwnedTags([...ownedTags, { id: "", name: tagName }]);
+  };
+
+  const handleRemoveTag = (tagName: string) => {
+    const newTags = ownedTags.filter((tag) => tag.name !== tagName);
+    setOwnedTags(newTags);
+    setNotOwnedTags([...notOwnedTags, { id: "", name: tagName }]);
   };
 
   if (isLoading)
@@ -185,7 +211,11 @@ const ProfileEditPage = () => {
             </label>
             <div className="mt-2 flex flex-wrap">
               {ownedTags.map((tag) => (
-                <RemovableUserTag key={tag.id} tagName={tag.name} />
+                <RemovableUserTag
+                  key={tag.id}
+                  tagName={tag.name}
+                  handleRemoveTag={handleRemoveTag}
+                />
               ))}
             </div>
           </div>
