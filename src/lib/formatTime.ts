@@ -12,14 +12,12 @@ export const formatTime = (timestamp: string, now: Date): string => {
   };
 
   if (diff.year > 0) {
-    return `${target.getFullYear()}年${
-      target.getMonth() + 1
-    }月${target.getDate()}日`;
+    return `${target.getFullYear()}年${target.getMonth() + 1}月${target.getDate()}日`;
   } else if (diff.month > 0) {
     return `${target.getMonth() + 1}月${target.getDate()}日`;
   } else if (diff.day > 0) {
     if (diff.day === 1) {
-      return "昨日";
+      return '昨日';
     }
     return `${target.getDate()}日`;
   } else if (diff.hour > 0) {
@@ -29,6 +27,6 @@ export const formatTime = (timestamp: string, now: Date): string => {
   } else if (diff.second > 0) {
     return `${diff.second}秒前`;
   } else {
-    return "たった今";
+    return 'たった今';
   }
 };

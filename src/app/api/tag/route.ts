@@ -1,25 +1,18 @@
 //このファイルはTagのCRU操作をしている。
 
-import { NextResponse } from "next/server";
-import { dbConnect } from "../lib/dbConnect";
-import prisma from "../lib/prisma";
-import { auth } from "@clerk/nextjs/server";
-import { CreateTag } from "../lib/tag/createTag";
-import { apiRes } from "../types";
+import { NextResponse } from 'next/server';
+import { dbConnect } from '../lib/dbConnect';
+import prisma from '../lib/prisma';
+import { CreateTag } from '../lib/tag/createTag';
+import { apiRes } from '../types';
 
 export const GET = async (req: Request, res: NextResponse) => {
   try {
     dbConnect();
     const tags = await prisma.tag.findMany();
-    return NextResponse.json<apiRes>(
-      { message: "success", data: tags },
-      { status: 200 }
-    );
+    return NextResponse.json<apiRes>({ message: 'success', data: tags }, { status: 200 });
   } catch (error) {
-    return NextResponse.json<apiRes>(
-      { message: "failed", data: error },
-      { status: 500 }
-    );
+    return NextResponse.json<apiRes>({ message: 'failed', data: error }, { status: 500 });
   } finally {
     await prisma.$disconnect();
   }
@@ -33,12 +26,9 @@ export const POST = async (req: Request, res: NextResponse) => {
 
     CreateTag(tagName);
 
-    return NextResponse.json<apiRes>({ message: "success" }, { status: 200 });
+    return NextResponse.json<apiRes>({ message: 'success' }, { status: 200 });
   } catch (error) {
-    return NextResponse.json<apiRes>(
-      { message: "failed", data: error },
-      { status: 500 }
-    );
+    return NextResponse.json<apiRes>({ message: 'failed', data: error }, { status: 500 });
   } finally {
     await prisma.$disconnect();
   }
@@ -50,8 +40,8 @@ export const PUT = async (req: Request) => {
 
     if (!clerkId || !Array.isArray(tagNames)) {
       return NextResponse.json(
-        { message: "Invalid input. ClerkId and tagNames array are required." },
-        { status: 400 }
+        { message: 'Invalid input. ClerkId and tagNames array are required.' },
+        { status: 400 },
       );
     }
 
@@ -63,7 +53,7 @@ export const PUT = async (req: Request) => {
       });
 
       if (!user) {
-        throw new Error("User not found");
+        throw new Error('User not found');
       }
 
       // 新しいタグを取得または作成
@@ -73,8 +63,8 @@ export const PUT = async (req: Request) => {
             where: { name },
             update: {},
             create: { name },
-          })
-        )
+          }),
+        ),
       );
 
       // 現在のタグと新しいタグの差分を計算
@@ -82,9 +72,7 @@ export const PUT = async (req: Request) => {
       const newTagIds = new Set(newTags.map((tag) => tag.id));
 
       const tagsToConnect = newTags.filter((tag) => !currentTagIds.has(tag.id));
-      const tagsToDisconnect = user.tags.filter(
-        (tag) => !newTagIds.has(tag.id)
-      );
+      const tagsToDisconnect = user.tags.filter((tag) => !newTagIds.has(tag.id));
 
       // ユーザーのタグを更新
       const updatedUser = await tx.user.update({
@@ -101,18 +89,15 @@ export const PUT = async (req: Request) => {
       return updatedUser;
     });
 
-    return NextResponse.json(
-      { message: "success", data: result },
-      { status: 200 }
-    );
+    return NextResponse.json({ message: 'success', data: result }, { status: 200 });
   } catch (error) {
-    console.error("Error in updating user tags:", error);
+    console.error('Error in updating user tags:', error);
     return NextResponse.json(
       {
-        message: "failed",
-        error: error instanceof Error ? error.message : "Unknown error",
+        message: 'failed',
+        error: error instanceof Error ? error.message : 'Unknown error',
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 };

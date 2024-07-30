@@ -1,18 +1,18 @@
-"use client";
-import { cn } from "@/lib/utils";
-import React, { useState } from "react";
-import { useSWRConfig } from "swr";
+'use client';
+import { cn } from '@/lib/utils';
+import React, { useState } from 'react';
+import { useSWRConfig } from 'swr';
 
 export const AddPost = () => {
   const { mutate } = useSWRConfig();
-  const [authorName, setAuthorName] = useState("");
-  const [content, setContent] = useState("");
+  const [authorName, setAuthorName] = useState('');
+  const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const handleSubmit = async () => {
     setLoading(true);
-    setError("");
+    setError('');
 
     const newPost = {
       author: { name: authorName },
@@ -21,21 +21,21 @@ export const AddPost = () => {
     };
 
     try {
-      const response = await fetch("/api/post", {
-        method: "POST",
+      const response = await fetch('/api/post', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(newPost),
       });
 
       if (!response.ok) {
-        throw new Error("投稿に失敗しました");
+        throw new Error('投稿に失敗しました');
       }
 
-      mutate("/api/post");
-      setAuthorName("");
-      setContent("");
+      mutate('/api/post');
+      setAuthorName('');
+      setContent('');
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -44,7 +44,7 @@ export const AddPost = () => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && e.ctrlKey) {
+    if (e.key === 'Enter' && e.ctrlKey) {
       e.preventDefault();
       handleSubmit();
     }
@@ -70,12 +70,12 @@ export const AddPost = () => {
         <button
           type='submit'
           className={cn(
-            "bg-blue-500 py-2 text-white rounded-md",
-            loading || (!content && "opacity-50")
+            'bg-blue-500 py-2 text-white rounded-md',
+            loading || (!content && 'opacity-50'),
           )}
           disabled={loading || content.length < 1}
         >
-          {loading ? "投稿中..." : "投稿する"}
+          {loading ? '投稿中...' : '投稿する'}
         </button>
         {error && <p className='text-red-500'>{error}</p>}
       </form>
