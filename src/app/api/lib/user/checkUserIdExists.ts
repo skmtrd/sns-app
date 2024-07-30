@@ -5,7 +5,8 @@ import prisma from "../prisma";
 import { dbConnect } from "../dbConnect";
 
 export const checkUserIdExists = async (
-  newUserId: string
+  newUserId: string,
+  clerkId: string
 ): Promise<boolean> => {
   try {
     //prismaでdbを操作しているのに
@@ -14,6 +15,7 @@ export const checkUserIdExists = async (
       where: { id: newUserId },
     });
 
+    if (isUserIdExists?.clerkId === clerkId) return false;
     return isUserIdExists ? true : false;
   } catch (error) {
     throw error;
