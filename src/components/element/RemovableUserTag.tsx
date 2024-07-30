@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 
-import { X } from "lucide-react";
+import { X } from 'lucide-react';
 
 type Props = {
   tagName: string;
@@ -10,10 +10,10 @@ type Props = {
 const RemovableUserTag: React.FC<Props> = ({ tagName, handleRemoveTag }) => {
   return (
     <div>
-      <span className="mb-2 mr-2 inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-sm text-blue-800 hover:bg-blue-300">
-        <span className="mr-1">{tagName}</span>
+      <span className='mb-2 mr-2 inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-sm text-blue-800 hover:bg-blue-300'>
+        <span className='mr-1'>{tagName}</span>
         <div
-          className=" rounded-full p-1 hover:bg-blue-200 focus:outline-none "
+          className=' rounded-full p-1 hover:bg-blue-200 focus:outline-none '
           onClick={() => handleRemoveTag(tagName)}
         >
           <X size={15} />

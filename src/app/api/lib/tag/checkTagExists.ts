@@ -1,5 +1,4 @@
-import { dbConnect } from "../dbConnect";
-import prisma from "../prisma";
+import prisma from '../prisma';
 
 //タグがTagテーブルに存在するかを確認
 export const checkTagExists = async (tagName: string): Promise<boolean> => {
