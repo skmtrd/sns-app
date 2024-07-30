@@ -30,8 +30,8 @@ export const POST = async (req: Request, res: NextResponse) => {
 
     const { content } = await req.json();
     //clerkのuserIdからUserテーブルのuserIdを取得
-    // const { userId } = auth();
-    const userId = process.env.clerkId;
+    const { userId } = auth();
+    // const userId = process.env.clerkId;
 
     const user = await prisma.user.findUniqueOrThrow({
       where: { clerkId: userId },
