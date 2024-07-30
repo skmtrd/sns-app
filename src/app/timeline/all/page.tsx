@@ -1,11 +1,9 @@
-"use client";
-import AddPost from "@/components/timeline/AddPost";
-import { Post } from "@/components/timeline/Post";
-import console from "console";
-import { Loader2 } from "lucide-react";
-import React from "react";
-import useSWR from "swr";
-import { z } from "zod";
+'use client';
+import { AddPost } from '@/components/timeline/AddPost';
+import { Post } from '@/components/timeline/Post';
+import { Loader2 } from 'lucide-react';
+import useSWR from 'swr';
+import { z } from 'zod';
 
 export const postSchema = z.object({
   author: z.object({
@@ -17,7 +15,7 @@ export const postSchema = z.object({
 
 const TimelineAll = () => {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
-  const { data, error, isLoading } = useSWR("/api/post", fetcher, {
+  const { data, error, isLoading } = useSWR('/api/post', fetcher, {
     refreshInterval: 20000,
     revalidateOnFocus: true,
   });

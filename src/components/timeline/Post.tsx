@@ -1,5 +1,5 @@
-import { formatTime } from "@/lib/formatTime";
-import { useEffect, useState } from "react";
+import { formatTime } from '@/lib/formatTime';
+import { useEffect, useState } from 'react';
 
 type PostProps = {
   username: string;
@@ -8,12 +8,7 @@ type PostProps = {
   tags?: string[];
 };
 
-export const Post: React.FC<PostProps> = ({
-  username,
-  timestamp,
-  content,
-  tags,
-}) => {
+export const Post: React.FC<PostProps> = ({ username, timestamp, content, tags }) => {
   const [time, setTime] = useState(new Date());
   useEffect(() => {
     const updateDate = setInterval(() => {

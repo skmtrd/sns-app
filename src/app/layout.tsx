@@ -1,26 +1,15 @@
-import {
-  ClerkProvider,
-  RedirectToSignIn,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/nextjs";
-import "./globals.css";
-import SideBar from "@/components/layout/SideBar";
-import RightSideBar from "@/components/layout/RightSideBar";
-import { auth } from "@clerk/nextjs/server";
+import RightSideBar from '@/components/layout/RightSideBar';
+import SideBar from '@/components/layout/SideBar';
+import { ClerkProvider, SignInButton, SignedIn, SignedOut } from '@clerk/nextjs';
+import { auth } from '@clerk/nextjs/server';
+import './globals.css';
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   const { userId } = auth();
 
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang='en'>
         <body>
           <SignedOut>
             <SignInButton></SignInButton>
