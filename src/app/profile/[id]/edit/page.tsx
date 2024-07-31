@@ -1,5 +1,7 @@
 'use client';
 
+import Button from '@/components/element/Button';
+import Header from '@/components/element/Header';
 import RemovableUserTag from '@/components/element/RemovableUserTag';
 import UserTag from '@/components/element/UserTag';
 import { Tag, UserInfo } from '@/lib/types';
@@ -141,9 +143,7 @@ const ProfileEditPage = () => {
 
   return (
     <div className='flex flex-1 flex-col overflow-hidden'>
-      <header className='flex items-center justify-between border-b border-gray-200 bg-white p-4'>
-        <h2 className='text-xl font-bold'>プロフィール編集</h2>
-      </header>
+      <Header title={'プロフィール編集'} />
       <main className='flex-1 overflow-y-auto bg-gray-100 p-6'>
         <form className='rounded-lg bg-white p-6 shadow'>
           <div className='mb-4'>
@@ -230,12 +230,9 @@ const ProfileEditPage = () => {
             </div>
           </div>
         </form>
-        <button
-          className='mt-2 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50'
-          onClick={handleSubmit}
-        >
-          保存
-        </button>
+        <div onClick={handleSubmit}>
+          <Button title={'保存'} href={''} />
+        </div>
       </main>
     </div>
   );
