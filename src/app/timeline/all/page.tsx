@@ -8,6 +8,8 @@ import { z } from 'zod';
 export const postSchema = z.object({
   author: z.object({
     name: z.string(),
+    id: z.string(),
+    clerkId: z.string(),
   }),
   createdAt: z.string(),
   content: z.string(),
@@ -43,6 +45,8 @@ const TimelineAll = () => {
           <Post
             key={index}
             username={post.author.name}
+            clerkId={post.author.clerkId}
+            userId={post.author.id}
             timestamp={post.createdAt}
             content={post.content}
             // 後で実装
