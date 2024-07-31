@@ -1,7 +1,7 @@
 'use client';
 import { cn } from '@/lib/utils';
 import { X } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSWRConfig } from 'swr';
 
 type AddPostProps = {
@@ -14,6 +14,7 @@ export const AddPost: React.FC<AddPostProps> = ({ closeModal }) => {
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const textAriaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -56,6 +57,10 @@ export const AddPost: React.FC<AddPostProps> = ({ closeModal }) => {
     }
   };
 
+  useEffect(() => {
+    textAriaRef.current?.focus();
+  }, []);
+
   return (
     <div className='animate-fadeIn fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4'>
       <div
@@ -87,9 +92,11 @@ export const AddPost: React.FC<AddPostProps> = ({ closeModal }) => {
             <textarea
               placeholder='内容を入力してください'
               value={content}
+              rows={10}
               onChange={(e) => setContent(e.target.value)}
               onKeyDown={handleKeyDown}
-              className='w-full rounded-md border p-2'
+              className='w-full rounded-md border p-2 outline-none'
+              ref={textAriaRef}
               required
             />
             <button
