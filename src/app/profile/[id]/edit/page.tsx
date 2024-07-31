@@ -11,15 +11,16 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 const formSchema = z.object({
-  name: z.string().min(1),
-  id: z.string().min(1),
-  introduction: z.string().min(1),
+  name: z.string().min(1, '名前は必須です'),
+  userId: z
+    .string()
+    .regex(/^[a-zA-Z0-9_]+$/, 'ユーザーIDは半角英数字とアンダースコアのみ使用できます')
+    .min(1, 'ユーザーIDは必須です'),
+  introduction: z.string().min(1, '自己紹介は必須です'),
   tags: z.array(
     z.object({
       id: z.string().min(1),
       name: z.string().min(1),
-      createdAt: z.date(),
-      updatedAt: z.date(),
     }),
   ),
 });
@@ -50,10 +51,11 @@ const ProfileEditPage = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
-      id: '',
+      userId: '',
       introduction: '',
       tags: [],
     },
+    mode: 'onChange',
   });
 
   const [pageError, setPageError] = useState<string | null>(null);
@@ -85,7 +87,7 @@ const ProfileEditPage = () => {
       try {
         const userInfo = await fetchUserInfo(userId);
         setValue('name', userInfo.name);
-        setValue('id', userInfo.id);
+        setValue('userId', userInfo.id);
         setValue('introduction', userInfo.introduction);
         setValue('tags', userInfo.tags);
       } catch (error) {
@@ -97,16 +99,17 @@ const ProfileEditPage = () => {
   }, [pathname, setValue]);
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (data) => {
-    const userId = pathname.split('/profile/')[1].split('/')[0];
-    const { name, id, introduction, tags } = data;
+    const pathUserId = pathname.split('/profile/')[1].split('/')[0];
+    const { name, userId, introduction, tags } = data;
 
     try {
-      const userInfoRes = await fetch(`http://localhost:3000/api/profile/${userId}`, {
+      console.log('Submitting data:', data);
+      const userInfoRes = await fetch(`http://localhost:3000/api/profile/${pathUserId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, introduction, id }),
+        body: JSON.stringify({ name, introduction, id: userId }),
       });
 
       const tagRes = await fetch('http://localhost:3000/api/tag', {
@@ -116,14 +119,14 @@ const ProfileEditPage = () => {
         },
         body: JSON.stringify({
           tagNames: tags?.map((tag) => tag.name),
-          clerkId: userId,
+          clerkId: pathUserId,
         }),
       });
 
       const tagData = await tagRes.json();
       console.log('Tag update response:', tagData);
 
-      router.push(`/profile/${userId}`);
+      router.push(`/profile/${pathUserId}`);
     } catch (error) {
       console.error('Failed to update user info:', error);
       setError('root.error', { message: 'ユーザー情報の更新に失敗しました。' });
@@ -168,6 +171,7 @@ const ProfileEditPage = () => {
               name='name'
               className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200/50'
             />
+            {errors.name && <p className='mt-2 text-sm text-red-500'>{errors.name.message}</p>}
           </div>
           <div className='mb-4'>
             <label htmlFor='userId' className='block text-sm font-medium text-gray-700'>
@@ -178,13 +182,12 @@ const ProfileEditPage = () => {
                 @
               </span>
               <input
-                {...register('id')}
+                {...register('userId')}
                 type='text'
-                id='userId'
-                name='userId'
                 className='block w-full flex-1 rounded-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200/50'
               />
             </div>
+            {errors.userId && <p className='mt-2 text-sm text-red-500'>{errors.userId.message}</p>}
           </div>
           <div className='mb-4'>
             <label htmlFor='bio' className='block text-sm font-medium text-gray-700'>
@@ -195,6 +198,9 @@ const ProfileEditPage = () => {
               rows={3}
               className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200/50'
             ></textarea>
+            {errors.introduction && (
+              <p className='mt-2 text-sm text-red-500'>{errors.introduction.message}</p>
+            )}
           </div>
           <div className='mb-4'>
             <label className='block text-sm font-medium text-gray-700'>タグ</label>
@@ -240,10 +246,11 @@ const ProfileEditPage = () => {
                 </div>
               </div>
             </div>
+            {errors.tags && <p className='mt-2 text-sm text-red-500'>{errors.tags.message}</p>}
           </div>
         </form>
         <button
-          className='mt-2 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50'
+          className='mt-2 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-0 focus:ring-blue-500/50'
           onClick={handleSubmit(onSubmit)}
         >
           保存

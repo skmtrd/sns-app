@@ -38,7 +38,7 @@ export const PUT = async (req: Request, res: NextResponse) => {
     //userIdが存在しなければ、新しいプロフィールを作成する
     else {
       const newProfile = await prisma.user.update({
-        data: { name, introduction, userId },
+        data: { name, introduction, id: userId },
         where: { clerkId: clerkId },
       });
 
