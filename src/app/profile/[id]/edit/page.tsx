@@ -1,93 +1,112 @@
 'use client';
 
-import Button from '@/components/element/Button';
 import Header from '@/components/element/Header';
 import RemovableUserTag from '@/components/element/RemovableUserTag';
 import UserTag from '@/components/element/UserTag';
-import { Tag, UserInfo } from '@/lib/types';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { ChevronDown, ChevronUp, Loader2, Plus } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { z } from 'zod';
+
+const formSchema = z.object({
+  name: z.string().min(1),
+  id: z.string().min(1),
+  introduction: z.string().min(1),
+  tags: z.array(
+    z.object({
+      id: z.string().min(1),
+      name: z.string().min(1),
+      createdAt: z.date(),
+      updatedAt: z.date(),
+    }),
+  ),
+});
+
+export type Tag = z.infer<typeof formSchema>['tags'][0];
+
+const fetchUserInfo = async (userId: string) =>
+  fetch(`http://localhost:3000/api/profile/${userId}`)
+    .then((res) => res.json())
+    .then((data) => data.data);
+
+const fetchTags = async () =>
+  fetch('http://localhost:3000/api/tag', { cache: 'no-cache' })
+    .then((res) => res.json())
+    .then((data) => data.data);
 
 const ProfileEditPage = () => {
-  const nameRef = React.useRef<HTMLInputElement>();
-  const userIdRef = React.useRef<HTMLInputElement>();
-  const introRef = React.useRef<HTMLTextAreaElement>();
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [ownedTags, setOwnedTags] = useState<Tag[]>([]);
-  const [notOwnedTags, setNotOwnedTags] = useState<Tag[]>([]);
-  const pathname = usePathname();
   const router = useRouter();
+  const pathname = usePathname();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError,
+    getValues,
+    setValue,
+  } = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: '',
+      id: '',
+      introduction: '',
+      tags: [],
+    },
+  });
+
+  const [pageError, setPageError] = useState<string | null>(null);
+  const [availableTags, setAvailableTags] = useState<z.infer<typeof formSchema>['tags']>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const notOwnedTags = availableTags.filter(
+    (tag) => !getValues('tags')?.some((ownedTag) => ownedTag.name === tag.name),
+  );
 
   useEffect(() => {
-    const fetchUserInfo = async () => {
+    const fetchTagsAndSetAvailableTags = async () => {
       try {
-        const userId = pathname.split('/profile/')[1].split('/edit')[0];
-        const res = await fetch(`http://localhost:3000/api/profile/${userId}`, {
-          cache: 'no-cache',
-        });
-        const data = await res.json();
-        setUserInfo(data.data);
-        setOwnedTags(data.data.tags);
-      } catch (error) {
-        console.error('Failed to fetch user info:', error);
-        setError('ユーザー情報の読み込みに失敗しました。');
-      } finally {
+        const tags = await fetchTags();
+        const parsedTags = tags.map((tag: Tag) => ({ id: tag.id, name: tag.name }));
+        if (parsedTags) setAvailableTags(parsedTags);
         setIsLoading(false);
+      } catch (error) {
+        console.error('Failed to fetch tags:', error);
+        setPageError('タグの読み込みに失敗しました。');
       }
     };
-
-    fetchUserInfo();
+    fetchTagsAndSetAvailableTags();
   }, [pathname]);
 
   useEffect(() => {
-    if (nameRef.current && userIdRef.current && introRef.current && userInfo) {
-      nameRef.current.value = userInfo.name;
-      userIdRef.current.value = userInfo.id;
-      introRef.current.value = userInfo.introduction;
-    }
-  }, [userInfo, nameRef, userIdRef, introRef]);
-
-  useEffect(() => {
-    const fetchTags = async () => {
+    const fetchUserInfoAndSetDefaultValues = async () => {
+      const userId = pathname.split('/profile/')[1].split('/')[0];
       try {
-        const res = await fetch('http://localhost:3000/api/tag', {
-          cache: 'no-cache',
-        });
-        const data = await res.json();
-
-        const notOwnedTags = data.data.filter(
-          (tag: Tag) => !userInfo?.tags.some((ownedTag: Tag) => ownedTag.name === tag.name),
-        );
-
-        setNotOwnedTags(notOwnedTags);
+        const userInfo = await fetchUserInfo(userId);
+        setValue('name', userInfo.name);
+        setValue('id', userInfo.id);
+        setValue('introduction', userInfo.introduction);
+        setValue('tags', userInfo.tags);
       } catch (error) {
-        console.error('Failed to fetch tags:', error);
-        setError('タグの読み込みに失敗しました。');
+        console.error('Failed to fetch user info:', error);
+        setPageError('ユーザー情報の読み込みに失敗しました。');
       }
     };
+    fetchUserInfoAndSetDefaultValues();
+  }, [pathname, setValue]);
 
-    fetchTags();
-  }, [userInfo]);
-
-  const handleSubmit = async () => {
-    const name = nameRef.current?.value;
-    const newId = userIdRef.current?.value;
-    const introduction = introRef.current?.value;
+  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (data) => {
     const userId = pathname.split('/profile/')[1].split('/')[0];
+    const { name, id, introduction, tags } = data;
 
     try {
-      console.log({ name, introduction, newId });
-      console.log('やあ');
       const userInfoRes = await fetch(`http://localhost:3000/api/profile/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, introduction, id: newId }),
+        body: JSON.stringify({ name, introduction, id }),
       });
 
       const tagRes = await fetch('http://localhost:3000/api/tag', {
@@ -96,7 +115,7 @@ const ProfileEditPage = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          tagNames: ownedTags.map((tag) => tag.name),
+          tagNames: tags?.map((tag) => tag.name),
           clerkId: userId,
         }),
       });
@@ -107,29 +126,23 @@ const ProfileEditPage = () => {
       router.push(`/profile/${userId}`);
     } catch (error) {
       console.error('Failed to update user info:', error);
-      setError('ユーザー情報の更新に失敗しました。');
+      setError('root.error', { message: 'ユーザー情報の更新に失敗しました。' });
     }
   };
 
-  const handleAddTag = (tagName: string) => {
-    console.log(ownedTags, notOwnedTags);
-    const newOwnedTags = structuredClone(ownedTags);
-    const newNotOwnedTags = structuredClone(notOwnedTags);
+  const handleAddTag = (newTag: Tag) => {
+    const newOwnedTags = structuredClone(getValues('tags'));
 
-    newOwnedTags.push({ id: '', name: tagName });
+    newOwnedTags.push(newTag);
 
-    setNotOwnedTags(newNotOwnedTags.filter((tag) => tag.name !== tagName));
-    setOwnedTags(newOwnedTags);
+    setValue('tags', newOwnedTags);
+    setAvailableTags(availableTags.filter((tag) => tag.name !== newTag.name));
   };
 
-  const handleRemoveTag = (tagName: string) => {
-    const newOwnedTags = structuredClone(ownedTags);
-    const newNotOwnedTags = structuredClone(notOwnedTags);
-
-    newNotOwnedTags.push({ id: '', name: tagName });
-
-    setOwnedTags(newOwnedTags.filter((tag) => tag.name !== tagName));
-    setNotOwnedTags(newNotOwnedTags);
+  const handleRemoveTag = (tagToRemove: Tag) => {
+    const newOwnedTags = getValues('tags').filter((tag) => tag.id !== tagToRemove.id);
+    setValue('tags', newOwnedTags);
+    setAvailableTags([...availableTags, tagToRemove]);
   };
 
   if (isLoading)
@@ -139,26 +152,25 @@ const ProfileEditPage = () => {
         ロード中...
       </div>
     );
-  if (error) return <div>{error}</div>;
 
   return (
     <div className='flex flex-1 flex-col overflow-hidden'>
       <Header title={'プロフィール編集'} />
       <main className='flex-1 overflow-y-auto bg-gray-100 p-6'>
-        <form className='rounded-lg bg-white p-6 shadow'>
+        <form className='rounded-lg bg-white p-6 shadow' onSubmit={handleSubmit(onSubmit)}>
           <div className='mb-4'>
             <label htmlFor='name' className='block text-sm font-medium text-gray-700'>
               名前
             </label>
             <input
-              ref={nameRef}
+              {...register('name')}
               type='text'
-              id='name'
-              className='focus:ring-opacity-50/50 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200'
+              name='name'
+              className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200/50'
             />
           </div>
           <div className='mb-4'>
-            <label htmlFor='username' className='block text-sm font-medium text-gray-700'>
+            <label htmlFor='userId' className='block text-sm font-medium text-gray-700'>
               ユーザーID
             </label>
             <div className='mt-1 flex rounded-md shadow-sm'>
@@ -166,10 +178,11 @@ const ProfileEditPage = () => {
                 @
               </span>
               <input
-                ref={userIdRef}
+                {...register('id')}
                 type='text'
-                id='username'
-                className='block w-full flex-1 rounded-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50'
+                id='userId'
+                name='userId'
+                className='block w-full flex-1 rounded-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200/50'
               />
             </div>
           </div>
@@ -178,20 +191,19 @@ const ProfileEditPage = () => {
               自己紹介
             </label>
             <textarea
-              ref={introRef}
-              id='bio'
+              {...register('introduction')}
               rows={3}
-              className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50'
+              className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200/50'
             ></textarea>
           </div>
           <div className='mb-4'>
             <label className='block text-sm font-medium text-gray-700'>タグ</label>
             <div className='mt-2 flex flex-wrap'>
-              {ownedTags.map((tag) => (
+              {getValues('tags')?.map((tag) => (
                 <RemovableUserTag
                   key={tag.id}
                   tagName={tag.name}
-                  handleRemoveTag={handleRemoveTag}
+                  handleRemoveTag={() => handleRemoveTag(tag)}
                 />
               ))}
             </div>
@@ -200,7 +212,7 @@ const ProfileEditPage = () => {
             <button
               type='button'
               onClick={() => setIsDrawerOpen(!isDrawerOpen)}
-              className='flex w-full items-center justify-between rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50'
+              className='flex w-full items-center justify-between rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50'
             >
               <span className='flex items-center'>
                 <Plus size={20} className='mr-2' />
@@ -221,7 +233,7 @@ const ProfileEditPage = () => {
                 />
                 <div className='flex flex-wrap gap-2'>
                   {notOwnedTags.map((tag) => (
-                    <div key={tag.id} onClick={() => handleAddTag(tag.name)}>
+                    <div key={tag.id} onClick={() => handleAddTag(tag)}>
                       <UserTag tagName={tag.name}></UserTag>
                     </div>
                   ))}
@@ -230,9 +242,12 @@ const ProfileEditPage = () => {
             </div>
           </div>
         </form>
-        <div onClick={handleSubmit}>
-          <Button title={'保存'} href={''} />
-        </div>
+        <button
+          className='mt-2 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50'
+          onClick={handleSubmit(onSubmit)}
+        >
+          保存
+        </button>
       </main>
     </div>
   );
