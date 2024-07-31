@@ -2,15 +2,10 @@
 
 import RemovableUserTag from '@/components/element/RemovableUserTag';
 import UserTag from '@/components/element/UserTag';
+import { Tag, UserInfo } from '@/lib/types';
 import { ChevronDown, ChevronUp, Loader2, Plus } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { UserInfo } from '../page';
-
-export type Tag = {
-  id: string;
-  name: string;
-};
 
 const ProfileEditPage = () => {
   const nameRef = React.useRef<HTMLInputElement>();
