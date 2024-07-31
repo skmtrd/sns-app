@@ -1,14 +1,24 @@
 import { formatTime } from '@/lib/formatTime';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 type PostProps = {
   username: string;
+  clerkId: string;
+  userId: string;
   timestamp: string;
   content: string;
   tags?: string[];
 };
 
-export const Post: React.FC<PostProps> = ({ username, timestamp, content, tags }) => {
+export const Post: React.FC<PostProps> = ({
+  username,
+  timestamp,
+  clerkId,
+  userId,
+  content,
+  tags,
+}) => {
   const [time, setTime] = useState(new Date());
   useEffect(() => {
     const updateDate = setInterval(() => {
@@ -20,10 +30,19 @@ export const Post: React.FC<PostProps> = ({ username, timestamp, content, tags }
   return (
     <div className='w-11/12 rounded-lg bg-white p-4 shadow'>
       <div className='mb-2 flex items-start justify-between'>
-        <h3 className='font-bold'>{username}</h3>
-        <p className='text-sm text-gray-500'>{formatTime(timestamp, time)}</p>
+        <div>
+          <Link href={`/profile/${clerkId}`}>
+            <div className='inline-block rounded-md hover:bg-gray-100'>
+              <h3 className='px-1 py-0.5 font-bold transition-colors duration-100 hover:text-blue-600'>
+                {username}
+              </h3>
+            </div>
+          </Link>
+          <p className='px-1 py-0.5 text-xs text-gray-500'>@{userId}</p>
+        </div>
+        <p className='mr-1 text-sm text-gray-500'>{formatTime(timestamp, time)}</p>
       </div>
-      <p className='mb-2'>{content}</p>
+      <p className='mb-2 ml-1'>{content}</p>
       <div className='flex flex-wrap'>
         {tags &&
           tags.map((tag, index) => (
