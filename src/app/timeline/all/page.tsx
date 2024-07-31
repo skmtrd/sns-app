@@ -1,5 +1,4 @@
 'use client';
-import { AddPost } from '@/components/timeline/AddPost';
 import { Post } from '@/components/timeline/Post';
 import { Loader2 } from 'lucide-react';
 import useSWR from 'swr';
@@ -16,6 +15,9 @@ export const postSchema = z.object({
 });
 
 const TimelineAll = () => {
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+  // const closeModal = () => setIsModalOpen(false);
+
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
   const { data, error, isLoading } = useSWR('/api/post', fetcher, {
     refreshInterval: 20000,
@@ -39,7 +41,7 @@ const TimelineAll = () => {
   return (
     <div className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'>
       <div className='h-10 w-full'></div>
-      <AddPost />
+      {/* {isModalOpen && <AddPost closeModal={closeModal} />} */}
       <div className='flex w-full grow flex-col items-center gap-y-4 border-t-2 p-3'>
         {posts.reverse().map((post, index) => (
           <Post

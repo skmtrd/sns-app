@@ -1,8 +1,10 @@
 'use client';
 
-import { BookOpen, HelpCircle, Home, LucideIcon, User } from 'lucide-react';
+import { Antenna, BookOpen, HelpCircle, Home, LucideIcon, User } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
+import { AddPost } from '../timeline/AddPostModal';
 
 type NavItem = {
   page: string;
@@ -15,6 +17,9 @@ type Props = {
 };
 
 const SideBar: React.FC<Props> = ({ userId }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
   const pathname = usePathname();
 
   const navItems: NavItem[] = [
@@ -32,7 +37,8 @@ const SideBar: React.FC<Props> = ({ userId }) => {
   };
 
   return (
-    <div className='w-20 border-r border-gray-200 bg-white p-4 transition-all duration-300 ease-in-out md:w-80'>
+    <div className='flex w-20 flex-col items-center border-r border-gray-200 bg-white p-4 transition-all duration-300 ease-in-out md:w-80'>
+      {isModalOpen && <AddPost closeModal={closeModal} />}
       <Link href={'/timeline/all'}>
         <h1 className='mb-4 hidden text-2xl font-bold text-blue-600 md:block'>INIAD SNS</h1>
       </Link>
@@ -50,6 +56,17 @@ const SideBar: React.FC<Props> = ({ userId }) => {
           <span className='hidden md:ml-3 md:inline'>{label}</span>
         </Link>
       ))}
+      <div
+        className='mt-4 flex w-full items-center justify-center rounded bg-blue-600 p-2 font-bold text-white transition-colors duration-200 hover:bg-blue-800 md:w-2/4'
+        onClick={openModal}
+      >
+        <div className='flex w-full items-center justify-center'>
+          <div className='flex items-center md:mr-2'>
+            <Antenna size={24} />
+          </div>
+          <span className='hidden md:inline'>ポスト</span>
+        </div>
+      </div>
     </div>
   );
 };
