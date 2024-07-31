@@ -34,14 +34,14 @@ const TimelineAll = () => {
     return <div>Error</div>;
   }
 
-  const posts = postSchema.array().parse(data.data.reverse());
+  const posts = postSchema.array().parse(data.data);
 
   return (
     <div className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'>
       <div className='h-10 w-full'></div>
       <AddPost />
       <div className='flex w-full grow flex-col items-center gap-y-4 border-t-2 p-3'>
-        {posts.reverse().map((post, index) => (
+        {posts.map((post, index) => (
           <Post
             key={index}
             username={post.author.name}

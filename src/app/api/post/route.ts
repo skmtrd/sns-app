@@ -8,7 +8,10 @@ export const GET = async (req: Request, res: NextResponse) => {
   try {
     dbConnect();
 
-    const posts = await prisma.post.findMany({ include: { author: true } });
+    const posts = await prisma.post.findMany({
+      include: { author: true },
+      orderBy: { createdAt: 'desc' },
+    });
     return NextResponse.json<apiRes>({ message: 'success', data: posts }, { status: 200 });
   } catch (error) {
     return NextResponse.json<apiRes>({ message: 'failed', data: error }, { status: 500 });
