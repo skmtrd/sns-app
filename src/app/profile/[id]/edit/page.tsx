@@ -168,7 +168,8 @@ const ProfileEditPage = () => {
             <input
               {...register('name')}
               type='text'
-              name='name'
+              id='name'
+              autoComplete='off'
               className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200/50'
             />
             {errors.name && <p className='mt-2 text-sm text-red-500'>{errors.name.message}</p>}
@@ -183,6 +184,7 @@ const ProfileEditPage = () => {
               </span>
               <input
                 {...register('userId')}
+                id='userId'
                 type='text'
                 className='block w-full flex-1 rounded-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200/50'
               />
@@ -195,6 +197,7 @@ const ProfileEditPage = () => {
             </label>
             <textarea
               {...register('introduction')}
+              id='bio'
               rows={3}
               className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200/50'
             ></textarea>
@@ -213,8 +216,6 @@ const ProfileEditPage = () => {
                 />
               ))}
             </div>
-          </div>
-          <div>
             <button
               type='button'
               onClick={() => setIsDrawerOpen(!isDrawerOpen)}
@@ -235,6 +236,7 @@ const ProfileEditPage = () => {
                 <input
                   type='text'
                   placeholder='タグを検索'
+                  id='tag-search'
                   className='mb-4 w-full rounded-md border px-3 py-2'
                 />
                 <div className='flex flex-wrap gap-2'>
