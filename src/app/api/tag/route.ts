@@ -37,6 +37,7 @@ export const POST = async (req: Request, res: NextResponse) => {
 export const PUT = async (req: Request) => {
   try {
     const { clerkId, tagNames } = await req.json();
+    dbConnect();
 
     if (!clerkId || !Array.isArray(tagNames)) {
       return NextResponse.json(
@@ -99,5 +100,7 @@ export const PUT = async (req: Request) => {
       },
       { status: 500 },
     );
+  } finally {
+    prisma.$disconnect();
   }
 };
