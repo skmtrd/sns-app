@@ -8,6 +8,8 @@ import { z } from 'zod';
 export const postSchema = z.object({
   author: z.object({
     name: z.string(),
+    id: z.string(),
+    clerkId: z.string(),
   }),
   createdAt: z.string(),
   content: z.string(),
@@ -32,17 +34,19 @@ const TimelineAll = () => {
     return <div>Error</div>;
   }
 
-  const posts = postSchema.array().parse(data.data.reverse());
+  const posts = postSchema.array().parse(data.data);
 
   return (
     <div className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'>
       <div className='h-10 w-full'></div>
       <AddPost />
       <div className='flex w-full grow flex-col items-center gap-y-4 border-t-2 p-3'>
-        {posts.reverse().map((post, index) => (
+        {posts.map((post, index) => (
           <Post
             key={index}
             username={post.author.name}
+            clerkId={post.author.clerkId}
+            userId={post.author.id}
             timestamp={post.createdAt}
             content={post.content}
             // 後で実装

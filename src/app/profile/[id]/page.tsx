@@ -1,19 +1,24 @@
 'use client';
+
+import Button from '@/components/element/Button';
+import Header from '@/components/element/Header';
+import UserTag from '@/components/element/UserTag';
+import { UserInfo } from '@/lib/types';
 import { Loader2 } from 'lucide-react';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Tag } from './edit/page';
 
-export type UserInfo = {
-  id: string;
-  clerkId: string;
-  name: string;
-  email: string;
-  introduction: string;
-  createdAt: string;
-  updatedAt: string;
-  tags: Tag[];
+const API_BASE_URL = 'http://localhost:3000/api';
+
+const fetchUserInfo = async (userId: string): Promise<UserInfo> => {
+  const res = await fetch(`${API_BASE_URL}/profile/${userId}`, {
+    cache: 'no-cache',
+  });
+  if (!res.ok) {
+    throw new Error(`HTTP error! status: ${res.status}`);
+  }
+  const data = await res.json();
+  return data.data;
 };
 
 const ProfilePage = () => {
@@ -23,18 +28,11 @@ const ProfilePage = () => {
   const pathname = usePathname();
 
   useEffect(() => {
-    const fetchUserInfo = async () => {
+    const getUserInfo = async () => {
       try {
         const userId = pathname.split('/profile/')[1];
-        const res = await fetch(`http://localhost:3000/api/profile/${userId}`, {
-          cache: 'no-cache',
-        });
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        const data = await res.json();
-        setUserInfo(data.data);
-        console.log(data.data);
+        const userData = await fetchUserInfo(userId);
+        setUserInfo(userData);
       } catch (error) {
         console.error('Failed to fetch user info:', error);
         setError('ユーザー情報の読み込みに失敗しました。');
@@ -42,7 +40,8 @@ const ProfilePage = () => {
         setIsLoading(false);
       }
     };
-    fetchUserInfo();
+
+    getUserInfo();
   }, [pathname]);
 
   if (isLoading) {
@@ -55,17 +54,11 @@ const ProfilePage = () => {
   }
 
   if (error) return <div>{error}</div>;
-
   if (!userInfo) return <div>ユーザー情報が見つかりません。</div>;
 
   return (
     <div className='flex flex-1 flex-col overflow-hidden'>
-      <header className='flex items-center justify-between border-b border-gray-200 bg-white p-4'>
-        <h2 className='text-xl font-bold'>プロフィール</h2>
-        <div className='flex items-center'>
-          <div className='relative mr-4'></div>
-        </div>
-      </header>
+      <Header title={'プロフィール'} />
       <main className='flex-1 overflow-y-auto bg-gray-100 p-6'>
         <div className='rounded-lg bg-white p-6 shadow'>
           <div className='mb-4 flex items-center'>
@@ -75,26 +68,15 @@ const ProfilePage = () => {
             </div>
           </div>
           <p className='mb-4 text-gray-700'>{userInfo.introduction}</p>
-          <div className='mb-4 flex flex-wrap'>
+          <div className='mb-4 flex flex-wrap gap-2'>
             {userInfo.tags && userInfo.tags.length > 0 ? (
-              userInfo.tags.map((tag) => (
-                <span
-                  key={tag.id}
-                  className='mb-2 mr-2 rounded-full bg-blue-100 px-2 py-1 text-sm text-blue-800 hover:bg-blue-300'
-                >
-                  {tag.name}
-                </span>
-              ))
+              userInfo.tags.map((tag) => <UserTag key={tag.id} tagName={tag.name} />)
             ) : (
               <p>タグがありません</p>
             )}
           </div>
         </div>
-        <Link href={`${pathname}/edit`}>
-          <button className='focus:ring-opacity-50/50 mt-2 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500'>
-            編集
-          </button>
-        </Link>
+        <Button title={'編集'} href={`${pathname}/edit`} />
       </main>
     </div>
   );
