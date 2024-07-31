@@ -81,16 +81,6 @@ const ProfileEditPage = () => {
     const newId = userIdRef.current?.value;
     const introduction = introRef.current?.value;
     const userId = pathname.split('/profile/')[1].split('/')[0];
-    console.log(userId);
-
-    // if (
-    //   name === userInfo?.name &&
-    //   newId === userInfo?.id &&
-    //   introduction === userInfo?.introduction
-    // ) {
-    //   router.push(`/profile/${userId}`);
-    //   return;
-    // }
 
     try {
       console.log({ name, introduction, newId });
@@ -125,15 +115,24 @@ const ProfileEditPage = () => {
   };
 
   const handleAddTag = (tagName: string) => {
-    const newTags = notOwnedTags.filter((tag) => tag.name !== tagName);
-    setNotOwnedTags(newTags);
-    setOwnedTags([...ownedTags, { id: '', name: tagName }]);
+    console.log(ownedTags, notOwnedTags);
+    const newOwnedTags = structuredClone(ownedTags);
+    const newNotOwnedTags = structuredClone(notOwnedTags);
+
+    newOwnedTags.push({ id: '', name: tagName });
+
+    setNotOwnedTags(newNotOwnedTags.filter((tag) => tag.name !== tagName));
+    setOwnedTags(newOwnedTags);
   };
 
   const handleRemoveTag = (tagName: string) => {
-    const newTags = ownedTags.filter((tag) => tag.name !== tagName);
-    setOwnedTags(newTags);
-    setNotOwnedTags([...notOwnedTags, { id: '', name: tagName }]);
+    const newOwnedTags = structuredClone(ownedTags);
+    const newNotOwnedTags = structuredClone(notOwnedTags);
+
+    newNotOwnedTags.push({ id: '', name: tagName });
+
+    setOwnedTags(newOwnedTags.filter((tag) => tag.name !== tagName));
+    setNotOwnedTags(newNotOwnedTags);
   };
 
   if (isLoading)
