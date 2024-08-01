@@ -23,6 +23,7 @@
     "node-mocks-http": "^1.15.0",
     "react": "^18",
     "react-dom": "^18",
+    "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.52.1",
     "svix": "^1.25.0",
     "swr": "^2.2.5",

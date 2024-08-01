@@ -1,5 +1,6 @@
 'use client';
 
+import { Dropzone } from '@/components/element/DropZone';
 import Header from '@/components/element/Header';
 import RemovableUserTag from '@/components/element/RemovableUserTag';
 import UserTag from '@/components/element/UserTag';
@@ -23,6 +24,12 @@ const formSchema = z.object({
       name: z.string().min(1),
     }),
   ),
+  avatar: z
+    .custom<File>((value) => {
+      if (!(value instanceof File) && value) throw new Error('Invalid file type');
+      return value;
+    })
+    .nullable(),
 });
 
 export type Tag = z.infer<typeof formSchema>['tags'][0];
@@ -49,12 +56,6 @@ const ProfileEditPage = () => {
     setValue,
   } = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: '',
-      userId: '',
-      introduction: '',
-      tags: [],
-    },
     mode: 'onChange',
   });
 
@@ -88,8 +89,9 @@ const ProfileEditPage = () => {
         const userInfo = await fetchUserInfo(userId);
         setValue('name', userInfo.name);
         setValue('userId', userInfo.id);
-        setValue('introduction', userInfo.introduction);
+        setValue('introduction', userInfo.introduction ?? '');
         setValue('tags', userInfo.tags);
+        setValue('avatar', userInfo.avatar ?? null);
       } catch (error) {
         console.error('Failed to fetch user info:', error);
         setPageError('ユーザー情報の読み込みに失敗しました。');
@@ -100,16 +102,15 @@ const ProfileEditPage = () => {
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (data) => {
     const pathUserId = pathname.split('/profile/')[1].split('/')[0];
-    const { name, userId, introduction, tags } = data;
+    const { name, userId, introduction, tags, avatar } = data;
 
     try {
-      console.log('Submitting data:', data);
       const userInfoRes = await fetch(`http://localhost:3000/api/profile/${pathUserId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, introduction, id: userId }),
+        body: JSON.stringify({ name, introduction, id: userId, avatar }),
       });
 
       const tagRes = await fetch('http://localhost:3000/api/tag', {
@@ -146,6 +147,11 @@ const ProfileEditPage = () => {
     const newOwnedTags = getValues('tags').filter((tag) => tag.id !== tagToRemove.id);
     setValue('tags', newOwnedTags);
     setAvailableTags([...availableTags, tagToRemove]);
+  };
+
+  const onDrop = async (files: File[]) => {
+    const file = files[0];
+    setValue('avatar', file);
   };
 
   if (isLoading)
@@ -249,6 +255,10 @@ const ProfileEditPage = () => {
               </div>
             </div>
             {errors.tags && <p className='mt-2 text-sm text-red-500'>{errors.tags.message}</p>}
+          </div>
+          <div className='mt-4'>
+            <label className='block text-sm font-medium text-gray-700'>アバター</label>
+            <Dropzone onDrop={onDrop} className='mt-2' />
           </div>
         </form>
         <button
