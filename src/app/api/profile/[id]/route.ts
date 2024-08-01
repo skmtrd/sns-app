@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
 import { dbConnect } from '../../lib/dbConnect';
+import { handleAPIError } from '../../lib/handleAPIError';
 import prisma from '../../lib/prisma';
 import { checkUserIdExists } from '../../lib/user/checkUserIdExists';
 import { apiRes } from '../../types';
 
-export const GET = async (req: Request, res: NextResponse) => {
-  try {
+export const GET = async (req: Request, res: NextResponse) =>
+  handleAPIError(async () => {
     const clerkId = req.url.split('/profile/')[1];
 
     await dbConnect();
@@ -16,15 +17,10 @@ export const GET = async (req: Request, res: NextResponse) => {
     });
 
     return NextResponse.json<apiRes>({ message: 'Success', data: user }, { status: 200 });
-  } catch (err) {
-    return NextResponse.json<apiRes>({ message: 'Error', data: err }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
-  }
-};
+  });
 
-export const PUT = async (req: Request, res: NextResponse) => {
-  try {
+export const PUT = async (req: Request, res: NextResponse) =>
+  handleAPIError(async () => {
     await dbConnect();
     const clerkId = req.url.split('/profile/')[1];
 
@@ -44,9 +40,4 @@ export const PUT = async (req: Request, res: NextResponse) => {
 
       return NextResponse.json<apiRes>({ message: 'Success', data: newProfile }, { status: 200 });
     }
-  } catch (err) {
-    return NextResponse.json<apiRes>({ message: 'Error', data: err }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
-  }
-};
+  });
