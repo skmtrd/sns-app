@@ -102,7 +102,6 @@ const ProfileEditPage = () => {
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (data) => {
     const pathUserId = pathname.split('/profile/')[1].split('/')[0];
-    const { name, userId, introduction, tags, avatar } = data;
 
     try {
       const userInfoRes = await fetch(`http://localhost:3000/api/profile/${pathUserId}`, {
@@ -110,7 +109,7 @@ const ProfileEditPage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, introduction, id: userId, avatar }),
+        body: JSON.stringify(data),
       });
 
       const tagRes = await fetch('http://localhost:3000/api/tag', {
@@ -119,7 +118,7 @@ const ProfileEditPage = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          tagNames: tags?.map((tag) => tag.name),
+          tagNames: data.tags?.map((tag) => tag.name),
           clerkId: pathUserId,
         }),
       });
@@ -190,8 +189,8 @@ const ProfileEditPage = () => {
               </span>
               <input
                 {...register('userId')}
-                id='userId'
                 type='text'
+                id='userId'
                 className='block w-full flex-1 rounded-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200/50'
               />
             </div>
