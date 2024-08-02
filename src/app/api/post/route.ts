@@ -5,17 +5,6 @@ import { handleAPIError } from '../lib/handleAPIError';
 import prisma from '../lib/prisma';
 import { apiRes } from '../types';
 
-// export const GET = async (req: Request, res: NextResponse) =>
-//   handleAPIError(async () => {
-//     dbConnect();
-
-//     const posts = await prisma.post.findMany({
-//       include: { author: true },
-//       orderBy: { createdAt: 'desc' },
-//     });
-//     return NextResponse.json<apiRes>({ message: 'success', data: posts }, { status: 200 });
-//   });
-
 export const GET = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
     await dbConnect();
