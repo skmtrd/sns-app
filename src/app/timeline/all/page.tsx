@@ -48,7 +48,6 @@ const TimelineAll = () => {
             timestamp={post.createdAt}
             content={post.content}
             // 後で実装
-            tags={[]}
           />
         ))}
       </div>
