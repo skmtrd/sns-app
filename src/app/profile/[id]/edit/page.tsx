@@ -1,5 +1,6 @@
 'use client';
 
+import { Dropzone } from '@/components/element/DropZone';
 import Header from '@/components/element/Header';
 import RemovableUserTag from '@/components/element/RemovableUserTag';
 import UserTag from '@/components/element/UserTag';
@@ -23,6 +24,12 @@ const formSchema = z.object({
       name: z.string().min(1),
     }),
   ),
+  avatar: z
+    .custom<File>((value) => {
+      if (!(value instanceof File) && value) throw new Error('Invalid file type');
+      return value;
+    })
+    .nullable(),
 });
 
 export type Tag = z.infer<typeof formSchema>['tags'][0];
@@ -49,12 +56,6 @@ const ProfileEditPage = () => {
     setValue,
   } = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: '',
-      userId: '',
-      introduction: '',
-      tags: [],
-    },
     mode: 'onChange',
   });
 
@@ -88,8 +89,9 @@ const ProfileEditPage = () => {
         const userInfo = await fetchUserInfo(userId);
         setValue('name', userInfo.name);
         setValue('userId', userInfo.id);
-        setValue('introduction', userInfo.introduction);
+        setValue('introduction', userInfo.introduction ?? '');
         setValue('tags', userInfo.tags);
+        setValue('avatar', userInfo.avatar ?? null);
       } catch (error) {
         console.error('Failed to fetch user info:', error);
         setPageError('ユーザー情報の読み込みに失敗しました。');
@@ -100,16 +102,14 @@ const ProfileEditPage = () => {
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (data) => {
     const pathUserId = pathname.split('/profile/')[1].split('/')[0];
-    const { name, userId, introduction, tags } = data;
 
     try {
-      console.log('Submitting data:', data);
       const userInfoRes = await fetch(`http://localhost:3000/api/profile/${pathUserId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ name, introduction, id: userId }),
+        body: JSON.stringify(data),
       });
 
       const tagRes = await fetch('http://localhost:3000/api/tag', {
@@ -118,7 +118,7 @@ const ProfileEditPage = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          tagNames: tags?.map((tag) => tag.name),
+          tagNames: data.tags?.map((tag) => tag.name),
           clerkId: pathUserId,
         }),
       });
@@ -148,6 +148,11 @@ const ProfileEditPage = () => {
     setAvailableTags([...availableTags, tagToRemove]);
   };
 
+  const onDrop = async (files: File[]) => {
+    const file = files[0];
+    setValue('avatar', file);
+  };
+
   if (isLoading)
     return (
       <div className='flex h-svh w-full flex-1 grow flex-col items-center justify-center gap-4 bg-gray-100'>
@@ -170,7 +175,7 @@ const ProfileEditPage = () => {
               type='text'
               id='name'
               autoComplete='off'
-              className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200/50'
+              className='mt-1 block w-full rounded-md border-gray-300 shadow-sm outline-none focus:border-blue-300 focus:ring focus:ring-blue-200/50'
             />
             {errors.name && <p className='mt-2 text-sm text-red-500'>{errors.name.message}</p>}
           </div>
@@ -179,14 +184,14 @@ const ProfileEditPage = () => {
               ユーザーID
             </label>
             <div className='mt-1 flex rounded-md shadow-sm'>
-              <span className='inline-flex items-center rounded-sm border border-gray-300 bg-gray-50 px-3 text-sm text-gray-500'>
+              <span className='inline-flex items-center rounded-sm border border-gray-300 bg-gray-50 px-2 text-sm text-gray-500'>
                 @
               </span>
               <input
                 {...register('userId')}
-                id='userId'
                 type='text'
-                className='block w-full flex-1 rounded-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200/50'
+                id='userId'
+                className='block w-full flex-1 rounded-sm border-gray-300 outline-none focus:border-blue-300 focus:ring focus:ring-blue-200/50'
               />
             </div>
             {errors.userId && <p className='mt-2 text-sm text-red-500'>{errors.userId.message}</p>}
@@ -199,7 +204,7 @@ const ProfileEditPage = () => {
               {...register('introduction')}
               id='bio'
               rows={3}
-              className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200/50'
+              className='mt-1 block w-full rounded-md border-gray-300 shadow-sm outline-none focus:border-blue-300 focus:ring focus:ring-blue-200/50'
             ></textarea>
             {errors.introduction && (
               <p className='mt-2 text-sm text-red-500'>{errors.introduction.message}</p>
@@ -249,6 +254,10 @@ const ProfileEditPage = () => {
               </div>
             </div>
             {errors.tags && <p className='mt-2 text-sm text-red-500'>{errors.tags.message}</p>}
+          </div>
+          <div className='mt-4'>
+            <label className='block text-sm font-medium text-gray-700'>アバター</label>
+            <Dropzone onDrop={onDrop} className='mt-2' />
           </div>
         </form>
         <button

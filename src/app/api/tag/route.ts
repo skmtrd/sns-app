@@ -2,24 +2,20 @@
 
 import { NextResponse } from 'next/server';
 import { dbConnect } from '../lib/dbConnect';
+import { handleAPIError } from '../lib/handleAPIError';
 import prisma from '../lib/prisma';
 import { CreateTag } from '../lib/tag/createTag';
 import { apiRes } from '../types';
 
-export const GET = async (req: Request, res: NextResponse) => {
-  try {
+export const GET = async (req: Request, res: NextResponse) =>
+  handleAPIError(async () => {
     dbConnect();
     const tags = await prisma.tag.findMany();
     return NextResponse.json<apiRes>({ message: 'success', data: tags }, { status: 200 });
-  } catch (error) {
-    return NextResponse.json<apiRes>({ message: 'failed', data: error }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
-  }
-};
+  });
 
-export const POST = async (req: Request, res: NextResponse) => {
-  try {
+export const POST = async (req: Request, res: NextResponse) =>
+  handleAPIError(async () => {
     const { tagName } = await req.json();
 
     dbConnect();
@@ -27,15 +23,10 @@ export const POST = async (req: Request, res: NextResponse) => {
     CreateTag(tagName);
 
     return NextResponse.json<apiRes>({ message: 'success' }, { status: 200 });
-  } catch (error) {
-    return NextResponse.json<apiRes>({ message: 'failed', data: error }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
-  }
-};
+  });
 
-export const PUT = async (req: Request) => {
-  try {
+export const PUT = async (req: Request) =>
+  handleAPIError(async () => {
     const { clerkId, tagNames } = await req.json();
     dbConnect();
 
@@ -91,16 +82,4 @@ export const PUT = async (req: Request) => {
     });
 
     return NextResponse.json({ message: 'success', data: result }, { status: 200 });
-  } catch (error) {
-    console.error('Error in updating user tags:', error);
-    return NextResponse.json(
-      {
-        message: 'failed',
-        error: error instanceof Error ? error.message : 'Unknown error',
-      },
-      { status: 500 },
-    );
-  } finally {
-    prisma.$disconnect();
-  }
-};
+  });
