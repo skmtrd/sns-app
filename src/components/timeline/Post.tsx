@@ -9,29 +9,17 @@ type PostProps = {
   userId: string;
   timestamp: string;
   content: string;
+  tags: string[];
 };
 
-type Tag = {
-  id: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-const fetchUserTag = async (userId: string) => {
-  const res = await fetch('http://localhost:3000/api/tag/tagGetById', {
-    method: 'POST',
-    body: JSON.stringify({ userId }),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-  const data = await res.json();
-  return data.data;
-};
-
-export const Post: React.FC<PostProps> = ({ username, timestamp, clerkId, userId, content }) => {
-  const [postTags, setPostTags] = useState<Tag[]>([]);
+export const Post: React.FC<PostProps> = ({
+  username,
+  timestamp,
+  clerkId,
+  userId,
+  content,
+  tags,
+}) => {
   const [time, setTime] = useState(new Date());
   useEffect(() => {
     const updateDate = setInterval(() => {
@@ -39,20 +27,6 @@ export const Post: React.FC<PostProps> = ({ username, timestamp, clerkId, userId
     }, 1000);
     return () => clearInterval(updateDate);
   }, []);
-
-  useEffect(() => {
-    // console.log('userId:', userId);
-    const getUserTag = async () => {
-      try {
-        const userTag = await fetchUserTag(userId);
-        setPostTags(userTag.tags);
-      } catch (error) {
-        console.error('Failed to fetch user tag:', error);
-      }
-    };
-    getUserTag();
-  }, []);
-
   return (
     <div className='w-11/12 rounded-lg bg-white p-4 shadow'>
       <div className='mb-2 flex items-start justify-between'>
@@ -70,7 +44,7 @@ export const Post: React.FC<PostProps> = ({ username, timestamp, clerkId, userId
       </div>
       <p className='mb-2 ml-1'>{content}</p>
       <div className='flex flex-wrap gap-2'>
-        {postTags && postTags.map((tag: Tag) => <UserTag key={tag.id} tagName={tag.name} />)}
+        {tags && tags.map((tag) => <UserTag key={tag} tagName={tag} />)}
       </div>
     </div>
   );

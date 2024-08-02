@@ -5,15 +5,41 @@ import { handleAPIError } from '../lib/handleAPIError';
 import prisma from '../lib/prisma';
 import { apiRes } from '../types';
 
+// export const GET = async (req: Request, res: NextResponse) =>
+//   handleAPIError(async () => {
+//     dbConnect();
+
+//     const posts = await prisma.post.findMany({
+//       include: { author: true },
+//       orderBy: { createdAt: 'desc' },
+//     });
+//     return NextResponse.json<apiRes>({ message: 'success', data: posts }, { status: 200 });
+//   });
+
 export const GET = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
-    dbConnect();
-
+    await dbConnect();
     const posts = await prisma.post.findMany({
-      include: { author: true },
+      include: {
+        author: {
+          include: {
+            tags: true, // 作者のタグ情報を含める
+          },
+        },
+      },
       orderBy: { createdAt: 'desc' },
     });
-    return NextResponse.json<apiRes>({ message: 'success', data: posts }, { status: 200 });
+
+    // 必要に応じてデータを整形
+    const formattedPosts = posts.map((post) => ({
+      ...post,
+      author: {
+        ...post.author,
+        tags: post.author.tags.map((tag) => tag.name), // タグ名のみの配列に変換
+      },
+    }));
+
+    return NextResponse.json<apiRes>({ message: 'success', data: formattedPosts }, { status: 200 });
   });
 
 export const POST = async (req: Request, res: NextResponse) =>
