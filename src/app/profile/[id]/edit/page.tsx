@@ -175,7 +175,7 @@ const ProfileEditPage = () => {
               type='text'
               id='name'
               autoComplete='off'
-              className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200/50'
+              className='mt-1 block w-full rounded-md border-gray-300 shadow-sm outline-none focus:border-blue-300 focus:ring focus:ring-blue-200/50'
             />
             {errors.name && <p className='mt-2 text-sm text-red-500'>{errors.name.message}</p>}
           </div>
@@ -184,14 +184,14 @@ const ProfileEditPage = () => {
               ユーザーID
             </label>
             <div className='mt-1 flex rounded-md shadow-sm'>
-              <span className='inline-flex items-center rounded-sm border border-gray-300 bg-gray-50 px-3 text-sm text-gray-500'>
+              <span className='inline-flex items-center rounded-sm border border-gray-300 bg-gray-50 px-2 text-sm text-gray-500'>
                 @
               </span>
               <input
                 {...register('userId')}
                 type='text'
                 id='userId'
-                className='block w-full flex-1 rounded-sm border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200/50'
+                className='block w-full flex-1 rounded-sm border-gray-300 outline-none focus:border-blue-300 focus:ring focus:ring-blue-200/50'
               />
             </div>
             {errors.userId && <p className='mt-2 text-sm text-red-500'>{errors.userId.message}</p>}
@@ -204,7 +204,7 @@ const ProfileEditPage = () => {
               {...register('introduction')}
               id='bio'
               rows={3}
-              className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200/50'
+              className='mt-1 block w-full rounded-md border-gray-300 shadow-sm outline-none focus:border-blue-300 focus:ring focus:ring-blue-200/50'
             ></textarea>
             {errors.introduction && (
               <p className='mt-2 text-sm text-red-500'>{errors.introduction.message}</p>
