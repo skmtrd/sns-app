@@ -11,6 +11,18 @@ type PostProps = {
   tags?: string[];
 };
 
+const fetchUserTag = async (userId: string) => {
+  const res = await fetch('http://localhost:3000/api/tag/tagGetById', {
+    method: 'POST',
+    body: JSON.stringify({ userId }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  const data = await res.json();
+  return data.data;
+};
+
 export const Post: React.FC<PostProps> = ({
   username,
   timestamp,
@@ -26,6 +38,10 @@ export const Post: React.FC<PostProps> = ({
     }, 1000);
     return () => clearInterval(updateDate);
   }, []);
+
+  useEffect(() => {
+    const getUserTag = async () => {};
+  });
 
   return (
     <div className='w-11/12 rounded-lg bg-white p-4 shadow'>
