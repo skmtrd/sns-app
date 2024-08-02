@@ -1,6 +1,7 @@
 import { formatTime } from '@/lib/formatTime';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import UserTag from '../element/UserTag';
 
 type PostProps = {
   username: string;
@@ -8,7 +9,7 @@ type PostProps = {
   userId: string;
   timestamp: string;
   content: string;
-  tags?: string[];
+  tags: string[];
 };
 
 export const Post: React.FC<PostProps> = ({
@@ -26,7 +27,6 @@ export const Post: React.FC<PostProps> = ({
     }, 1000);
     return () => clearInterval(updateDate);
   }, []);
-
   return (
     <div className='w-11/12 rounded-lg bg-white p-4 shadow'>
       <div className='mb-2 flex items-start justify-between'>
@@ -43,16 +43,8 @@ export const Post: React.FC<PostProps> = ({
         <p className='mr-1 text-sm text-gray-500'>{formatTime(timestamp, time)}</p>
       </div>
       <p className='mb-2 ml-1'>{content}</p>
-      <div className='flex flex-wrap'>
-        {tags &&
-          tags.map((tag, index) => (
-            <span
-              key={index}
-              className='mb-2 mr-2 rounded-full bg-blue-100 px-2 py-1 text-xs text-blue-800'
-            >
-              #{tag}
-            </span>
-          ))}
+      <div className='flex flex-wrap gap-2'>
+        {tags && tags.map((tag) => <UserTag key={tag} tagName={tag} />)}
       </div>
     </div>
   );
