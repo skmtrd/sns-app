@@ -1,21 +1,27 @@
 import { NextResponse } from 'next/server';
 import { dbConnect } from '../../lib/dbConnect';
 import prisma from '../../lib/prisma';
+import { identification } from '../../lib/profile/identification';
 import { checkUserIdExists } from '../../lib/user/checkUserIdExists';
 import { apiRes } from '../../types';
 
 export const GET = async (req: Request, res: NextResponse) => {
   try {
+    //開いているユーザーのID
     const clerkId = req.url.split('/profile/')[1];
 
     await dbConnect();
+    const authorization = await identification(clerkId);
 
     const user = await prisma.user.findUnique({
       where: { clerkId: clerkId },
       include: { tags: true },
     });
 
-    return NextResponse.json<apiRes>({ message: 'Success', data: user }, { status: 200 });
+    return NextResponse.json(
+      { message: 'Success', data: user, authorization: authorization },
+      { status: 200 },
+    );
   } catch (err) {
     return NextResponse.json<apiRes>({ message: 'Error', data: err }, { status: 500 });
   } finally {
