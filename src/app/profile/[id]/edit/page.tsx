@@ -135,17 +135,17 @@ const ProfileEditPage = () => {
 
   const handleAddTag = (newTag: Tag) => {
     const newOwnedTags = structuredClone(getValues('tags'));
-
     newOwnedTags.push(newTag);
-
     setValue('tags', newOwnedTags);
-    setAvailableTags(availableTags.filter((tag) => tag.name !== newTag.name));
+    const newAvailableTags = structuredClone(availableTags);
+    setAvailableTags(newAvailableTags);
   };
 
   const handleRemoveTag = (tagToRemove: Tag) => {
+    const newAvailableTags = structuredClone(availableTags);
     const newOwnedTags = getValues('tags').filter((tag) => tag.id !== tagToRemove.id);
     setValue('tags', newOwnedTags);
-    setAvailableTags([...availableTags, tagToRemove]);
+    setAvailableTags(newAvailableTags);
   };
 
   const onDrop = async (files: File[]) => {
