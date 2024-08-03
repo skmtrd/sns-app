@@ -37,10 +37,10 @@ const SideBar: React.FC<Props> = ({ userId }) => {
   };
 
   return (
-    <div className='flex w-20 flex-col items-center border-r border-gray-200 bg-white p-4 transition-all duration-300 ease-in-out md:w-80'>
+    <div className='flex w-20 flex-col items-center border-r border-gray-200 bg-white p-4 transition-all duration-300 ease-in-out xl:w-80'>
       {isModalOpen && <AddPost closeModal={closeModal} />}
       <Link href={'/timeline/all'}>
-        <h1 className='mb-4 hidden text-2xl font-bold text-blue-600 md:block'>INIAD SNS</h1>
+        <h1 className='mb-4 hidden text-2xl font-bold text-blue-600 xl:block'>INIAD SNS</h1>
       </Link>
       {navItems.map(({ page, label, icon: Icon }) => (
         <Link
@@ -48,23 +48,23 @@ const SideBar: React.FC<Props> = ({ userId }) => {
           href={page}
           className={`mb-2 flex w-full items-center justify-center rounded p-2 font-bold transition-colors duration-200 ${
             isActive(page) ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100 hover:text-blue-600'
-          } md:justify-start`}
+          } xl:justify-start`}
         >
           <div className='flex size-10 items-center justify-center'>
             <Icon size={24} />
           </div>
-          <span className='hidden md:ml-3 md:inline'>{label}</span>
+          <span className='hidden xl:ml-3 xl:inline'>{label}</span>
         </Link>
       ))}
       <div
-        className='mt-4 flex w-full items-center justify-center rounded bg-blue-600 p-2 font-bold text-white transition-colors duration-200 hover:bg-blue-800 md:w-2/4'
+        className='mt-4 flex w-full items-center justify-center rounded bg-blue-600 p-2 font-bold text-white transition-colors duration-200 hover:bg-blue-800 xl:w-2/4'
         onClick={openModal}
       >
         <div className='flex w-full items-center justify-center'>
-          <div className='flex items-center md:mr-2'>
+          <div className='flex items-center xl:mr-2'>
             <Antenna size={24} />
           </div>
-          <span className='hidden md:inline'>ポスト</span>
+          <span className='hidden xl:inline'>ポスト</span>
         </div>
       </div>
     </div>
