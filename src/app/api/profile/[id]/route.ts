@@ -6,7 +6,6 @@ import { identification } from '../../lib/profile/identification';
 import { checkUserIdExists } from '../../lib/user/checkUserIdExists';
 import { apiRes } from '../../types';
 
-
 export const GET = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
     const clerkId = req.url.split('/profile/')[1];
@@ -18,7 +17,7 @@ export const GET = async (req: Request, res: NextResponse) =>
       where: { clerkId: clerkId },
       include: { tags: true },
     });
-    
+
     return NextResponse.json<apiRes>({ message: 'Success', data: user }, { status: 200 });
   });
 
