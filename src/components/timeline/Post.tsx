@@ -1,4 +1,5 @@
 import { formatTime } from '@/lib/formatTime';
+import { Tag } from '@/lib/types';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import UserTag from '../element/UserTag';
@@ -9,7 +10,7 @@ type PostProps = {
   userId: string;
   timestamp: string;
   content: string;
-  tags: string[];
+  tags: Tag[];
 };
 
 export const Post: React.FC<PostProps> = ({
@@ -44,7 +45,12 @@ export const Post: React.FC<PostProps> = ({
       </div>
       <p className='mb-2 ml-1'>{content}</p>
       <div className='flex flex-wrap gap-2'>
-        {tags && tags.map((tag) => <UserTag key={tag} tagName={tag} />)}
+        {tags &&
+          tags.map((tag) => (
+            <Link key={tag.id} href={`/timeline/${tag.id}`}>
+              <UserTag tagName={tag.name} />
+            </Link>
+          ))}
       </div>
     </div>
   );

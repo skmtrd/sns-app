@@ -1,4 +1,5 @@
 'use client';
+import TimeLineHeader from '@/components/layout/TimeLineHeader';
 import { Post } from '@/components/timeline/Post';
 import { Loader2 } from 'lucide-react';
 import useSWR from 'swr';
@@ -38,8 +39,8 @@ const TimelineAll = () => {
 
   return (
     <div className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'>
-      <div className='h-10 w-full'></div>
-      <div className='flex w-full grow flex-col items-center gap-y-4 border-t-2 p-3'>
+      <TimeLineHeader target={'すべて'} />
+      <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>
         {posts.map((post, index) => (
           <Post
             key={index}
@@ -48,7 +49,7 @@ const TimelineAll = () => {
             userId={post.author.id}
             timestamp={post.createdAt}
             content={post.content}
-            tags={post.author.tags.map((tag) => tag.name)}
+            tags={post.author.tags}
           />
         ))}
       </div>
