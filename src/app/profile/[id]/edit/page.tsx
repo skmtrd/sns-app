@@ -1,6 +1,5 @@
 'use client';
 
-import Button from '@/components/element/Button';
 import { Dropzone } from '@/components/element/DropZone';
 import Header from '@/components/element/Header';
 import RemovableUserTag from '@/components/element/RemovableUserTag';
@@ -267,7 +266,6 @@ const ProfileEditPage = () => {
         >
           保存
         </button>
-        <button onClick={() => console.log(availableTags)}>ssssss</button>
       </main>
     </div>
   );
