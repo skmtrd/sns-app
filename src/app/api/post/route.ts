@@ -19,16 +19,7 @@ export const GET = async (req: Request, res: NextResponse) =>
       orderBy: { createdAt: 'desc' },
     });
 
-    // 必要に応じてデータを整形
-    const formattedPosts = posts.map((post) => ({
-      ...post,
-      author: {
-        ...post.author,
-        tags: post.author.tags.map((tag) => tag.name), // タグ名のみの配列に変換
-      },
-    }));
-
-    return NextResponse.json<apiRes>({ message: 'success', data: formattedPosts }, { status: 200 });
+    return NextResponse.json<apiRes>({ message: 'success', data: posts }, { status: 200 });
   });
 
 export const POST = async (req: Request, res: NextResponse) =>
