@@ -15,20 +15,6 @@ type PostProps = {
   tags: Tag[];
   postId: string;
 };
-// const deletePost = async (id: string) => {
-//   const toDelete = `http://localhost:3000/api/post/${id}`;
-//   try {
-//     const res = await fetch(toDelete, {
-//       method: 'DELETE',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//     });
-//     return (await res).json();
-//   } catch (error) {
-//     console.error(error);
-//   }
-// };
 export const Post: React.FC<PostProps> = ({
   username,
   timestamp,
@@ -42,11 +28,6 @@ export const Post: React.FC<PostProps> = ({
   const [time, setTime] = useState(new Date());
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // const handleDelete = async (id: string) => {
-  //   await deletePost(id);
-  //   router.refresh();
-  // };
 
   const deletePost = async (id: string) => {
     const toDelete = `http://localhost:3000/api/post/${id}`;
