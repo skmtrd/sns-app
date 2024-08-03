@@ -2,6 +2,7 @@
 import TimeLineHeader from '@/components/layout/TimeLineHeader';
 import { Post } from '@/components/timeline/Post';
 import { Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import useSWR from 'swr';
 import { z } from 'zod';
 
@@ -13,11 +14,13 @@ export const postSchema = z.object({
     tags: z.array(z.object({ name: z.string(), id: z.string() })),
   }),
   createdAt: z.string(),
+  id: z.string(),
   content: z.string(),
 });
 
 const TimelineAll = () => {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
+  const router = useRouter();
   const { data, error, isLoading } = useSWR('/api/post', fetcher, {
     refreshInterval: 20000,
     revalidateOnFocus: true,
@@ -50,6 +53,7 @@ const TimelineAll = () => {
             timestamp={post.createdAt}
             content={post.content}
             tags={post.author.tags}
+            postId={post.id}
           />
         ))}
       </div>
