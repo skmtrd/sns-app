@@ -18,10 +18,13 @@ export const GET = async (req: Request, res: NextResponse) =>
       include: { tags: true },
     });
 
-    return NextResponse.json<apiRes>({ message: 'Success', data: user }, { status: 200 });
+    return NextResponse.json(
+      { message: 'Success', data: user, authorization: authorization },
+      { status: 200 },
+    );
   });
 
-export const PUT = async (req: Request, res: NextResponse) =>
+export const PUT = async (req: Request, res: NextResponse) => {
   handleAPIError(async () => {
     await dbConnect();
     const clerkId = req.url.split('/profile/')[1];
@@ -37,9 +40,11 @@ export const PUT = async (req: Request, res: NextResponse) =>
     else {
       const newProfile = await prisma.user.update({
         data: { name, introduction, id: userId },
+
         where: { clerkId: clerkId },
       });
 
       return NextResponse.json<apiRes>({ message: 'Success', data: newProfile }, { status: 200 });
     }
   });
+};
