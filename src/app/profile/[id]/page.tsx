@@ -6,6 +6,7 @@ import UserTag from '@/components/element/UserTag';
 import { UserInfo } from '@/lib/types';
 import { useAuth } from '@clerk/nextjs';
 import { Loader2 } from 'lucide-react';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -65,6 +66,16 @@ const ProfilePage = () => {
         <div className='rounded-lg bg-white p-6 shadow'>
           <div className='mb-4 flex items-center'>
             <div>
+              {userInfo.avatar && (
+                <Image
+                  src={userInfo.avatar}
+                  alt='avatar'
+                  layout='layout'
+                  width={200}
+                  height={200}
+                  className='rounded-full'
+                />
+              )}
               <h1 className='text-2xl font-bold'>{userInfo.name}</h1>
               <p className='text-gray-600'>@{userInfo.id}</p>
             </div>

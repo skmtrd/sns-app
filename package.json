@@ -13,6 +13,8 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.621.0",
+    "@aws-sdk/s3-request-presigner": "^3.621.0",
     "@clerk/nextjs": "^5.2.6",
     "@hookform/resolvers": "^3.9.0",
     "@prisma/client": "^5.17.0",
@@ -25,6 +27,7 @@
     "react-dom": "^18",
     "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.52.1",
+    "sharp": "^0.33.4",
     "svix": "^1.25.0",
     "swr": "^2.2.5",
     "tailwind-merge": "^2.4.0",
