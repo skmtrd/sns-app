@@ -1,10 +1,10 @@
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 type DropZoneProps = {
-  onDrop?: (files: File[]) => void;
+  onDrop: (files: File[]) => void;
   className?: string;
 };
 
@@ -13,10 +13,13 @@ export const Dropzone: React.FC<DropZoneProps> = ({ onDrop, className }) => {
   const { getRootProps, getInputProps, isDragActive, isDragReject, acceptedFiles } = useDropzone({
     accept: { 'image/*': ['.jpg', '.jpeg', '.png', '.gif', '.webp'] },
     maxFiles: 1,
-    onDrop: (acceptedFiles: File[]) => {
-      onDrop && onDrop(acceptedFiles);
-      setFiles(acceptedFiles);
-    },
+    onDrop: useCallback(
+      (acceptedFiles: File[]) => {
+        onDrop(acceptedFiles);
+        setFiles(acceptedFiles);
+      },
+      [onDrop],
+    ),
     disabled: files.length > 0,
   });
 
