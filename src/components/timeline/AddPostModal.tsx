@@ -55,6 +55,10 @@ export const AddPost: React.FC<AddPostProps> = ({ closeModal }) => {
       e.preventDefault();
       handleSubmit();
     }
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeModal();
+    }
   };
 
   useEffect(() => {
