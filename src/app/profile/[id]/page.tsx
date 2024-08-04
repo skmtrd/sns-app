@@ -66,9 +66,9 @@ const ProfilePage = () => {
         <div className='rounded-lg bg-white p-6 shadow sm:p-8'>
           <div className='mb-6 flex flex-col items-center sm:flex-row sm:items-start'>
             <div className='mb-4 sm:mb-0 sm:mr-6'>
-              {user?.imageUrl ? (
+              {userInfo.avatar ? (
                 <Image
-                  src={user?.id}
+                  src={userInfo.avatar}
                   alt={`${userInfo.name}のアバター`}
                   width={100}
                   height={100}
@@ -84,7 +84,7 @@ const ProfilePage = () => {
               <h1 className='mb-2 text-2xl font-bold text-gray-900 sm:text-3xl'>{userInfo.name}</h1>
               <p className='mb-2 w-full text-sm text-gray-500 sm:text-base'>@{userInfo.id}</p>
               {userInfo.introduction && (
-                <p className='mb-4 max-w-lg break-words text-sm text-gray-700 sm:text-base'>
+                <p className='mb-4 max-w-md break-words text-sm text-gray-700 sm:text-base'>
                   {userInfo.introduction}
                 </p>
               )}

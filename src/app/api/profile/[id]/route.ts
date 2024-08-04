@@ -1,25 +1,29 @@
+import { clerkClient } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { dbConnect } from '../../lib/dbConnect';
 import { handleAPIError } from '../../lib/handleAPIError';
 import prisma from '../../lib/prisma';
-import { identification } from '../../lib/profile/identification';
-import { getObjectURL } from '../../lib/S3Client';
 import { checkUserIdExists } from '../../lib/user/checkUserIdExists';
 import { apiRes } from '../../types';
 
 export const GET = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
     const clerkId = req.url.split('/profile/')[1];
+    const clerkUser = await clerkClient().users.getUser(clerkId);
+    if (!clerkUser)
+      return NextResponse.json<apiRes>({ message: 'User not found' }, { status: 404 });
+
+    const { imageUrl } = clerkUser;
 
     await dbConnect();
-    const authorization = await identification(clerkId);
-
     const user = await prisma.user.findUnique({
       where: { clerkId: clerkId },
       include: { tags: true },
     });
 
-    user?.avatar ? (user.avatar = await getObjectURL(user.avatar)) : null;
+    if (!user) return NextResponse.json<apiRes>({ message: 'User not found' }, { status: 404 });
+
+    user.avatar = imageUrl;
 
     return NextResponse.json<apiRes>({ message: 'Success', data: user }, { status: 200 });
   });
