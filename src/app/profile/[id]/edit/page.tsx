@@ -24,12 +24,7 @@ const formSchema = z.object({
       name: z.string().min(1),
     }),
   ),
-  avatar: z
-    .custom<File>((value) => {
-      if (!(value instanceof File) && value) throw new Error('Invalid file type');
-      return value;
-    })
-    .nullable(),
+  avatar: z.string().optional(),
 });
 
 export type Tag = z.infer<typeof formSchema>['tags'][0];
@@ -61,6 +56,9 @@ const ProfileEditPage = () => {
 
   const [pageError, setPageError] = useState<string | null>(null);
   const [availableTags, setAvailableTags] = useState<z.infer<typeof formSchema>['tags']>([]);
+  const [uploadStatus, setUploadStatus] = useState<'uploading' | 'success' | 'error' | 'idle'>(
+    'idle',
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const notOwnedTags = availableTags.filter(
@@ -149,8 +147,24 @@ const ProfileEditPage = () => {
   };
 
   const onDrop = async (files: File[]) => {
-    const file = files[0];
-    setValue('avatar', file);
+    setUploadStatus('uploading');
+    const formData = new FormData();
+    formData.append('file', files[0]);
+    const { data } = await fetch(`http://localhost:3000/api/files/avatars/`, {
+      method: 'POST',
+      body: formData,
+    })
+      .then((res) => res.json())
+      .catch((error) => {
+        console.error('Failed to upload avatar:', error);
+      });
+
+    if (!data) {
+      setUploadStatus('error');
+      return;
+    }
+    setUploadStatus('success');
+    setValue('avatar', data);
   };
 
   if (isLoading)
@@ -257,7 +271,12 @@ const ProfileEditPage = () => {
           </div>
           <div className='mt-4'>
             <label className='block text-sm font-medium text-gray-700'>アバター</label>
-            <Dropzone onDrop={onDrop} className='mt-2' />
+            <Dropzone
+              onDrop={onDrop}
+              className='mt-2'
+              status={uploadStatus}
+              value={getValues('avatar')}
+            />
           </div>
         </form>
         <button
