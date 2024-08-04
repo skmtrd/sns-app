@@ -4,6 +4,7 @@ import { Dropzone } from '@/components/element/DropZone';
 import Header from '@/components/element/Header';
 import RemovableUserTag from '@/components/element/RemovableUserTag';
 import UserTag from '@/components/element/UserTag';
+import { useAuth } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ChevronDown, ChevronUp, Loader2, Plus } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
@@ -47,6 +48,7 @@ const fetchTags = async () =>
 const ProfileEditPage = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const { userId } = useAuth();
   const {
     register,
     handleSubmit,
@@ -68,6 +70,9 @@ const ProfileEditPage = () => {
   );
 
   useEffect(() => {
+    if (userId !== pathname.split('/profile/')[1].split('/')[0]) {
+      router.back();
+    }
     const fetchTagsAndSetAvailableTags = async () => {
       try {
         const tags = await fetchTags();

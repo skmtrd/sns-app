@@ -4,6 +4,7 @@ import Button from '@/components/element/Button';
 import Header from '@/components/element/Header';
 import UserTag from '@/components/element/UserTag';
 import { UserInfo } from '@/lib/types';
+import { useAuth } from '@clerk/nextjs';
 import { Loader2 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -26,6 +27,7 @@ const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const pathname = usePathname();
+  const { userId } = useAuth();
 
   useEffect(() => {
     const getUserInfo = async () => {
@@ -76,7 +78,7 @@ const ProfilePage = () => {
             )}
           </div>
         </div>
-        <Button title={'編集'} href={`${pathname}/edit`} />
+        {userId === userInfo.clerkId && <Button title={'編集'} href={`${pathname}/edit`} />}
       </main>
     </div>
   );
