@@ -111,7 +111,7 @@ const ProfileEditPage = () => {
     if (data.avatar) {
       user?.setProfileImage({ file: data.avatar });
     }
-    delete data.avatar;
+    // delete data.avatar;
 
     try {
       const userInfoRes = await fetch(`http://localhost:3000/api/profile/${pathUserId}`, {
