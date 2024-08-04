@@ -25,11 +25,7 @@ const formSchema = z.object({
       name: z.string().min(1),
     }),
   ),
-  avatar: z
-    .custom<File>((value) => {
-      return value instanceof File;
-    })
-    .optional(),
+  avatar: z.custom<File>((value) => value instanceof File).optional(),
 });
 
 export type Tag = z.infer<typeof formSchema>['tags'][0];
@@ -85,7 +81,7 @@ const ProfileEditPage = () => {
       }
     };
     fetchTagsAndSetAvailableTags();
-  }, [pathname]);
+  }, [pathname, router, userId]);
 
   useEffect(() => {
     const fetchUserInfoAndSetDefaultValues = async () => {
@@ -96,7 +92,6 @@ const ProfileEditPage = () => {
         setValue('userId', userInfo.id);
         setValue('introduction', userInfo.introduction ?? '');
         setValue('tags', userInfo.tags);
-        setValue('avatar', userInfo.avatar ?? null);
       } catch (error) {
         console.error('Failed to fetch user info:', error);
         setPageError('ユーザー情報の読み込みに失敗しました。');
