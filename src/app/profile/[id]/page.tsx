@@ -4,7 +4,7 @@ import Button from '@/components/element/Button';
 import Header from '@/components/element/Header';
 import UserTag from '@/components/element/UserTag';
 import { UserInfo } from '@/lib/types';
-import { useAuth } from '@clerk/nextjs';
+import { useUser } from '@clerk/nextjs';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -28,7 +28,7 @@ const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const pathname = usePathname();
-  const { userId } = useAuth();
+  const { user } = useUser();
 
   useEffect(() => {
     const getUserInfo = async () => {
@@ -66,16 +66,16 @@ const ProfilePage = () => {
         <div className='rounded-lg bg-white p-6 shadow sm:p-8'>
           <div className='mb-6 flex flex-col items-center sm:flex-row sm:items-start'>
             <div className='mb-4 sm:mb-0 sm:mr-6'>
-              {userInfo.avatar ? (
+              {user?.imageUrl ? (
                 <Image
-                  src={userInfo.avatar}
+                  src={user?.id}
                   alt={`${userInfo.name}のアバター`}
                   width={100}
                   height={100}
                   className='rounded-full'
                 />
               ) : (
-                <div className='flex h-24 w-24 items-center justify-center rounded-full bg-gray-200 text-gray-500'>
+                <div className='flex size-24 items-center justify-center rounded-full bg-gray-200 text-gray-500'>
                   No Image
                 </div>
               )}
@@ -100,7 +100,7 @@ const ProfilePage = () => {
             </div>
           </div>
         </div>
-        {userId === userInfo.clerkId && <Button title={'編集'} href={`${pathname}/edit`} />}
+        {user?.id === userInfo.clerkId && <Button title={'編集'} href={`${pathname}/edit`} />}
       </main>
     </div>
   );

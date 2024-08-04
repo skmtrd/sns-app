@@ -6,11 +6,10 @@ import { useDropzone } from 'react-dropzone';
 type DropZoneProps = {
   onDrop: (files: File[]) => void;
   className?: string;
-  status?: 'uploading' | 'success' | 'error' | 'idle';
   value?: string;
 };
 
-export const Dropzone: React.FC<DropZoneProps> = ({ onDrop, className, status, value }) => {
+export const Dropzone: React.FC<DropZoneProps> = ({ onDrop, className, value }) => {
   const [files, setFiles] = useState<File[]>([]);
   const { getRootProps, getInputProps, isDragActive, isDragReject, acceptedFiles } = useDropzone({
     accept: { 'image/*': ['.jpg', '.jpeg', '.png', '.gif', '.webp'] },
@@ -61,24 +60,16 @@ export const Dropzone: React.FC<DropZoneProps> = ({ onDrop, className, status, v
               <p>
                 {file.name} ({Math.ceil(file.size / 1024)}KB)
               </p>
-              {status == 'uploading' ? (
-                <div className='size-6 animate-spin rounded-full border-b-2 border-gray-900' />
-              ) : (
-                <button
-                  type='button'
-                  className='rounded-md px-2 text-red-500 hover:bg-red-100 hover:text-red-700'
-                  onClick={() => {
-                    if (status == 'error') {
-                      onDrop(acceptedFiles);
-                      return;
-                    }
-                    setFiles([]);
-                    acceptedFiles.splice(acceptedFiles.indexOf(file), 1);
-                  }}
-                >
-                  {status == 'error' ? '再試行' : '削除'}
-                </button>
-              )}
+              <button
+                type='button'
+                className='rounded-md px-2 text-red-500 hover:bg-red-100 hover:text-red-700'
+                onClick={() => {
+                  setFiles([]);
+                  acceptedFiles.splice(acceptedFiles.indexOf(file), 1);
+                }}
+              >
+                削除
+              </button>
             </div>
             <Image
               src={URL.createObjectURL(file)}
