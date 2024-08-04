@@ -4,6 +4,7 @@ import { Dropzone } from '@/components/element/DropZone';
 import Header from '@/components/element/Header';
 import RemovableUserTag from '@/components/element/RemovableUserTag';
 import UserTag from '@/components/element/UserTag';
+import { useAuth } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ChevronDown, ChevronUp, Loader2, Plus } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
@@ -42,6 +43,7 @@ const fetchTags = async () =>
 const ProfileEditPage = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const { userId } = useAuth();
   const {
     register,
     handleSubmit,
@@ -66,6 +68,9 @@ const ProfileEditPage = () => {
   );
 
   useEffect(() => {
+    if (userId !== pathname.split('/profile/')[1].split('/')[0]) {
+      router.back();
+    }
     const fetchTagsAndSetAvailableTags = async () => {
       try {
         const tags = await fetchTags();
@@ -247,11 +252,11 @@ const ProfileEditPage = () => {
               {isDrawerOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
             </button>
             <div
-              className={`mt-2 overflow-scroll rounded-md border border-gray-200 bg-white transition-all duration-300 ease-in-out ${
+              className={`mt-2 w-full overflow-x-hidden overflow-y-scroll rounded-md border border-gray-200 bg-white transition-all duration-300 ease-in-out ${
                 isDrawerOpen ? 'max-h-64' : 'max-h-0'
               }`}
             >
-              <div className='p-4'>
+              <div className='w-fll p-4'>
                 <input
                   type='text'
                   placeholder='タグを検索'

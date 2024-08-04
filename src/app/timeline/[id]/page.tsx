@@ -1,4 +1,5 @@
 'use client';
+import Header from '@/components/element/Header';
 import TimeLineHeader from '@/components/layout/TimeLineHeader';
 import { Post } from '@/components/timeline/Post';
 import { Loader2 } from 'lucide-react';
@@ -46,6 +47,7 @@ const TimelineAll = () => {
   return (
     <div className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'>
       <TimeLineHeader target={filteredTagName} />
+      <Header title={''} />
       <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>
         {filteredPosts.map((post, index) => (
           <Post

@@ -77,7 +77,9 @@ export const Post: React.FC<PostProps> = ({
         </div>
         <p className='mr-1 text-sm text-gray-500'>{formatTime(timestamp, time)}</p>
       </div>
-      <p className='mb-2 ml-1'>{content}</p>
+      <div className='mb-4'>
+        <div className='mb-2 ml-1 w-full break-words'>{content}</div>
+      </div>
       <div className='flex flex-wrap gap-2'>
         {tags &&
           tags.map((tag) => (

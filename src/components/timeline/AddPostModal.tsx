@@ -8,6 +8,8 @@ type AddPostProps = {
   closeModal: () => void;
 };
 
+const MAX_CONTENT_LENGTH = 500;
+
 export const AddPost: React.FC<AddPostProps> = ({ closeModal }) => {
   const { mutate } = useSWRConfig();
   const [authorName, setAuthorName] = useState('');
@@ -55,6 +57,10 @@ export const AddPost: React.FC<AddPostProps> = ({ closeModal }) => {
       e.preventDefault();
       handleSubmit();
     }
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeModal();
+    }
   };
 
   useEffect(() => {
@@ -95,10 +101,18 @@ export const AddPost: React.FC<AddPostProps> = ({ closeModal }) => {
               rows={10}
               onChange={(e) => setContent(e.target.value)}
               onKeyDown={handleKeyDown}
+              maxLength={MAX_CONTENT_LENGTH}
               className='w-full rounded-md border p-2 outline-none'
               ref={textAriaRef}
               required
             />
+            <div className='flex w-full justify-end'>
+              <p
+                className={`${content.length === MAX_CONTENT_LENGTH ? 'text-red-500' : 'text-gray-400'}`}
+              >
+                {content.length} / {MAX_CONTENT_LENGTH}
+              </p>
+            </div>
             <button
               type='submit'
               className={cn(
