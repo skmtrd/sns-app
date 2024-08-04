@@ -69,7 +69,6 @@ export const Post: React.FC<PostProps> = ({
     }
   };
 
-  console.log('avatar', avatar);
   return (
     <div className='relative w-11/12 rounded-lg bg-white p-4 shadow'>
       <div className='mb-2 flex items-center justify-start'>
@@ -82,8 +81,8 @@ export const Post: React.FC<PostProps> = ({
             className='rounded-full hover:opacity-80'
           />
         </Link>
-        <div className='ml-2'>
-          <div className='flex items-center'>
+        <div className='ml-2 w-full'>
+          <div className='flex w-full items-center justify-between'>
             <Link href={`/profile/${clerkId}`}>
               <div className='inline-block rounded-md hover:bg-gray-100'>
                 <h3 className='px-1 py-0.5 font-bold transition-colors duration-100 hover:text-blue-600'>
