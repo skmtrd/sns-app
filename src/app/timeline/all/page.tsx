@@ -49,7 +49,7 @@ const TimelineAll = () => {
             key={index}
             username={post.author.name}
             clerkId={post.author.clerkId}
-            userId={post.author.id}
+            id={post.author.id}
             timestamp={post.createdAt}
             content={post.content}
             tags={post.author.tags}
