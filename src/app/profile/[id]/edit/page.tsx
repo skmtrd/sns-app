@@ -238,11 +238,11 @@ const ProfileEditPage = () => {
               {isDrawerOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
             </button>
             <div
-              className={`mt-2 overflow-scroll rounded-md border border-gray-200 bg-white transition-all duration-300 ease-in-out ${
+              className={`mt-2 w-full overflow-x-hidden overflow-y-scroll rounded-md border border-gray-200 bg-white transition-all duration-300 ease-in-out ${
                 isDrawerOpen ? 'max-h-64' : 'max-h-0'
               }`}
             >
-              <div className='p-4'>
+              <div className='w-fll p-4'>
                 <input
                   type='text'
                   placeholder='タグを検索'
