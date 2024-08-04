@@ -4,6 +4,7 @@ export type UserInfo = {
   name: string;
   email: string;
   introduction: string;
+  avatar?: string;
   createdAt: string;
   updatedAt: string;
   tags: Tag[];
