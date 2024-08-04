@@ -66,9 +66,9 @@ const ProfilePage = () => {
         <div className='rounded-lg bg-white p-6 shadow sm:p-8'>
           <div className='mb-6 flex flex-col items-center sm:flex-row sm:items-start'>
             <div className='mb-4 sm:mb-0 sm:mr-6'>
-              {user?.imageUrl ? (
+              {userInfo.avatar ? (
                 <Image
-                  src={user?.imageUrl}
+                  src={userInfo.avatar}
                   alt={`${userInfo.name}のアバター`}
                   width={100}
                   height={100}

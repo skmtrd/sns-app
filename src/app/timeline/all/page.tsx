@@ -16,10 +16,12 @@ export const postSchema = z.object({
   createdAt: z.string(),
   id: z.string(),
   content: z.string(),
+  avatar: z.string(),
 });
 
 const TimelineAll = () => {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
   const { data, error, isLoading } = useSWR('/api/post', fetcher, {
     refreshInterval: 20000,
     revalidateOnFocus: true,
@@ -54,6 +56,7 @@ const TimelineAll = () => {
             content={post.content}
             tags={post.author.tags}
             postId={post.id}
+            avatar={post.avatar}
           />
         ))}
       </div>
