@@ -23,6 +23,7 @@ model User {
   introduction String @db.Text
   posts     Post[]
   tags      Tag[]
+  avatar    String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
