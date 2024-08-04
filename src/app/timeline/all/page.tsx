@@ -12,6 +12,7 @@ export const postSchema = z.object({
     id: z.string(),
     clerkId: z.string(),
     tags: z.array(z.object({ name: z.string(), id: z.string() })),
+    introduction: z.string(),
   }),
   createdAt: z.string(),
   id: z.string(),
@@ -55,6 +56,7 @@ const TimelineAll = () => {
             timestamp={post.createdAt}
             content={post.content}
             tags={post.author.tags}
+            introduction={post.author.introduction}
             postId={post.id}
             avatar={post.avatar}
           />
