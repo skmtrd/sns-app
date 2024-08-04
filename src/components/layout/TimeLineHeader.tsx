@@ -4,7 +4,7 @@ type TimeLineHeaderProps = {
 
 const TimeLineHeader: React.FC<TimeLineHeaderProps> = ({ target }) => {
   return (
-    <div className='relative w-full'>
+    <div className='relative z-10 w-full'>
       <header className='fixed flex w-full items-center justify-between border-b border-gray-200 bg-white p-4'>
         <h2 className='text-xl font-bold'>タイムライン-{target}</h2>
         <div className='flex items-center'>

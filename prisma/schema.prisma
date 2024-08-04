@@ -27,6 +27,7 @@ model User {
   assignmentReply AssignmentReply[]
   question  Question[]
   questionReply  QuestionReply[]
+  avatar    String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
