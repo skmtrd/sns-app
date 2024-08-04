@@ -4,7 +4,7 @@ import { Dropzone } from '@/components/element/DropZone';
 import Header from '@/components/element/Header';
 import RemovableUserTag from '@/components/element/RemovableUserTag';
 import UserTag from '@/components/element/UserTag';
-import { useAuth } from '@clerk/nextjs';
+import { useAuth, useUser } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ChevronDown, ChevronUp, Loader2, Plus } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
@@ -25,7 +25,11 @@ const formSchema = z.object({
       name: z.string().min(1),
     }),
   ),
-  avatar: z.string().optional(),
+  avatar: z
+    .custom<File>((value) => {
+      return value instanceof File;
+    })
+    .optional(),
 });
 
 export type Tag = z.infer<typeof formSchema>['tags'][0];
@@ -44,6 +48,7 @@ const ProfileEditPage = () => {
   const router = useRouter();
   const pathname = usePathname();
   const { userId } = useAuth();
+  const { user } = useUser();
   const {
     register,
     handleSubmit,
@@ -58,9 +63,6 @@ const ProfileEditPage = () => {
 
   const [pageError, setPageError] = useState<string | null>(null);
   const [availableTags, setAvailableTags] = useState<z.infer<typeof formSchema>['tags']>([]);
-  const [uploadStatus, setUploadStatus] = useState<'uploading' | 'success' | 'error' | 'idle'>(
-    'idle',
-  );
   const [isLoading, setIsLoading] = useState(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const notOwnedTags = availableTags.filter(
@@ -105,6 +107,11 @@ const ProfileEditPage = () => {
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (data) => {
     const pathUserId = pathname.split('/profile/')[1].split('/')[0];
+
+    if (data.avatar) {
+      user?.setProfileImage({ file: data.avatar });
+    }
+    delete data.avatar;
 
     try {
       const userInfoRes = await fetch(`http://localhost:3000/api/profile/${pathUserId}`, {
@@ -152,24 +159,7 @@ const ProfileEditPage = () => {
   };
 
   const onDrop = async (files: File[]) => {
-    setUploadStatus('uploading');
-    const formData = new FormData();
-    formData.append('file', files[0]);
-    const { data } = await fetch(`http://localhost:3000/api/files/avatars/`, {
-      method: 'POST',
-      body: formData,
-    })
-      .then((res) => res.json())
-      .catch((error) => {
-        console.error('Failed to upload avatar:', error);
-      });
-
-    if (!data) {
-      setUploadStatus('error');
-      return;
-    }
-    setUploadStatus('success');
-    setValue('avatar', data);
+    setValue('avatar', files[0]);
   };
 
   if (isLoading)
@@ -256,7 +246,7 @@ const ProfileEditPage = () => {
                 isDrawerOpen ? 'max-h-64' : 'max-h-0'
               }`}
             >
-              <div className='w-fll p-4'>
+              <div className='w-full p-4'>
                 <input
                   type='text'
                   placeholder='タグを検索'
@@ -276,12 +266,7 @@ const ProfileEditPage = () => {
           </div>
           <div className='mt-4'>
             <label className='block text-sm font-medium text-gray-700'>アバター</label>
-            <Dropzone
-              onDrop={onDrop}
-              className='mt-2'
-              status={uploadStatus}
-              value={getValues('avatar')}
-            />
+            <Dropzone onDrop={onDrop} className='mt-2' value={user?.imageUrl} />
           </div>
         </form>
         <button
