@@ -24,35 +24,29 @@ export const GET = async (req: Request, res: NextResponse) =>
 
 export const POST = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
-    try {
-      dbConnect();
+    dbConnect();
 
-      const { content } = await req.json();
-      //clerkのuserIdからUserテーブルのuserIdを取得
-      const { userId } = auth();
-      // const userId = process.env.clerkId;
+    const { content } = await req.json();
+    //clerkのuserIdからUserテーブルのuserIdを取得
+    const { userId } = auth();
+    // const userId = process.env.clerkId;
 
-      const user = await prisma.user.findUniqueOrThrow({
-        where: { clerkId: userId },
-      });
+    const user = await prisma.user.findUniqueOrThrow({
+      where: { clerkId: userId },
+    });
 
-      //postgresqlに投稿
-      const newPost = await prisma.post.create({
-        data: {
-          content,
-          author: {
-            connect: { id: user.id },
-          },
+    //postgresqlに投稿
+    const newPost = await prisma.post.create({
+      data: {
+        content,
+        author: {
+          connect: { id: user.id },
         },
-        include: {
-          author: true,
-        },
-      });
+      },
+      include: {
+        author: true,
+      },
+    });
 
-      return NextResponse.json<apiRes>({ message: 'success', data: newPost }, { status: 200 });
-    } catch (error) {
-      return NextResponse.json<apiRes>({ message: 'failed', data: error }, { status: 500 });
-    } finally {
-      await prisma.$disconnect();
-    }
+    return NextResponse.json<apiRes>({ message: 'success', data: newPost }, { status: 200 });
   });
