@@ -1,4 +1,4 @@
-import { auth } from '@clerk/nextjs/server';
+import { auth, clerkClient } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { dbConnect } from '../lib/dbConnect';
 import { handleAPIError } from '../lib/handleAPIError';
@@ -7,6 +7,7 @@ import { apiRes } from '../types';
 
 export const GET = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
+    const { getUser } = clerkClient().users;
     await dbConnect();
     const posts = await prisma.post.findMany({
       include: {
@@ -19,7 +20,19 @@ export const GET = async (req: Request, res: NextResponse) =>
       orderBy: { createdAt: 'desc' },
     });
 
-    return NextResponse.json<apiRes>({ message: 'success', data: posts }, { status: 200 });
+    const postsWithAvatar = await Promise.all(
+      posts.map(async (post) => {
+        return {
+          ...post,
+          avatar: (await clerkClient().users.getUser(post.author.clerkId)).imageUrl,
+        };
+      }),
+    );
+
+    return NextResponse.json<apiRes>(
+      { message: 'success', data: postsWithAvatar },
+      { status: 200 },
+    );
   });
 
 export const POST = async (req: Request, res: NextResponse) =>
@@ -29,6 +42,9 @@ export const POST = async (req: Request, res: NextResponse) =>
     const { content } = await req.json();
     //clerkのuserIdからUserテーブルのuserIdを取得
     const { userId } = auth();
+    if (!userId) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
     // const userId = process.env.clerkId;
 
     const user = await prisma.user.findUniqueOrThrow({
