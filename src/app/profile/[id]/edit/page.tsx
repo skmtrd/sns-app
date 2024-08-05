@@ -65,7 +65,6 @@ const ProfileEditPage = () => {
     handleSubmit,
     formState: { errors },
     setError,
-    getValues,
     setValue,
   } = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -199,7 +198,7 @@ const ProfileEditPage = () => {
             )}
           </div>
           <div>
-            <TagPicker tags={tags} defaultTags={getValues('tags')} onChange={onTagChange} />
+            <TagPicker tags={tags} defaultTags={userInfo?.tags} onChange={onTagChange} />
             {errors.tags && <p className='mt-2 text-sm text-red-500'>{errors.tags.message}</p>}
           </div>
         </form>

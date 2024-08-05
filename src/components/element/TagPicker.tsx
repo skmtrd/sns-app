@@ -16,7 +16,7 @@ export const TagPicker: React.FC<TagPickerProps> = ({ tags, defaultTags, onChang
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedTags, setSelectedTags] = useState<Tag[]>(defaultTags ?? []);
 
-  const selectableTags = tags.filter((tag) => !selectedTags.includes(tag));
+  const selectableTags = tags.filter((tag) => !selectedTags.some((t) => t.id === tag.id));
 
   const handleAddTag = (tag: Tag) => {
     if (selectedTags.includes(tag)) return;
