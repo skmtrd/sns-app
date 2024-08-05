@@ -1,28 +1,24 @@
 'use client';
+import AssignmentPost from '@/components/assignmentshare/AssignmentPost';
 import Header from '@/components/element/Header';
 import FixedHeader from '@/components/layout/FixedHeader';
-import { Post } from '@/components/timeline/Post';
 import { Loader2 } from 'lucide-react';
 import useSWR from 'swr';
-import { z } from 'zod';
 
-export const postSchema = z.object({
-  author: z.object({
-    name: z.string(),
-    id: z.string(),
-    clerkId: z.string(),
-    tags: z.array(z.object({ name: z.string(), id: z.string() })),
-    introduction: z.string(),
-  }),
-  createdAt: z.string(),
-  id: z.string(),
-  content: z.string(),
-  avatar: z.string(),
-});
+// export const postSchema = z.object({
+//   author: z.object({
+//     name: z.string(),
+//     id: z.string(),
+//     clerkId: z.string(),
+//     tags: z.array(z.object({ name: z.string(), id: z.string() })),
+//   }),
+//   createdAt: z.string(),
+//   id: z.string(),
+//   content: z.string(),
+// });
 
 const TimelineAll = () => {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
-
   const { data, error, isLoading } = useSWR('/api/post', fetcher, {
     refreshInterval: 20000,
     revalidateOnFocus: true,
@@ -40,27 +36,12 @@ const TimelineAll = () => {
     return <div>Error</div>;
   }
 
-  const posts = postSchema.array().parse(data.data);
-
   return (
     <div className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'>
-      <FixedHeader title={'タイムライン'} target={'すべて'} />
+      <FixedHeader title={'課題共有'} target={'すべて'} />
       <Header title={''} />
       <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>
-        {posts.map((post, index) => (
-          <Post
-            key={index}
-            username={post.author.name}
-            clerkId={post.author.clerkId}
-            id={post.author.id}
-            timestamp={post.createdAt}
-            content={post.content}
-            tags={post.author.tags}
-            introduction={post.author.introduction}
-            postId={post.id}
-            avatar={post.avatar}
-          />
-        ))}
+        <AssignmentPost />
       </div>
     </div>
   );

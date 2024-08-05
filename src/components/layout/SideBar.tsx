@@ -24,8 +24,8 @@ const SideBar: React.FC<Props> = ({ userId }) => {
 
   const navItems: NavItem[] = [
     { page: '/timeline/all', label: 'タイムライン', icon: Home },
-    { page: '/assiignment', label: '課題共有', icon: BookOpen },
-    { page: '/question', label: '質問スペース', icon: HelpCircle },
+    { page: '/assignmentshare/all', label: '課題共有', icon: BookOpen },
+    { page: '/question/all', label: '質問スペース', icon: HelpCircle },
     { page: `/profile/${userId}`, label: 'プロフィール', icon: User },
   ];
 
