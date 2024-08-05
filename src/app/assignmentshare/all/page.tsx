@@ -1,28 +1,22 @@
 'use client';
 import Header from '@/components/element/Header';
 import FixedHeader from '@/components/layout/FixedHeader';
-import { Post } from '@/components/timeline/Post';
 import { Loader2 } from 'lucide-react';
-import { usePathname } from 'next/navigation';
 import useSWR from 'swr';
-import { z } from 'zod';
 
-export const postSchema = z.object({
-  author: z.object({
-    name: z.string(),
-    id: z.string(),
-    clerkId: z.string(),
-    tags: z.array(z.object({ name: z.string(), id: z.string() })),
-  }),
-  createdAt: z.string(),
-  content: z.string(),
-  id: z.string(),
-  avatar: z.string(),
-});
+// export const postSchema = z.object({
+//   author: z.object({
+//     name: z.string(),
+//     id: z.string(),
+//     clerkId: z.string(),
+//     tags: z.array(z.object({ name: z.string(), id: z.string() })),
+//   }),
+//   createdAt: z.string(),
+//   id: z.string(),
+//   content: z.string(),
+// });
 
 const TimelineAll = () => {
-  const pathName = usePathname();
-  const tagId = pathName.split('/timeline/')[1];
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
   const { data, error, isLoading } = useSWR('/api/post', fetcher, {
     refreshInterval: 20000,
@@ -41,16 +35,14 @@ const TimelineAll = () => {
     return <div>Error</div>;
   }
 
-  const posts = postSchema.array().parse(data.data);
-  const filteredPosts = posts.filter((post) => post.author.tags.some((tag) => tag.id === tagId));
-  const filteredTagName = filteredPosts[0].author.tags.find((tag) => tag.id === tagId)?.name;
+  //   const posts = postSchema.array().parse(data.data);
 
   return (
     <div className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'>
-      <FixedHeader title={'タイムライン'} target={filteredTagName} />
+      <FixedHeader title={'課題共有'} target={'すべて'} />
       <Header title={''} />
       <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>
-        {filteredPosts.map((post, index) => (
+        {/* {posts.map((post, index) => (
           <Post
             key={index}
             username={post.author.name}
@@ -60,9 +52,8 @@ const TimelineAll = () => {
             content={post.content}
             tags={post.author.tags}
             postId={post.id}
-            avatar={post.avatar}
           />
-        ))}
+        ))} */}
       </div>
     </div>
   );

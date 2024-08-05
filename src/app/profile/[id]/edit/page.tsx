@@ -1,6 +1,6 @@
 'use client';
 
-import { Dropzone } from '@/components/element/DropZone';
+import { ChangeAvatar } from '@/components/element/ChangeAvatar';
 import Header from '@/components/element/Header';
 import RemovableUserTag from '@/components/element/RemovableUserTag';
 import UserTag from '@/components/element/UserTag';
@@ -25,11 +25,7 @@ const formSchema = z.object({
       name: z.string().min(1),
     }),
   ),
-  avatar: z
-    .custom<File>((value) => {
-      return value instanceof File;
-    })
-    .optional(),
+  avatar: z.custom<File>((value) => value instanceof File).optional(),
 });
 
 export type Tag = z.infer<typeof formSchema>['tags'][0];
@@ -65,6 +61,7 @@ const ProfileEditPage = () => {
   const [availableTags, setAvailableTags] = useState<z.infer<typeof formSchema>['tags']>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const notOwnedTags = availableTags.filter(
     (tag) => !getValues('tags')?.some((ownedTag) => ownedTag.name === tag.name),
   );
@@ -85,7 +82,7 @@ const ProfileEditPage = () => {
       }
     };
     fetchTagsAndSetAvailableTags();
-  }, [pathname]);
+  }, [pathname, router, userId]);
 
   useEffect(() => {
     const fetchUserInfoAndSetDefaultValues = async () => {
@@ -96,7 +93,6 @@ const ProfileEditPage = () => {
         setValue('userId', userInfo.id);
         setValue('introduction', userInfo.introduction ?? '');
         setValue('tags', userInfo.tags);
-        setValue('avatar', userInfo.avatar ?? null);
       } catch (error) {
         console.error('Failed to fetch user info:', error);
         setPageError('ユーザー情報の読み込みに失敗しました。');
@@ -104,6 +100,10 @@ const ProfileEditPage = () => {
     };
     fetchUserInfoAndSetDefaultValues();
   }, [pathname, setValue]);
+
+  if (pageError) return <div>{pageError}</div>;
+
+  if (!user) return <div>ログインしてください。</div>;
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (data) => {
     const pathUserId = pathname.split('/profile/')[1].split('/')[0];
@@ -158,8 +158,8 @@ const ProfileEditPage = () => {
     setAvailableTags(newAvailableTags);
   };
 
-  const onDrop = async (files: File[]) => {
-    setValue('avatar', files[0]);
+  const onFileChange = async (file: File) => {
+    setValue('avatar', file);
   };
 
   if (isLoading)
@@ -174,38 +174,48 @@ const ProfileEditPage = () => {
     <div className='flex flex-1 flex-col overflow-hidden'>
       <Header title={'プロフィール編集'} />
       <main className='flex-1 overflow-y-auto bg-gray-100 p-6'>
-        <form className='rounded-lg bg-white p-6 shadow' onSubmit={handleSubmit(onSubmit)}>
-          <div className='mb-4'>
-            <label htmlFor='name' className='block text-sm font-medium text-gray-700'>
-              名前
-            </label>
-            <input
-              {...register('name')}
-              type='text'
-              id='name'
-              autoComplete='off'
-              className='mt-1 block w-full rounded-md border-gray-300 shadow-sm outline-none focus:border-blue-300 focus:ring focus:ring-blue-200/50'
-            />
-            {errors.name && <p className='mt-2 text-sm text-red-500'>{errors.name.message}</p>}
-          </div>
-          <div className='mb-4'>
-            <label htmlFor='userId' className='block text-sm font-medium text-gray-700'>
-              ユーザーID
-            </label>
-            <div className='mt-1 flex rounded-md shadow-sm'>
-              <span className='inline-flex items-center rounded-sm border border-gray-300 bg-gray-50 px-2 text-sm text-gray-500'>
-                @
-              </span>
-              <input
-                {...register('userId')}
-                type='text'
-                id='userId'
-                className='block w-full flex-1 rounded-sm border-gray-300 outline-none focus:border-blue-300 focus:ring focus:ring-blue-200/50'
-              />
+        <form
+          className='space-y-4 rounded-lg bg-white p-6 shadow'
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <div className='flex'>
+            <ChangeAvatar onFileChange={onFileChange} value={user?.imageUrl} className='mr-6' />
+            <div className='w-full space-y-4'>
+              <div>
+                <label htmlFor='name' className='block text-sm font-medium text-gray-700'>
+                  名前
+                </label>
+                <input
+                  {...register('name')}
+                  type='text'
+                  id='name'
+                  autoComplete='off'
+                  className='mt-1 block w-full rounded-md border-gray-300 shadow-sm outline-none focus:border-blue-300 focus:ring focus:ring-blue-200/50'
+                />
+                {errors.name && <p className='mt-2 text-sm text-red-500'>{errors.name.message}</p>}
+              </div>
+              <div>
+                <label htmlFor='userId' className='block text-sm font-medium text-gray-700'>
+                  ユーザーID
+                </label>
+                <div className='mt-1 flex rounded-md shadow-sm'>
+                  <span className='inline-flex items-center rounded-sm border border-gray-300 bg-gray-50 px-2 text-sm text-gray-500'>
+                    @
+                  </span>
+                  <input
+                    {...register('userId')}
+                    type='text'
+                    id='userId'
+                    className='ml-2 block w-full flex-1 rounded-sm border-gray-300 outline-none focus:border-blue-300 focus:ring focus:ring-blue-200/50'
+                  />
+                </div>
+                {errors.userId && (
+                  <p className='mt-2 text-sm text-red-500'>{errors.userId.message}</p>
+                )}
+              </div>
             </div>
-            {errors.userId && <p className='mt-2 text-sm text-red-500'>{errors.userId.message}</p>}
           </div>
-          <div className='mb-4'>
+          <div>
             <label htmlFor='bio' className='block text-sm font-medium text-gray-700'>
               自己紹介
             </label>
@@ -219,7 +229,7 @@ const ProfileEditPage = () => {
               <p className='mt-2 text-sm text-red-500'>{errors.introduction.message}</p>
             )}
           </div>
-          <div className='mb-4'>
+          <div>
             <label className='block text-sm font-medium text-gray-700'>タグ</label>
             <div className='mt-2 flex flex-wrap'>
               {getValues('tags')?.map((tag) => (
@@ -264,10 +274,10 @@ const ProfileEditPage = () => {
             </div>
             {errors.tags && <p className='mt-2 text-sm text-red-500'>{errors.tags.message}</p>}
           </div>
-          <div className='mt-4'>
+          {/* <div>
             <label className='block text-sm font-medium text-gray-700'>アバター</label>
             <Dropzone onDrop={onDrop} className='mt-2' value={user?.imageUrl} />
-          </div>
+          </div> */}
         </form>
         <button
           className='mt-2 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-0 focus:ring-blue-500/50'

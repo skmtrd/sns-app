@@ -80,27 +80,26 @@ model AssignmentReply {
 
 
 model Question {
-  id        String   @id @default(cuid())
-  title     String 
-  description String @db.Text 
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  String   @unique
-  reply     QuestionReply? @relation(fields: [replyId] , references: [id])
-  replyId   String?  @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String         @id @default(cuid())
+  title       String 
+  description String         @db.Text 
+  author      User           @relation(fields: [authorId], references: [id])
+  authorId    String
+  replies     QuestionReply[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
 }
 
 model QuestionReply {
-  id        String   @id @default(cuid())
-  title     String 
-  description String @db.Text 
-  question  Question?
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  String   @unique
-  parentReply     QuestionReply?  @relation("ParentChildReply", fields: [parentReplyId], references: [id])
-  parentReplyId   String?
-  childReplies    QuestionReply[] @relation("ParentChildReply")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String         @id @default(cuid())
+  content        String         @db.Text 
+  question       Question       @relation(fields: [questionId], references: [id])
+  questionId     String
+  author         User           @relation(fields: [authorId], references: [id])
+  authorId       String
+  parentReply    QuestionReply? @relation("ParentChildReply", fields: [parentReplyId], references: [id])
+  parentReplyId  String?
+  childReplies   QuestionReply[] @relation("ParentChildReply")
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
 }

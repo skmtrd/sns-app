@@ -10,9 +10,14 @@ export const GET = async (req: Request, res: NextResponse) =>
     await dbConnect();
     const posts = await prisma.question.findMany({
       include: {
+        replies: {
+          include: {
+            author: true,
+          },
+        },
         author: {
           include: {
-            tags: true, // 作者のタグ情報を含める
+            tags: true,
           },
         },
       },
@@ -34,7 +39,6 @@ export const POST = async (req: Request, res: NextResponse) =>
       where: { clerkId: userId },
     });
 
-    //postgresqlに投稿
     const newPost = await prisma.question.create({
       data: {
         title,
