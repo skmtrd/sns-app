@@ -32,7 +32,7 @@ export const GET = async (req: Request, res: NextResponse) =>
     return NextResponse.json<apiRes>({ message: 'Success', data: user }, { status: 200 });
   });
 
-export const PUT = async (req: Request, res: NextResponse) =>
+export const PUT = async (req: Request, res: NextResponse) => {
   handleAPIError(async () => {
     await dbConnect();
     const clerkId = req.url.split('/profile/')[1];
@@ -54,3 +54,4 @@ export const PUT = async (req: Request, res: NextResponse) =>
       return NextResponse.json<apiRes>({ message: 'Success', data: newProfile }, { status: 200 });
     }
   });
+};
