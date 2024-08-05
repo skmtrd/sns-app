@@ -23,6 +23,7 @@ model User {
   introduction String @db.Text
   posts     Post[]
   tags      Tag[]
+  likes     Like[]
   assignment Assignment[]
   assignmentReply AssignmentReply[]
   question  Question[]
@@ -37,9 +38,22 @@ model Post {
   content   String
   author    User     @relation(fields: [authorId], references: [id])
   authorId  String
+  likes     Like[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Like{
+  id        String   @id @default(cuid())
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String   
+  post      Post     @relation(fields: [postId] , references: [id])
+  postId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@unique([authorId, postId])
+}
+
 
 model Tag {
   id        String   @id @default(cuid())
