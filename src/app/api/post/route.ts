@@ -13,9 +13,11 @@ export const GET = async (req: Request, res: NextResponse) =>
       include: {
         author: {
           include: {
-            tags: true, // 作者のタグ情報を含める
+            tags: true,
+            // 作者のタグ情報を含める
           },
         },
+        likes: true,
       },
       orderBy: { createdAt: 'desc' },
     });
