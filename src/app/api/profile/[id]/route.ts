@@ -18,7 +18,11 @@ export const GET = async (req: Request, res: NextResponse) =>
     await dbConnect();
     const user = await prisma.user.findUnique({
       where: { clerkId: clerkId },
-      include: { tags: true },
+      include: {
+        tags: {
+          select: { id: true, name: true },
+        },
+      },
     });
 
     if (!user) return NextResponse.json<apiRes>({ message: 'User not found' }, { status: 404 });
