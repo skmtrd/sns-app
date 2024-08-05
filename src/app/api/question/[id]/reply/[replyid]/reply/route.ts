@@ -11,7 +11,7 @@ export const POST = async (req: Request, res: NextResponse) =>
     //がんばれたなか
     //成長するんだ
 
-    const { content, questionId } = await req.json();
+    const { content, parentReplyId } = await req.json();
 
     const userId = 'user_2kAm1CqUROhV77wXS43Td3lI3NN';
 
@@ -19,14 +19,22 @@ export const POST = async (req: Request, res: NextResponse) =>
       where: { clerkId: userId },
     });
 
+    const parentReply = await prisma.questionReply.findUniqueOrThrow({
+      where: { id: parentReplyId },
+      include: { question: true },
+    });
+
     const reply = await prisma.questionReply.create({
       data: {
         question: {
-          connect: { id: questionId },
+          connect: { id: parentReply.questionId },
         },
         content,
         author: {
           connect: { id: user.id },
+        },
+        parentReply: {
+          connect: { id: parentReplyId },
         },
       },
       include: {

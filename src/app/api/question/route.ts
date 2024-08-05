@@ -13,6 +13,7 @@ export const GET = async (req: Request, res: NextResponse) =>
         replies: {
           include: {
             author: true,
+            childReplies: true,
           },
         },
         author: {
@@ -33,7 +34,7 @@ export const POST = async (req: Request, res: NextResponse) =>
 
     const { title, description } = await req.json();
 
-    const userId = 'user_2kBbB59pFe6EQcpYrVAcUkBr446';
+    const userId = 'user_2kAm1CqUROhV77wXS43Td3lI3NN';
 
     const user = await prisma.user.findUniqueOrThrow({
       where: { clerkId: userId },
