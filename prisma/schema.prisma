@@ -55,8 +55,7 @@ model Assignment {
   title     String 
   description String @db.Text
   deadLine  DateTime 
-  reply     AssignmentReply? @relation(fields: [replyId] , references: [id]) 
-  replyId   String?  @unique
+  replies   AssignmentReply[]
   author    User     @relation(fields: [authorId], references: [id]) 
   authorId  String   @unique
   createdAt DateTime @default(now())
@@ -66,9 +65,9 @@ model Assignment {
 
 model AssignmentReply {
   id        String   @id @default(cuid())
-  title     String 
-  description String @db.Text
-  assignment Assignment?
+  content   String   @db.Text
+  assignment Assignment @relation(fields: [assignmentId], references: [id])
+  assignmentId String
   parentReply     AssignmentReply?  @relation("ParentChildReply", fields: [parentReplyId], references: [id])
   parentReplyId   String?
   childReplies    AssignmentReply[] @relation("ParentChildReply")
@@ -77,6 +76,7 @@ model AssignmentReply {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
 
 
 model Question {
