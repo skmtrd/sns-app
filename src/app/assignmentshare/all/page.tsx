@@ -1,4 +1,5 @@
 'use client';
+import AssignmentPost from '@/components/assignmentshare/AssignmentPost';
 import Header from '@/components/element/Header';
 import FixedHeader from '@/components/layout/FixedHeader';
 import { Loader2 } from 'lucide-react';
@@ -35,25 +36,12 @@ const TimelineAll = () => {
     return <div>Error</div>;
   }
 
-  //   const posts = postSchema.array().parse(data.data);
-
   return (
     <div className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'>
       <FixedHeader title={'課題共有'} target={'すべて'} />
       <Header title={''} />
       <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>
-        {/* {posts.map((post, index) => (
-          <Post
-            key={index}
-            username={post.author.name}
-            clerkId={post.author.clerkId}
-            id={post.author.id}
-            timestamp={post.createdAt}
-            content={post.content}
-            tags={post.author.tags}
-            postId={post.id}
-          />
-        ))} */}
+        <AssignmentPost />
       </div>
     </div>
   );

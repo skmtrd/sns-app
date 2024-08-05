@@ -1,6 +1,6 @@
 const QuestionPost = ({ post }) => {
   return (
-    <div key={post.id} className='w-11/12 rounded-lg bg-white p-4 shadow'>
+    <div key={post.id} className='w-11/12 rounded-lg bg-white p-6 shadow'>
       <div className='flex items-start justify-between'>
         <div>
           <h3 className='text-lg font-bold'>{post.title}</h3>
