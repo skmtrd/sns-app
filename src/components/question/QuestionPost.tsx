@@ -3,7 +3,7 @@
 import { formatTime } from '@/lib/formatTime';
 import { Reply } from '@/lib/types';
 import { useAuth } from '@clerk/nextjs';
-import { ChevronDown, ChevronUp, MessageCircle, MoreVertical, Send } from 'lucide-react';
+import { ChevronDown, ChevronUp, MessageCircleReply, MoreVertical, Send } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { mutate } from 'swr';
@@ -130,7 +130,7 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
                   onClick={handleReplyDrawerToggle}
                   className='flex items-center justify-center rounded-full bg-blue-400 px-4 py-2 text-white transition-all hover:bg-blue-600 hover:shadow-lg'
                 >
-                  <MessageCircle size={20} />
+                  <MessageCircleReply size={20} />
                 </button>
                 <div className='relative flex gap-2'>
                   <button
@@ -163,7 +163,7 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
             onClick={handleReplyDrawerToggle}
             className='flex items-center justify-center rounded-full bg-blue-400 px-4 py-2 text-white transition-all hover:bg-blue-600 hover:shadow-lg'
           >
-            <MessageCircle size={20} />
+            <MessageCircleReply size={20} />
           </button>
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}

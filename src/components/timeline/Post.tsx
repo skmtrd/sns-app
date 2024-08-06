@@ -1,12 +1,15 @@
 'use client';
 import { formatTime } from '@/lib/formatTime';
 import { Tag } from '@/lib/types';
+import { cn } from '@/lib/utils';
 import { useAuth } from '@clerk/nextjs';
-import { MoreVertical, Share, Trash } from 'lucide-react';
+import { MessageCircleReply, MoreVertical, Send } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useSWRConfig } from 'swr';
+import KebabMenu from '../element/KebabMenu';
 import ProfilePreview from '../element/ProfilePreview';
 import UserTag from '../element/UserTag';
 
@@ -19,8 +22,14 @@ type PostProps = {
   tags: Tag[];
   postId: string;
   avatar: string;
-  introduction?: string; // Add introduction field
+  introduction?: string;
 };
+
+type ReplyFormData = {
+  content: string;
+};
+
+const REPLY_MAX_LENGTH = 500;
 
 export const Post: React.FC<PostProps> = ({
   username,
@@ -37,9 +46,22 @@ export const Post: React.FC<PostProps> = ({
   const [time, setTime] = useState(new Date());
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showProfilePreview, setShowProfilePreview] = useState(false);
+  const [isReplyDrawerOpen, setIsReplyDrawerOpen] = useState(false);
+  const [replyContentHeight, setReplyContentHeight] = useState(0);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const profilePreviewRef = useRef<HTMLDivElement>(null);
+  const replyContentRef = useRef<HTMLDivElement>(null);
   const { userId } = useAuth();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    reset,
+  } = useForm<ReplyFormData>();
+
+  const replyContent = watch('content');
 
   useEffect(() => {
     const updateDate = setInterval(() => {
@@ -62,6 +84,12 @@ export const Post: React.FC<PostProps> = ({
     };
   }, []);
 
+  useEffect(() => {
+    if (replyContentRef.current) {
+      setReplyContentHeight(replyContentRef.current.scrollHeight);
+    }
+  }, [isReplyDrawerOpen]);
+
   const deletePost = async (id: string) => {
     const toDelete = `http://localhost:3000/api/post/${id}`;
     try {
@@ -75,6 +103,16 @@ export const Post: React.FC<PostProps> = ({
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleReplyDrawerToggle = () => {
+    setIsReplyDrawerOpen(!isReplyDrawerOpen);
+  };
+
+  const onSubmit = (data: ReplyFormData) => {
+    console.log(data); // ここでAPIを呼び出す代わりに、データをコンソールに出力
+    reset(); // フォームをリセット
+    setIsReplyDrawerOpen(false); // リプライ送信後にドロワーを閉じる
   };
 
   return (
@@ -132,37 +170,56 @@ export const Post: React.FC<PostProps> = ({
             </Link>
           ))}
       </div>
-      <div className='absolute bottom-2 right-2'>
+      <div className='relative mt-6 flex w-full items-center justify-between'>
+        <button
+          onClick={handleReplyDrawerToggle}
+          className='flex items-center justify-center rounded-full bg-blue-400 px-4 py-2 text-white transition-all hover:bg-blue-600 hover:shadow-lg'
+        >
+          <MessageCircleReply size={20} />
+        </button>
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           className='text-gray-500 hover:text-gray-700'
         >
           <MoreVertical size={20} />
         </button>
-        {isDropdownOpen && (
-          <div
-            ref={dropdownRef}
-            className='absolute bottom-full right-0 mb-2 w-32 rounded-md bg-white shadow-lg ring-1 ring-black/50'
-          >
-            <div className='py-1'>
-              {userId === clerkId && (
-                <button
-                  onClick={() => {
-                    deletePost(postId);
-                  }}
-                  className='block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100'
-                >
-                  <Trash size={16} className='mr-2 inline-block' />
-                  削除
-                </button>
+        {isDropdownOpen && <KebabMenu currentClerkId={userId} postClerkId={clerkId} />}
+      </div>
+
+      <div
+        ref={replyContentRef}
+        className='overflow-hidden transition-all duration-500 ease-in-out'
+        style={{ height: isReplyDrawerOpen ? `${replyContentHeight}px` : '0' }}
+      >
+        <form onSubmit={handleSubmit(onSubmit)} className='mt-4'>
+          <textarea
+            {...register('content', { required: 'リプライを入力してください' })}
+            className='w-full rounded-lg border p-3 focus:border-blue-500 focus:outline-none'
+            rows={4}
+            maxLength={REPLY_MAX_LENGTH}
+            placeholder='リプライを入力してください'
+          />
+          <div className='flex justify-end'>
+            <p
+              className={cn(
+                'text-sm',
+                replyContent?.length === REPLY_MAX_LENGTH || replyContent?.length === 0
+                  ? 'text-red-500'
+                  : 'text-gray-400',
               )}
-              <button className='block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100'>
-                <Share size={16} className='mr-2 inline-block' />
-                共有
-              </button>
-            </div>
+            >
+              {replyContent?.length || 0} / {REPLY_MAX_LENGTH}
+            </p>
           </div>
-        )}
+          <div className='mb-4 mt-3 text-right'>
+            <button
+              type='submit'
+              className='inline-flex items-center justify-center rounded-full bg-blue-500 px-4 py-2 text-white transition-all hover:bg-blue-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2'
+            >
+              <Send size={20} />
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
