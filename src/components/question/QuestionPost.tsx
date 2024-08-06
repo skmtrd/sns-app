@@ -132,7 +132,7 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
                   onClick={handleDrawerToggle}
                   className='flex items-center justify-center rounded-full bg-blue-100 px-4 py-2 text-blue-600 transition-all hover:bg-blue-200'
                 >
-                  {isDrawerOpen ? <ChevronUp /> : <ChevronDown />}
+                  {isDrawerOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                 </button>
               </div>
             </>
