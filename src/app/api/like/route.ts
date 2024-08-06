@@ -5,13 +5,13 @@ import { handleAPIError } from '../lib/handleAPIError';
 import prisma from '../lib/prisma';
 import { apiRes } from '../types';
 
+//ユーザーがいいねした投稿を返すapi
 export const GET = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
     dbConnect();
 
     //clerkId
-    // const { userId } = auth();
-    const userId = 'user_2kBasPGZhMBIuxhF7zov5BXVrgq';
+    const { userId } = auth();
 
     //Userテーブルのid(sns上でのID)
     const { id } = await prisma.user.findUniqueOrThrow({
@@ -22,6 +22,7 @@ export const GET = async (req: Request, res: NextResponse) =>
       where: {
         authorId: id,
       },
+      include: { post: true, author: true },
     });
     return NextResponse.json<apiRes>({ message: 'success', data: likedPost }, { status: 200 });
   });
@@ -30,8 +31,7 @@ export const POST = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
     dbConnect();
 
-    // const { userId } = auth();
-    const userId = 'user_2kBasPGZhMBIuxhF7zov5BXVrgq';
+    const { userId } = auth();
 
     const { postId } = await req.json();
 
