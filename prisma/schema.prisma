@@ -86,7 +86,7 @@ model AssignmentReply {
   parentReplyId   String?
   childReplies    AssignmentReply[] @relation("ParentChildReply")
   author    User     @relation(fields: [authorId], references: [id])
-  authorId  String   @unique
+  authorId  String   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
