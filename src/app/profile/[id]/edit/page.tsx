@@ -86,15 +86,16 @@ const ProfileEditPage = () => {
     delete data.avatar;
 
     try {
-      const userInfoRes = await fetch(`http://localhost:3000/api/profile/${pathUserId}`, {
+      const userInfoRes = await fetch(`/api/profile/${pathUserId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
       });
+      mutateUserInfo();
 
-      const tagRes = await fetch('http://localhost:3000/api/tag', {
+      const tagRes = await fetch('/api/tag', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -104,13 +105,10 @@ const ProfileEditPage = () => {
           clerkId: pathUserId,
         }),
       });
+      mutateTags();
 
       const tagData = await tagRes.json();
       console.log('Tag update response:', tagData);
-
-      mutateTags();
-      mutateUserInfo();
-
       router.push(`/profile/${pathUserId}`);
     } catch (error) {
       console.error('Failed to update user info:', error);

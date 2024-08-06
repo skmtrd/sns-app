@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "concurrently \"npm run dev:next\" \"npm run prisma:studio\"",
+    "dev:next": "next dev",
+    "prisma:studio": "prisma studio",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -40,6 +42,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "concurrently": "^8.2.2",
     "dotenv-cli": "^7.4.2",
     "eslint": "^8",
     "eslint-config-next": "14.2.5",

@@ -2,6 +2,12 @@
   "extends": ["next/core-web-vitals", "plugin:tailwindcss/recommended"],
   "plugins": ["prettier"],
   "rules": {
-    "prettier/prettier": "error"
+    "prettier/prettier": "error",
+    "tailwindcss/classnames-order": [
+      "warn",
+      {
+        "callees": ["clsx", "cn", "twMerge"]
+      }
+    ]
   }
 }
