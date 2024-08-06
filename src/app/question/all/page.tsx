@@ -56,7 +56,7 @@ const TimelineAll = () => {
             replies={question.replies}
             username={question.author.name}
             clerkId={question.author.clerkId}
-            id={question.author.id}
+            userId={question.author.id}
             timestamp={question.createdAt}
             // tags={question.author.tags}
             postId={question.id}

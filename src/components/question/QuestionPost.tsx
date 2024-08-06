@@ -2,7 +2,16 @@
 
 import { formatTime } from '@/lib/formatTime';
 import { Reply } from '@/lib/types';
-import { ChevronDown, ChevronUp, MessageCircle, Send } from 'lucide-react';
+import { useAuth } from '@clerk/nextjs';
+import {
+  ChevronDown,
+  ChevronUp,
+  MessageCircle,
+  MoreVertical,
+  Send,
+  Share,
+  Trash,
+} from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { mutate } from 'swr';
@@ -11,7 +20,7 @@ import QuestionReply from './QuestionReply';
 type QuestionPostProps = {
   username: string;
   clerkId: string;
-  id: string;
+  userId: string;
   postId: string;
   timestamp: string;
   title: string;
@@ -27,7 +36,7 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
   username,
   clerkId,
   postId,
-  id,
+  userId,
   timestamp,
   title,
   description,
@@ -36,10 +45,12 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
   const [time, setTime] = useState(new Date());
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isReplyDrawerOpen, setIsReplyDrawerOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [contentHeight, setContentHeight] = useState(0);
   const [replyContentHeight, setReplyContentHeight] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
   const replyContentRef = useRef<HTMLDivElement>(null);
+  const { userId: curremtClerkId } = useAuth();
 
   const {
     register,
@@ -97,7 +108,7 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
   }, [replies, isReplyDrawerOpen]);
 
   return (
-    <div key={id} className='w-11/12 rounded-lg bg-white p-6 shadow'>
+    <div className='relative w-11/12 rounded-lg bg-white p-6 shadow'>
       <div className='flex items-start justify-between'>
         <div>
           <h3 className='text-2xl font-bold'>{title}</h3>
@@ -128,12 +139,41 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
                 >
                   <MessageCircle size={20} />
                 </button>
-                <button
-                  onClick={handleDrawerToggle}
-                  className='flex items-center justify-center rounded-full bg-blue-100 px-4 py-2 text-blue-600 transition-all hover:bg-blue-200'
-                >
-                  {isDrawerOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-                </button>
+                <div className='relative flex gap-2'>
+                  <button
+                    onClick={handleDrawerToggle}
+                    className='flex items-center justify-center rounded-full bg-blue-100 px-4 py-2 text-blue-600 transition-all hover:bg-blue-200'
+                  >
+                    {isDrawerOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                  </button>
+                  <button
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    className='text-gray-500 hover:text-gray-700'
+                  >
+                    <MoreVertical size={20} />
+                    {isDropdownOpen && (
+                      <div className='absolute bottom-full right-0 mb-2 w-32 rounded-md bg-white shadow-lg ring-1 ring-black/50'>
+                        <div className='py-1'>
+                          {curremtClerkId === clerkId && (
+                            <button
+                              // onClick={() => {
+                              //   deletePost(postId);
+                              // }}
+                              className='block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100'
+                            >
+                              <Trash size={16} className='mr-2 inline-block' />
+                              削除
+                            </button>
+                          )}
+                          <button className='block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100'>
+                            <Share size={16} className='mr-2 inline-block' />
+                            共有
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </button>
+                </div>
               </div>
             </>
           )}
@@ -143,12 +183,39 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
       )}
 
       {replies.length <= 1 && (
-        <div className='mt-6'>
+        <div className='relative mt-6 flex w-full justify-between'>
           <button
             onClick={handleReplyDrawerToggle}
             className='flex items-center justify-center rounded-full bg-blue-400 px-4 py-2 text-white transition-all hover:bg-blue-600 hover:shadow-lg'
           >
             <MessageCircle size={20} />
+          </button>
+          <button
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className='text-gray-500 hover:text-gray-700'
+          >
+            <MoreVertical size={20} />
+            {isDropdownOpen && (
+              <div className='absolute bottom-full right-0 mb-2 w-32 rounded-md bg-white shadow-lg ring-1 ring-black/50'>
+                <div className='py-1'>
+                  {curremtClerkId === clerkId && (
+                    <button
+                      // onClick={() => {
+                      //   deletePost(postId);
+                      // }}
+                      className='block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100'
+                    >
+                      <Trash size={16} className='mr-2 inline-block' />
+                      削除
+                    </button>
+                  )}
+                  <button className='block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100'>
+                    <Share size={16} className='mr-2 inline-block' />
+                    共有
+                  </button>
+                </div>
+              </div>
+            )}
           </button>
         </div>
       )}
