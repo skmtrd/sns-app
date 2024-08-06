@@ -3,18 +3,11 @@
 import { formatTime } from '@/lib/formatTime';
 import { Reply } from '@/lib/types';
 import { useAuth } from '@clerk/nextjs';
-import {
-  ChevronDown,
-  ChevronUp,
-  MessageCircle,
-  MoreVertical,
-  Send,
-  Share,
-  Trash,
-} from 'lucide-react';
+import { ChevronDown, ChevronUp, MessageCircle, MoreVertical, Send } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { mutate } from 'swr';
+import KebabMenu from '../element/KebabMenu';
 import QuestionReply from './QuestionReply';
 
 type QuestionPostProps = {
@@ -50,7 +43,7 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
   const [replyContentHeight, setReplyContentHeight] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
   const replyContentRef = useRef<HTMLDivElement>(null);
-  const { userId: curremtClerkId } = useAuth();
+  const { userId: currentClerkId } = useAuth();
 
   const {
     register,
@@ -152,25 +145,7 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
                   >
                     <MoreVertical size={20} />
                     {isDropdownOpen && (
-                      <div className='absolute bottom-full right-0 mb-2 w-32 rounded-md bg-white shadow-lg ring-1 ring-black/50'>
-                        <div className='py-1'>
-                          {curremtClerkId === clerkId && (
-                            <button
-                              // onClick={() => {
-                              //   deletePost(postId);
-                              // }}
-                              className='block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100'
-                            >
-                              <Trash size={16} className='mr-2 inline-block' />
-                              削除
-                            </button>
-                          )}
-                          <button className='block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100'>
-                            <Share size={16} className='mr-2 inline-block' />
-                            共有
-                          </button>
-                        </div>
-                      </div>
+                      <KebabMenu currentClerkId={currentClerkId} postClerkId={clerkId} />
                     )}
                   </button>
                 </div>
@@ -195,27 +170,7 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
             className='text-gray-500 hover:text-gray-700'
           >
             <MoreVertical size={20} />
-            {isDropdownOpen && (
-              <div className='absolute bottom-full right-0 mb-2 w-32 rounded-md bg-white shadow-lg ring-1 ring-black/50'>
-                <div className='py-1'>
-                  {curremtClerkId === clerkId && (
-                    <button
-                      // onClick={() => {
-                      //   deletePost(postId);
-                      // }}
-                      className='block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100'
-                    >
-                      <Trash size={16} className='mr-2 inline-block' />
-                      削除
-                    </button>
-                  )}
-                  <button className='block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100'>
-                    <Share size={16} className='mr-2 inline-block' />
-                    共有
-                  </button>
-                </div>
-              </div>
-            )}
+            {isDropdownOpen && <KebabMenu currentClerkId={currentClerkId} postClerkId={clerkId} />}
           </button>
         </div>
       )}
