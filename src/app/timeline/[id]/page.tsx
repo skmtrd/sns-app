@@ -2,46 +2,45 @@
 import Header from '@/components/element/Header';
 import FixedHeader from '@/components/layout/FixedHeader';
 import { Post } from '@/components/timeline/Post';
-import { Loader2 } from 'lucide-react';
+import useData from '@/hooks/useData';
+import { LoaderCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
-import useSWR from 'swr';
 import { z } from 'zod';
 
-export const postSchema = z.object({
-  author: z.object({
-    name: z.string(),
+export const postSchema = z
+  .object({
+    author: z.object({
+      name: z.string(),
+      id: z.string(),
+      clerkId: z.string(),
+      tags: z.array(z.object({ name: z.string(), id: z.string() })),
+    }),
+    createdAt: z.string(),
+    content: z.string(),
     id: z.string(),
-    clerkId: z.string(),
-    tags: z.array(z.object({ name: z.string(), id: z.string() })),
-  }),
-  createdAt: z.string(),
-  content: z.string(),
-  id: z.string(),
-  avatar: z.string(),
-});
+    avatar: z.string(),
+  })
+  .array();
 
 const TimelineAll = () => {
   const pathName = usePathname();
   const tagId = pathName.split('/timeline/')[1];
-  const fetcher = (url: string) => fetch(url).then((res) => res.json());
-  const { data, error, isLoading } = useSWR('/api/post', fetcher, {
-    refreshInterval: 20000,
-    revalidateOnFocus: true,
-  });
+  const { data, error, isLoading } = useData('/api/post', postSchema);
 
-  if (isLoading) {
-    return (
-      <div className='flex h-svh w-full flex-1 grow flex-col items-center justify-center gap-4 bg-gray-100'>
-        <Loader2 size='64' className='animate-spin text-blue-600' />
-        ロード中...
-      </div>
-    );
-  }
   if (error) {
     return <div>Error</div>;
   }
 
-  const posts = postSchema.array().parse(data.data);
+  if (isLoading || !data) {
+    return (
+      <div className='flex h-svh w-full flex-1 grow flex-col items-center justify-center gap-4 bg-gray-100'>
+        <LoaderCircle size='64' className='animate-spin text-blue-600' />
+        ロード中...
+      </div>
+    );
+  }
+
+  const posts = data;
   const filteredPosts = posts.filter((post) => post.author.tags.some((tag) => tag.id === tagId));
   const filteredTagName = filteredPosts[0].author.tags.find((tag) => tag.id === tagId)?.name;
 
