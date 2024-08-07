@@ -1,32 +1,22 @@
-export const formatTime = (timestamp: string, now: Date): string => {
-  const target = new Date(timestamp);
-  const delta = now.getTime() - target.getTime();
+export const formatTime = (now: Date, target: Date): string => {
+  const diff = Math.floor((now.getTime() - target.getTime()) / 1000); // cut off milliseconds
 
-  const diff = {
-    year: now.getFullYear() - target.getFullYear(),
-    month: now.getMonth() - target.getMonth(),
-    day: now.getDate() - target.getDate(),
-    hour: Math.floor(delta / (1000 * 60 * 60)),
-    minute: Math.floor((delta / (1000 * 60)) % 60),
-    second: Math.floor((delta / 1000) % 60),
-  };
-
-  if (diff.year > 0) {
+  if (diff <= 0) {
+    return '今';
+  } else if (diff < 60) {
+    // 1 minute
+    return `${diff}秒前`;
+  } else if (diff < 60 * 60) {
+    // 1 hour
+    return `${Math.floor(diff / 60)}分前`;
+  } else if (diff < 60 * 60 * 24) {
+    // 1 day
+    return `${Math.floor(diff / (60 * 60))}時間前`;
+  } else if (now.getFullYear() > target.getFullYear()) {
+    // Different year
     return `${target.getFullYear()}年${target.getMonth() + 1}月${target.getDate()}日`;
-  } else if (diff.month > 0) {
-    return `${target.getMonth() + 1}月${target.getDate()}日`;
-  } else if (diff.day > 0) {
-    if (diff.day === 1) {
-      return '昨日';
-    }
-    return `${target.getDate()}日`;
-  } else if (diff.hour > 0) {
-    return `${diff.hour}時間前`;
-  } else if (diff.minute > 0) {
-    return `${diff.minute}分前`;
-  } else if (diff.second > 0) {
-    return `${diff.second}秒前`;
   } else {
-    return 'たった今';
+    // Same year, different day
+    return `${target.getMonth() + 1}月${target.getDate()}日`;
   }
 };
