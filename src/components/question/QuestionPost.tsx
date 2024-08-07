@@ -42,9 +42,7 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
   const [replyContentHeight, setReplyContentHeight] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
   const replyContentRef = useRef<HTMLDivElement>(null);
-
   const { userId: currentClerkId } = useAuth();
-
   const timeAgo = useRelativeTime(timestamp);
 
   const {
