@@ -56,6 +56,7 @@ export const Post: React.FC<PostProps> = ({
   const { userId } = useAuth();
   const timeAgo = useRelativeTime(timestamp);
   const [isLiked, setIsLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState(likes.length);
 
   const {
     register,
@@ -112,6 +113,7 @@ export const Post: React.FC<PostProps> = ({
   const handleLike = async () => {
     setIsLiked(!isLiked);
     isLiked ? await deleteLike(postId) : await postLike(postId);
+    isLiked ? setLikesCount(likesCount - 1) : setLikesCount(likesCount + 1);
   };
 
   const onSubmit = (data: ReplyFormData) => {
@@ -186,6 +188,7 @@ export const Post: React.FC<PostProps> = ({
           <button onClick={handleLike}>
             <Heart size={20} color={'#dc143c'} fill={isLiked ? '#dc143c' : 'white'} />
           </button>
+          <span>{likesCount}</span>
         </div>
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
