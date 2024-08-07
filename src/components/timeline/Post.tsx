@@ -1,5 +1,5 @@
 'use client';
-import { formatTime } from '@/lib/formatTime';
+import { useRelativeTime } from '@/hooks/useRelativeTime';
 import { Tag } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@clerk/nextjs';
@@ -43,7 +43,6 @@ export const Post: React.FC<PostProps> = ({
   introduction,
 }) => {
   const { mutate } = useSWRConfig();
-  const [time, setTime] = useState(new Date());
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showProfilePreview, setShowProfilePreview] = useState(false);
   const [isReplyDrawerOpen, setIsReplyDrawerOpen] = useState(false);
@@ -52,6 +51,7 @@ export const Post: React.FC<PostProps> = ({
   const profilePreviewRef = useRef<HTMLDivElement>(null);
   const replyContentRef = useRef<HTMLDivElement>(null);
   const { userId } = useAuth();
+  const timeAgo = useRelativeTime(timestamp);
 
   const {
     register,
@@ -64,10 +64,6 @@ export const Post: React.FC<PostProps> = ({
   const replyContent = watch('content');
 
   useEffect(() => {
-    const updateDate = setInterval(() => {
-      setTime(new Date());
-    }, 1000);
-
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
@@ -79,7 +75,6 @@ export const Post: React.FC<PostProps> = ({
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      clearInterval(updateDate);
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
@@ -154,7 +149,7 @@ export const Post: React.FC<PostProps> = ({
                 </div>
               )}
             </div>
-            <p className='mr-1 text-sm text-gray-500'>{formatTime(timestamp, time)}</p>
+            <p className='mr-1 text-sm text-gray-500'>{timeAgo}</p>
           </div>
           <p className='px-1 py-0.5 text-xs text-gray-500'>@{id}</p>
         </div>

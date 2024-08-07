@@ -1,6 +1,6 @@
 'use client';
 
-import { formatTime } from '@/lib/formatTime';
+import { useRelativeTime } from '@/hooks/useRelativeTime';
 import { Reply } from '@/lib/types';
 import { useAuth } from '@clerk/nextjs';
 import { ChevronDown, ChevronUp, MessageCircleReply, MoreVertical, Send } from 'lucide-react';
@@ -35,7 +35,6 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
   description,
   replies,
 }) => {
-  const [time, setTime] = useState(new Date());
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isReplyDrawerOpen, setIsReplyDrawerOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -43,7 +42,10 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
   const [replyContentHeight, setReplyContentHeight] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
   const replyContentRef = useRef<HTMLDivElement>(null);
+
   const { userId: currentClerkId } = useAuth();
+
+  const timeAgo = useRelativeTime(timestamp);
 
   const {
     register,
@@ -82,16 +84,6 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
   };
 
   useEffect(() => {
-    const updateDate = setInterval(() => {
-      setTime(new Date());
-    }, 1000);
-
-    return () => {
-      clearInterval(updateDate);
-    };
-  }, []);
-
-  useEffect(() => {
     if (contentRef.current) {
       setContentHeight(contentRef.current.scrollHeight);
     }
@@ -108,7 +100,7 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
           <p className='text-sm text-gray-600'>{username}さん</p>
           <p className='mt-2'>{description}</p>
         </div>
-        <p className='mr-1 text-sm text-gray-500'>{formatTime(timestamp, time)}</p>
+        <p className='mr-1 text-sm text-gray-500'>{timeAgo}</p>
       </div>
       <h4 className='mt-4 font-semibold'>回答({replies.length})</h4>
       {replies.length > 0 ? (
