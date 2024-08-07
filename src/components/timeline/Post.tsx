@@ -1,9 +1,10 @@
 'use client';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
+import { deleteLike, postLike } from '@/lib/likeRequests';
 import { Tag } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@clerk/nextjs';
-import { MessageCircleReply, MoreVertical, Send } from 'lucide-react';
+import { Heart, MessageCircleReply, MoreVertical, Send } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
@@ -23,6 +24,7 @@ type PostProps = {
   postId: string;
   avatar: string;
   introduction?: string;
+  likes: { author: { name: string; clerkId: string; id: string } }[];
 };
 
 type ReplyFormData = {
@@ -41,6 +43,7 @@ export const Post: React.FC<PostProps> = ({
   postId,
   avatar,
   introduction,
+  likes,
 }) => {
   const { mutate } = useSWRConfig();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -52,6 +55,7 @@ export const Post: React.FC<PostProps> = ({
   const replyContentRef = useRef<HTMLDivElement>(null);
   const { userId } = useAuth();
   const timeAgo = useRelativeTime(timestamp);
+  const [isLiked, setIsLiked] = useState(false);
 
   const {
     register,
@@ -64,6 +68,7 @@ export const Post: React.FC<PostProps> = ({
   const replyContent = watch('content');
 
   useEffect(() => {
+    setIsLiked(likes.some((like) => like.author.clerkId === userId));
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
@@ -104,10 +109,15 @@ export const Post: React.FC<PostProps> = ({
     setIsReplyDrawerOpen(!isReplyDrawerOpen);
   };
 
+  const handleLike = async () => {
+    setIsLiked(!isLiked);
+    isLiked ? await deleteLike(postId) : await postLike(postId);
+  };
+
   const onSubmit = (data: ReplyFormData) => {
-    console.log(data); // ここでAPIを呼び出す代わりに、データをコンソールに出力
-    reset(); // フォームをリセット
-    setIsReplyDrawerOpen(false); // リプライ送信後にドロワーを閉じる
+    console.log(data);
+    reset();
+    setIsReplyDrawerOpen(false);
   };
 
   return (
@@ -166,17 +176,22 @@ export const Post: React.FC<PostProps> = ({
           ))}
       </div>
       <div className='relative mt-6 flex w-full items-center justify-between'>
-        <button
-          onClick={handleReplyDrawerToggle}
-          className='flex items-center justify-center rounded-full bg-blue-400 px-4 py-2 text-white transition-all hover:bg-blue-600 hover:shadow-lg'
-        >
-          <MessageCircleReply size={20} />
-        </button>
+        <div className='flex items-center justify-center gap-2'>
+          <button
+            onClick={handleReplyDrawerToggle}
+            className='flex items-center justify-center rounded-full bg-blue-400 px-4 py-2 text-white transition-all hover:bg-blue-600 hover:shadow-lg'
+          >
+            <MessageCircleReply size={20} />
+          </button>
+          <button onClick={handleLike}>
+            <Heart size={20} color={'#dc143c'} fill={isLiked ? '#dc143c' : 'white'} />
+          </button>
+        </div>
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           className='text-gray-500 hover:text-gray-700'
         >
-          <MoreVertical size={20} />
+          <MoreVertical size={20} fill='red' />
         </button>
         {isDropdownOpen && <KebabMenu currentClerkId={userId} postClerkId={clerkId} />}
       </div>
