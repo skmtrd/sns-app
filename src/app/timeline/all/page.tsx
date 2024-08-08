@@ -48,7 +48,7 @@ const TimelineAll = () => {
       <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>
         {data.map((post, index) => (
           <Post
-            key={index}
+            key={post.id}
             username={post.author.name}
             clerkId={post.author.clerkId}
             id={post.author.id}

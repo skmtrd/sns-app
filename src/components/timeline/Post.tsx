@@ -56,7 +56,7 @@ export const Post: React.FC<PostProps> = ({
   const { userId } = useAuth();
   const timeAgo = useRelativeTime(timestamp);
   const [isLiked, setIsLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(likes.length);
+  const [likesCount, setLikesCount] = useState(0);
 
   const {
     register,
@@ -69,6 +69,7 @@ export const Post: React.FC<PostProps> = ({
   const replyContent = watch('content');
 
   useEffect(() => {
+    setLikesCount(likes.length);
     setIsLiked(likes.some((like) => like.author.clerkId === userId));
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -92,7 +93,7 @@ export const Post: React.FC<PostProps> = ({
   }, [isReplyDrawerOpen]);
 
   const deletePost = async (id: string) => {
-    const toDelete = `http://localhost:3000/api/post/${id}`;
+    const toDelete = `/api/post/${id}`;
     try {
       const res = await fetch(toDelete, {
         method: 'DELETE',
@@ -122,7 +123,6 @@ export const Post: React.FC<PostProps> = ({
     reset();
     setIsReplyDrawerOpen(false);
   };
-
   return (
     <div className='relative w-11/12 rounded-lg bg-white p-4 shadow'>
       <div className='mb-2 flex items-center justify-start'>
