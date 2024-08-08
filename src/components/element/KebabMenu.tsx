@@ -1,4 +1,5 @@
-import { Share, Trash } from 'lucide-react';
+import { Trash } from 'lucide-react';
+import { SharePost } from '../timeline/SharePost';
 
 type KebabMenuProps = {
   currentClerkId: string | null | undefined;
@@ -27,10 +28,7 @@ const KebabMenu: React.FC<KebabMenuProps> = ({
             削除
           </button>
         )}
-        <button className='flex w-full items-center justify-start px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100'>
-          <Share size={16} className='mr-2 inline-block' />
-          共有
-        </button>
+        <SharePost postId={postId} />
       </div>
     </div>
   );
