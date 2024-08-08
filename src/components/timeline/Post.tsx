@@ -101,6 +101,7 @@ export const Post: React.FC<PostProps> = ({
         },
       });
       mutate('/api/post');
+      setIsDropdownOpen(false);
     } catch (error) {
       console.error(error);
     }
@@ -196,7 +197,14 @@ export const Post: React.FC<PostProps> = ({
         >
           <MoreVertical size={20} fill='red' />
         </button>
-        {isDropdownOpen && <KebabMenu currentClerkId={userId} postClerkId={clerkId} />}
+        {isDropdownOpen && (
+          <KebabMenu
+            currentClerkId={userId}
+            postClerkId={clerkId}
+            postId={postId}
+            handleDelete={deletePost}
+          />
+        )}
       </div>
 
       <div
