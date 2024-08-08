@@ -39,6 +39,7 @@ export const DELETE = async (req: Request, res: NextResponse) =>
     dbConnect();
 
     //clerkId
+
     const { userId } = auth();
 
     //Userテーブルのid(sns上でのID)

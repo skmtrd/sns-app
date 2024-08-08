@@ -19,6 +19,9 @@ export const postSchema = z
     id: z.string(),
     content: z.string(),
     avatar: z.string(),
+    likes: z.array(
+      z.object({ author: z.object({ name: z.string(), clerkId: z.string(), id: z.string() }) }),
+    ),
   })
   .array();
 
@@ -45,7 +48,7 @@ const TimelineAll = () => {
       <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>
         {data.map((post, index) => (
           <Post
-            key={index}
+            key={post.id}
             username={post.author.name}
             clerkId={post.author.clerkId}
             id={post.author.id}
@@ -55,6 +58,7 @@ const TimelineAll = () => {
             introduction={post.author.introduction}
             postId={post.id}
             avatar={post.avatar}
+            likes={post.likes}
           />
         ))}
       </div>

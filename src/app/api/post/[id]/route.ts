@@ -9,6 +9,7 @@ export const DELETE = async (req: Request, res: NextResponse) =>
     dbConnect();
     const postId = req.url.split('/post/')[1];
 
+    const deletedLikes = await prisma.like.deleteMany({ where: { postId } });
     const deletedPost = await prisma.post.delete({ where: { id: postId } });
     return NextResponse.json<apiRes>({ message: 'success', data: deletedPost }, { status: 200 });
   });

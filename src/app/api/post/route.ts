@@ -17,7 +17,11 @@ export const GET = async (req: Request, res: NextResponse) =>
             // 作者のタグ情報を含める
           },
         },
-        likes: true,
+        likes: {
+          include: {
+            author: true,
+          },
+        },
       },
       orderBy: { createdAt: 'desc' },
     });
