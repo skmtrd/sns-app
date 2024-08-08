@@ -1,31 +1,39 @@
 'use client';
 import { cn } from '@/lib/utils';
 import { X } from 'lucide-react';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { useSWRConfig } from 'swr';
 
 type AddPostProps = {
   closeModal: () => void;
 };
 
+type FormInputs = {
+  content: string;
+};
+
 const MAX_CONTENT_LENGTH = 500;
 
 export const AddPost: React.FC<AddPostProps> = ({ closeModal }) => {
   const { mutate } = useSWRConfig();
-  const [authorName, setAuthorName] = useState('');
-  const [content, setContent] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const textAriaRef = useRef<HTMLTextAreaElement>(null);
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors, isSubmitting },
+    setError,
+    clearErrors,
+  } = useForm<FormInputs>();
 
-  const handleSubmit = async () => {
-    setLoading(true);
-    setError('');
+  const content = watch('content');
+
+  const onSubmit: SubmitHandler<FormInputs> = async (data) => {
+    clearErrors();
 
     const newPost = {
-      author: { name: authorName },
       createdAt: new Date().toISOString(),
-      content,
+      content: data.content,
     };
 
     try {
@@ -42,20 +50,19 @@ export const AddPost: React.FC<AddPostProps> = ({ closeModal }) => {
       }
 
       mutate('/api/post');
-      setAuthorName('');
-      setContent('');
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
       closeModal();
+    } catch (err: any) {
+      setError('root', {
+        type: 'manual',
+        message: err.message,
+      });
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && e.ctrlKey) {
       e.preventDefault();
-      handleSubmit();
+      handleSubmit(onSubmit)();
     }
     if (e.key === 'Escape') {
       e.preventDefault();
@@ -64,7 +71,8 @@ export const AddPost: React.FC<AddPostProps> = ({ closeModal }) => {
   };
 
   useEffect(() => {
-    textAriaRef.current?.focus();
+    const textArea = document.getElementById('content');
+    textArea?.focus();
   }, []);
 
   return (
@@ -77,7 +85,7 @@ export const AddPost: React.FC<AddPostProps> = ({ closeModal }) => {
       >
         <div className='flex items-center justify-between border-b p-4'>
           <h2 id='modal-title' className='text-lg font-semibold'>
-            新規投稿
+            ポストする
           </h2>
           <button
             onClick={closeModal}
@@ -88,42 +96,45 @@ export const AddPost: React.FC<AddPostProps> = ({ closeModal }) => {
           </button>
         </div>
         <div className='w-full p-4'>
-          <form
-            className='flex flex-col gap-4'
-            onSubmit={async (e: React.FormEvent) => {
-              e.preventDefault();
-              handleSubmit();
-            }}
-          >
+          <form className='flex flex-col gap-4' onSubmit={handleSubmit(onSubmit)}>
             <textarea
+              id='content'
+              {...register('content', {
+                required: '内容を入力してください',
+                maxLength: {
+                  value: MAX_CONTENT_LENGTH,
+                  message: `${MAX_CONTENT_LENGTH}文字以内で入力してください`,
+                },
+              })}
               placeholder='内容を入力してください'
-              value={content}
-              rows={10}
-              onChange={(e) => setContent(e.target.value)}
-              onKeyDown={handleKeyDown}
               maxLength={MAX_CONTENT_LENGTH}
+              rows={10}
+              onKeyDown={handleKeyDown}
               className='w-full rounded-md border p-2 outline-none'
-              ref={textAriaRef}
-              required
+              aria-invalid={errors.content ? 'true' : 'false'}
             />
             <div className='flex w-full justify-end'>
               <p
-                className={`${content.length === MAX_CONTENT_LENGTH ? 'text-red-500' : 'text-gray-400'}`}
+                className={cn(
+                  'text-sm',
+                  content?.length === MAX_CONTENT_LENGTH ? 'text-red-500' : 'text-gray-400',
+                )}
               >
-                {content.length} / {MAX_CONTENT_LENGTH}
+                {content?.length || 0} / {MAX_CONTENT_LENGTH}
               </p>
             </div>
+            {errors.content && <p className='text-red-500'>{errors.content.message}</p>}
             <button
               type='submit'
               className={cn(
                 'rounded-md bg-blue-500 py-2 text-white',
-                (loading || !content) && 'opacity-50',
+                (isSubmitting || !content) && 'opacity-50',
               )}
-              disabled={loading || content.length < 1}
+              disabled={isSubmitting || !content}
             >
-              {loading ? '投稿中...' : '投稿する'}
+              {isSubmitting ? '投稿中...' : '投稿する'}
             </button>
-            {error && <p className='text-red-500'>{error}</p>}
+            {errors.root && <p className='text-red-500'>{errors.root.message}</p>}
           </form>
         </div>
       </div>

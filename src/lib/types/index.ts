@@ -14,3 +14,9 @@ export type Tag = {
   id: string;
   name: string;
 };
+
+export type Reply = {
+  id: string;
+  content: string;
+  author: { name: string };
+};
