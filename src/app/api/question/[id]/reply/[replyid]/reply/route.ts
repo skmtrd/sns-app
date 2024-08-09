@@ -3,6 +3,7 @@ import { handleAPIError } from '@/app/api/lib/handleAPIError';
 import prisma from '@/app/api/lib/prisma';
 import { findSpecificUser } from '@/app/api/lib/user/findSpecificUser';
 import { apiRes } from '@/app/api/types';
+import { auth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
 export const POST = async (req: Request, res: NextResponse) =>
@@ -14,7 +15,7 @@ export const POST = async (req: Request, res: NextResponse) =>
 
     const { content, parentReplyId } = await req.json();
 
-    const userId = 'user_2kAm1CqUROhV77wXS43Td3lI3NN';
+    const { userId } = auth();
 
     if (!userId) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });

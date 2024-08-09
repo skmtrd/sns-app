@@ -1,3 +1,4 @@
+import { auth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { dbConnect } from '../lib/dbConnect';
 import { handleAPIError } from '../lib/handleAPIError';
@@ -35,7 +36,7 @@ export const POST = async (req: Request, res: NextResponse) =>
 
     const { title, description } = await req.json();
 
-    const userId = 'user_2kAm1CqUROhV77wXS43Td3lI3NN';
+    const { userId } = auth();
 
     if (!userId) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
