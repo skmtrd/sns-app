@@ -143,18 +143,19 @@ export const Post: React.FC<PostProps> = ({
     setIsReplyDrawerOpen(false);
     reset();
   };
+
   return (
     <div
       onClick={() => router.push(`/posts/${postId}`)}
-      className='z-0 w-11/12 rounded-lg bg-white p-4 shadow hover:bg-slate-100'
+      className='w-11/12 rounded-lg bg-white p-4 shadow hover:bg-gray-50'
     >
-      <div className='z-10 mb-2 flex items-center justify-start'>
+      <div className='mb-2 flex items-center justify-start'>
         <div
           className='relative'
           onMouseEnter={() => setShowProfilePreview(true)}
           onMouseLeave={() => setShowProfilePreview(false)}
         >
-          <Link href={`/profile/${clerkId}`}>
+          <Link href={`/profile/${clerkId}`} onClick={(e) => e.stopPropagation()}>
             <Image
               src={avatar}
               alt={username}
@@ -164,10 +165,10 @@ export const Post: React.FC<PostProps> = ({
             />
           </Link>
         </div>
-        <div className='z-10 ml-2 w-full'>
+        <div className='ml-2 w-full'>
           <div className='flex w-full items-center justify-between'>
             <div className='relative'>
-              <Link href={`/profile/${clerkId}`}>
+              <Link href={`/profile/${clerkId}`} onClick={(e) => e.stopPropagation()}>
                 <div className='inline-block rounded-md hover:bg-gray-100'>
                   <h3 className='px-1 py-0.5 font-bold transition-colors duration-100 hover:text-blue-600'>
                     {username}
@@ -190,33 +191,44 @@ export const Post: React.FC<PostProps> = ({
           <p className='px-1 py-0.5 text-xs text-gray-500'>@{id}</p>
         </div>
       </div>
-      <div className='z-10 mb-4'>
+      <div className='mb-4'>
         <div className='mb-2 ml-1 w-full break-words'>{content}</div>
       </div>
-      <div className='z-10 flex flex-wrap gap-2'>
+      <div className='flex flex-wrap gap-2'>
         {tags &&
           tags.map((tag) => (
-            <Link key={tag.id} href={`/timeline/${tag.id}`}>
+            <Link key={tag.id} href={`/timeline/${tag.id}`} onClick={(e) => e.stopPropagation()}>
               <UserTag tagName={tag.name} />
             </Link>
           ))}
       </div>
-      <div className='relative z-10 mt-6 flex w-full items-center justify-between'>
+      <div className='relative mt-6 flex w-full items-center justify-between'>
         <div className='flex items-center justify-center gap-2'>
           <button
-            onClick={handleReplyDrawerToggle}
+            onClick={(e) => {
+              e.stopPropagation(); // 親要素のクリックを防ぐ
+              handleReplyDrawerToggle();
+            }}
             className='flex items-center justify-center rounded-full bg-blue-400 px-4 py-2 text-white transition-all hover:bg-blue-600 hover:shadow-lg'
           >
             <MessageCircleReply size={20} />
             <span className='ml-1'>{replies.length}</span>
           </button>
-          <button onClick={handleLike}>
+          <button
+            onClick={(e) => {
+              e.stopPropagation(); // 親要素のクリックを防ぐ
+              handleLike();
+            }}
+          >
             <Heart size={20} color={'#dc143c'} fill={isLiked ? '#dc143c' : 'white'} />
           </button>
           <span>{likesCount}</span>
         </div>
         <button
-          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          onClick={(e) => {
+            e.stopPropagation(); // 親要素のクリックを防ぐ
+            setIsDropdownOpen(!isDropdownOpen);
+          }}
           className='text-gray-500 hover:text-gray-700'
         >
           <MoreVertical size={20} fill='red' />
@@ -233,7 +245,7 @@ export const Post: React.FC<PostProps> = ({
 
       <div
         ref={replyContentRef}
-        className='z-10 overflow-hidden transition-all duration-500 ease-in-out'
+        className='overflow-hidden transition-all duration-500 ease-in-out'
         style={{ height: isReplyDrawerOpen ? `${replyContentHeight}px` : '0' }}
       >
         <form onSubmit={handleSubmit(onSubmit)} className='mt-4'>
@@ -244,6 +256,7 @@ export const Post: React.FC<PostProps> = ({
             rows={4}
             maxLength={REPLY_MAX_LENGTH}
             placeholder='リプライを入力してください'
+            onClick={(e) => e.stopPropagation()} // 親要素のクリックを防ぐ
           />
           <div className='flex justify-end'>
             <p
@@ -260,6 +273,7 @@ export const Post: React.FC<PostProps> = ({
           <div className='mb-4 mt-3 text-right'>
             <button
               type='submit'
+              onClick={(e) => e.stopPropagation()} // 親要素のクリックを防ぐ
               className='inline-flex items-center justify-center rounded-full bg-blue-500 px-4 py-2 text-white transition-all hover:bg-blue-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2'
             >
               <Send size={20} />
