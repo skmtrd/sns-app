@@ -14,10 +14,14 @@ export const GET = async (req: Request, res: NextResponse) =>
         author: {
           include: {
             tags: true,
-            // 作者のタグ情報を含める
           },
         },
         likes: {
+          include: {
+            author: true,
+          },
+        },
+        replies: {
           include: {
             author: true,
           },

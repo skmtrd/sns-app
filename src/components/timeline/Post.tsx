@@ -1,7 +1,7 @@
 'use client';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
 import { deleteLike, postLike } from '@/lib/likeRequests';
-import { Tag } from '@/lib/types';
+import { Reply, Tag } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@clerk/nextjs';
 import { Heart, MessageCircleReply, MoreVertical, Send } from 'lucide-react';
@@ -25,6 +25,7 @@ type PostProps = {
   avatar: string;
   introduction?: string;
   likes: { author: { name: string; clerkId: string; id: string } }[];
+  replies: Reply[];
 };
 
 type ReplyFormData = {
@@ -44,6 +45,7 @@ export const Post: React.FC<PostProps> = ({
   avatar,
   introduction,
   likes,
+  replies,
 }) => {
   const { mutate } = useSWRConfig();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -109,6 +111,9 @@ export const Post: React.FC<PostProps> = ({
   };
 
   const handleReplyDrawerToggle = () => {
+    setTimeout(() => {
+      document.getElementById(postId)?.focus();
+    }, 400);
     setIsReplyDrawerOpen(!isReplyDrawerOpen);
   };
 
@@ -119,9 +124,22 @@ export const Post: React.FC<PostProps> = ({
   };
 
   const onSubmit = (data: ReplyFormData) => {
-    console.log(data);
-    reset();
+    const newReply = {
+      content: data.content,
+      postId,
+    };
+
+    fetch(`/api/post/${postId}/reply`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newReply),
+    });
+    console.log(data.content);
+    mutate('/api/post');
     setIsReplyDrawerOpen(false);
+    reset();
   };
   return (
     <div className='relative w-11/12 rounded-lg bg-white p-4 shadow'>
@@ -185,6 +203,7 @@ export const Post: React.FC<PostProps> = ({
             className='flex items-center justify-center rounded-full bg-blue-400 px-4 py-2 text-white transition-all hover:bg-blue-600 hover:shadow-lg'
           >
             <MessageCircleReply size={20} />
+            <span className='ml-1'>{replies.length}</span>
           </button>
           <button onClick={handleLike}>
             <Heart size={20} color={'#dc143c'} fill={isLiked ? '#dc143c' : 'white'} />
@@ -214,6 +233,7 @@ export const Post: React.FC<PostProps> = ({
       >
         <form onSubmit={handleSubmit(onSubmit)} className='mt-4'>
           <textarea
+            id={postId}
             {...register('content', { required: 'リプライを入力してください' })}
             className='w-full rounded-lg border p-3 focus:border-blue-500 focus:outline-none'
             rows={4}

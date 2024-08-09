@@ -22,6 +22,13 @@ export const postSchema = z
     likes: z.array(
       z.object({ author: z.object({ name: z.string(), clerkId: z.string(), id: z.string() }) }),
     ),
+    replies: z.array(
+      z.object({
+        id: z.string(),
+        content: z.string(),
+        author: z.object({ name: z.string(), id: z.string(), clerkId: z.string() }),
+      }),
+    ),
   })
   .array();
 
@@ -59,6 +66,7 @@ const TimelineAll = () => {
             postId={post.id}
             avatar={post.avatar}
             likes={post.likes}
+            replies={post.replies}
           />
         ))}
       </div>
