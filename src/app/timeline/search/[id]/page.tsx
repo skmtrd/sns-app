@@ -23,12 +23,19 @@ export const postSchema = z
     likes: z.array(
       z.object({ author: z.object({ name: z.string(), clerkId: z.string(), id: z.string() }) }),
     ),
+    replies: z.array(
+      z.object({
+        id: z.string(),
+        content: z.string(),
+        author: z.object({ name: z.string(), id: z.string(), clerkId: z.string() }),
+      }),
+    ),
   })
   .array();
 
 const TimelineAll = () => {
   const pathName = usePathname();
-  const searchInput = pathName.split('/searchInput/')[1];
+  const searchedWord = decodeURIComponent(pathName.split('/search/')[1]);
   const { data, error, isLoading } = useData('/api/post', postSchema);
 
   if (error) {
@@ -45,11 +52,11 @@ const TimelineAll = () => {
   }
 
   const posts = data;
-  const filteredPosts = posts.filter((post) => post.content.includes(searchInput));
+  const filteredPosts = posts.filter((post) => post.content.includes(searchedWord));
 
   return (
     <div className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'>
-      <FixedHeader title={'タイムライン'} target={searchInput} />
+      <FixedHeader title={'検索'} target={searchedWord} />
       <Header title={''} />
       <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>
         {filteredPosts.map((post, index) => (
@@ -64,6 +71,7 @@ const TimelineAll = () => {
             postId={post.id}
             avatar={post.avatar}
             likes={post.likes}
+            replies={post.replies}
           />
         ))}
       </div>

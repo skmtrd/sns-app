@@ -5,7 +5,7 @@ import { useState } from 'react';
 const RightSideBar = () => {
   const [searchInput, setSearchInput] = useState('');
   const router = useRouter();
-  const keyHandler = (event: React.KeyboardEvent) => {
+  const handleKeyInput = (event: React.KeyboardEvent) => {
     const key = event.key;
     console.log(searchInput);
     if (key === 'Enter') {
@@ -21,7 +21,7 @@ const RightSideBar = () => {
           placeholder='検索'
           value={searchInput}
           onChange={(e) => setSearchInput(e.currentTarget.value)}
-          onKeyDown={keyHandler}
+          onKeyDown={handleKeyInput}
         ></input>
       </div>
     </div>
