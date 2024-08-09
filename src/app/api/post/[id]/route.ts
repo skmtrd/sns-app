@@ -36,23 +36,28 @@ export const GET = async (req: Request, res: NextResponse) =>
         },
         replies: {
           include: {
-            author: true,
+            author: {
+              include: {
+                tags: true,
+              },
+            },
           },
         },
       },
     });
-    // const postsWithAvatar = await Promise.all(
-    //   post.map(async (post) => {
-    //     return {
-    //       ...post,
-    //       avatar: (await clerkClient().users.getUser(post.author.clerkId)).imageUrl,
-    //     };
-    //   }),
-    // );
 
-    const postWithAvatar = await {
+    const postAvatar = await (await clerkClient().users.getUser(post.author.clerkId)).imageUrl;
+
+    const postWithAvatar = {
       ...post,
-      avatar: (await clerkClient().users.getUser(post.author.clerkId)).imageUrl,
+      avatar: postAvatar,
+      replies: await Promise.all(
+        post.replies.map(async (reply) => ({
+          ...reply,
+          avatar: (await clerkClient().users.getUser(reply.author.clerkId)).imageUrl,
+        })),
+      ),
     };
+
     return NextResponse.json<apiRes>({ message: 'success', data: postWithAvatar }, { status: 200 });
   });

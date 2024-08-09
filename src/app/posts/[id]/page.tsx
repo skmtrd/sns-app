@@ -2,6 +2,7 @@
 import Header from '@/components/element/Header';
 import FixedHeader from '@/components/layout/FixedHeader';
 import { Post } from '@/components/timeline/Post';
+import PostReply from '@/components/timeline/PostReply';
 import useData from '@/hooks/useData';
 import { LoaderCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
@@ -18,7 +19,7 @@ const postSchema = z.object({
     name: z.string(),
     clerkId: z.string(),
     introduction: z.string().optional(),
-    tags: z.array(z.object({ id: z.string(), name: z.string() })),
+    tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(), // tagsをオプションにする
   }),
   likes: z.array(
     z.object({
@@ -29,7 +30,14 @@ const postSchema = z.object({
     z.object({
       id: z.string(),
       content: z.string(),
-      author: z.object({ id: z.string(), name: z.string(), clerkId: z.string() }),
+      createdAt: z.string(),
+      avatar: z.string(),
+      author: z.object({
+        id: z.string(),
+        name: z.string(),
+        clerkId: z.string(),
+        tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(), // tagsをオプションにする
+      }),
     }),
   ),
 });
@@ -51,7 +59,6 @@ const TimelineAll = () => {
     );
   }
 
-  // データが配列でない場合の処理
   const postData = Array.isArray(data) ? data[0] : data;
 
   if (!postData) {
@@ -60,7 +67,7 @@ const TimelineAll = () => {
 
   return (
     <div className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'>
-      <FixedHeader title={'タイムライン'} target={'すべて'} />
+      <FixedHeader title={'タイムライン'} target={''} />
       <Header title={''} />
       <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>
         <Post
@@ -77,6 +84,20 @@ const TimelineAll = () => {
           likes={postData.likes}
           replies={postData.replies}
         />
+        {postData.replies.map((reply) => (
+          <PostReply
+            key={reply.id}
+            username={reply.author.name}
+            clerkId={reply.author.clerkId}
+            id={reply.author.id}
+            timestamp={reply.createdAt}
+            content={reply.content}
+            avatar={reply.avatar}
+            likes={reply.likes}
+            tags={reply.author.tags}
+            postId={reply.id}
+          />
+        ))}
       </div>
     </div>
   );

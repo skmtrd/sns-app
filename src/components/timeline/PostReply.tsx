@@ -1,10 +1,9 @@
 'use client';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
-import { deleteLike, postLike } from '@/lib/likeRequests';
-import { Reply, Tag } from '@/lib/types';
+import { Tag } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@clerk/nextjs';
-import { Heart, MessageCircleReply, MoreVertical, Send } from 'lucide-react';
+import { MessageCircleReply, MoreVertical, Send } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -26,7 +25,6 @@ type PostProps = {
   avatar: string;
   introduction?: string;
   likes: { author: { name: string; clerkId: string; id: string } }[];
-  replies: Reply[];
 };
 
 type ReplyFormData = {
@@ -35,7 +33,7 @@ type ReplyFormData = {
 
 const REPLY_MAX_LENGTH = 500;
 
-export const Post: React.FC<PostProps> = ({
+export const PostReply: React.FC<PostProps> = ({
   username,
   timestamp,
   clerkId,
@@ -46,7 +44,6 @@ export const Post: React.FC<PostProps> = ({
   avatar,
   introduction,
   likes,
-  replies,
 }) => {
   const router = useRouter();
   const { mutate } = useSWRConfig();
@@ -59,8 +56,8 @@ export const Post: React.FC<PostProps> = ({
   const replyContentRef = useRef<HTMLDivElement>(null);
   const { userId } = useAuth();
   const timeAgo = useRelativeTime(timestamp);
-  const [isLiked, setIsLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(0);
+  //   const [isLiked, setIsLiked] = useState(false);
+  //   const [likesCount, setLikesCount] = useState(0);
 
   const {
     register,
@@ -73,8 +70,8 @@ export const Post: React.FC<PostProps> = ({
   const replyContent = watch('content');
 
   useEffect(() => {
-    setLikesCount(likes.length);
-    setIsLiked(likes.some((like) => like.author.clerkId === userId));
+    // setLikesCount(likes.length);
+    // setIsLiked(likes.some((like) => like.author.clerkId === userId));
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
@@ -119,11 +116,11 @@ export const Post: React.FC<PostProps> = ({
     setIsReplyDrawerOpen(!isReplyDrawerOpen);
   };
 
-  const handleLike = async () => {
-    setIsLiked(!isLiked);
-    isLiked ? await deleteLike(postId) : await postLike(postId);
-    isLiked ? setLikesCount(likesCount - 1) : setLikesCount(likesCount + 1);
-  };
+  //   const handleLike = async () => {
+  //     setIsLiked(!isLiked);
+  //     isLiked ? await deleteLike(postId) : await postLike(postId);
+  //     isLiked ? setLikesCount(likesCount - 1) : setLikesCount(likesCount + 1);
+  //   };
 
   const onSubmit = (data: ReplyFormData) => {
     const newReply = {
@@ -143,12 +140,13 @@ export const Post: React.FC<PostProps> = ({
     setIsReplyDrawerOpen(false);
     reset();
   };
+  console.log(tags);
   return (
     <div
       onClick={() => router.push(`/posts/${postId}`)}
-      className='z-0 w-11/12 rounded-lg bg-white p-4 shadow hover:bg-slate-100'
+      className='relative w-11/12 rounded-lg bg-white p-4 shadow hover:bg-slate-100'
     >
-      <div className='z-10 mb-2 flex items-center justify-start'>
+      <div className='mb-2 flex items-center justify-start'>
         <div
           className='relative'
           onMouseEnter={() => setShowProfilePreview(true)}
@@ -164,7 +162,7 @@ export const Post: React.FC<PostProps> = ({
             />
           </Link>
         </div>
-        <div className='z-10 ml-2 w-full'>
+        <div className='ml-2 w-full'>
           <div className='flex w-full items-center justify-between'>
             <div className='relative'>
               <Link href={`/profile/${clerkId}`}>
@@ -190,10 +188,10 @@ export const Post: React.FC<PostProps> = ({
           <p className='px-1 py-0.5 text-xs text-gray-500'>@{id}</p>
         </div>
       </div>
-      <div className='z-10 mb-4'>
+      <div className='mb-4'>
         <div className='mb-2 ml-1 w-full break-words'>{content}</div>
       </div>
-      <div className='z-10 flex flex-wrap gap-2'>
+      <div className='flex flex-wrap gap-2'>
         {tags &&
           tags.map((tag) => (
             <Link key={tag.id} href={`/timeline/${tag.id}`}>
@@ -201,19 +199,19 @@ export const Post: React.FC<PostProps> = ({
             </Link>
           ))}
       </div>
-      <div className='relative z-10 mt-6 flex w-full items-center justify-between'>
+      <div className='relative mt-6 flex w-full items-center justify-between'>
         <div className='flex items-center justify-center gap-2'>
           <button
             onClick={handleReplyDrawerToggle}
             className='flex items-center justify-center rounded-full bg-blue-400 px-4 py-2 text-white transition-all hover:bg-blue-600 hover:shadow-lg'
           >
             <MessageCircleReply size={20} />
-            <span className='ml-1'>{replies.length}</span>
+            {/* <span className='ml-1'>{replies.length}</span> */}
           </button>
-          <button onClick={handleLike}>
+          {/* <button onClick={handleLike}>
             <Heart size={20} color={'#dc143c'} fill={isLiked ? '#dc143c' : 'white'} />
           </button>
-          <span>{likesCount}</span>
+          <span>{likesCount}</span> */}
         </div>
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -233,7 +231,7 @@ export const Post: React.FC<PostProps> = ({
 
       <div
         ref={replyContentRef}
-        className='z-10 overflow-hidden transition-all duration-500 ease-in-out'
+        className='overflow-hidden transition-all duration-500 ease-in-out'
         style={{ height: isReplyDrawerOpen ? `${replyContentHeight}px` : '0' }}
       >
         <form onSubmit={handleSubmit(onSubmit)} className='mt-4'>
@@ -270,3 +268,5 @@ export const Post: React.FC<PostProps> = ({
     </div>
   );
 };
+
+export default PostReply;
