@@ -58,17 +58,6 @@ export async function POST(req: Request) {
         },
       });
 
-      // await fetch('/api/tag', {
-      //   method: 'PUT',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({
-      //     tagNames: [`${entranceYear}期生`],
-      //     clerkId: id,
-      //   }),
-      // });
-
       console.log(`User created: ${newUser.id}`);
       return new Response(JSON.stringify({ success: true, userId: newUser.id }), {
         status: 201,
