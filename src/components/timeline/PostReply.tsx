@@ -1,10 +1,9 @@
 'use client';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
-import { deleteLike, postLike } from '@/lib/likeRequests';
-import { Reply, Tag } from '@/lib/types';
+import { Tag } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@clerk/nextjs';
-import { Heart, MessageCircleReply, MoreVertical, Send } from 'lucide-react';
+import { MessageCircleReply, MoreVertical, Send } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -26,7 +25,6 @@ type PostProps = {
   avatar: string;
   introduction?: string;
   likes: { author: { name: string; clerkId: string; id: string } }[];
-  replies: Reply[];
 };
 
 type ReplyFormData = {
@@ -35,7 +33,7 @@ type ReplyFormData = {
 
 const REPLY_MAX_LENGTH = 500;
 
-export const Post: React.FC<PostProps> = ({
+export const PostReply: React.FC<PostProps> = ({
   username,
   timestamp,
   clerkId,
@@ -46,7 +44,6 @@ export const Post: React.FC<PostProps> = ({
   avatar,
   introduction,
   likes,
-  replies,
 }) => {
   const router = useRouter();
   const { mutate } = useSWRConfig();
@@ -59,8 +56,8 @@ export const Post: React.FC<PostProps> = ({
   const replyContentRef = useRef<HTMLDivElement>(null);
   const { userId } = useAuth();
   const timeAgo = useRelativeTime(timestamp);
-  const [isLiked, setIsLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(0);
+  //   const [isLiked, setIsLiked] = useState(false);
+  //   const [likesCount, setLikesCount] = useState(0);
 
   const {
     register,
@@ -73,8 +70,8 @@ export const Post: React.FC<PostProps> = ({
   const replyContent = watch('content');
 
   useEffect(() => {
-    setLikesCount(likes?.length);
-    setIsLiked(likes?.some((like) => like.author.clerkId === userId));
+    // setLikesCount(likes.length);
+    // setIsLiked(likes.some((like) => like.author.clerkId === userId));
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
@@ -119,11 +116,11 @@ export const Post: React.FC<PostProps> = ({
     setIsReplyDrawerOpen(!isReplyDrawerOpen);
   };
 
-  const handleLike = async () => {
-    setIsLiked(!isLiked);
-    isLiked ? await deleteLike(postId) : await postLike(postId);
-    isLiked ? setLikesCount(likesCount - 1) : setLikesCount(likesCount + 1);
-  };
+  //   const handleLike = async () => {
+  //     setIsLiked(!isLiked);
+  //     isLiked ? await deleteLike(postId) : await postLike(postId);
+  //     isLiked ? setLikesCount(likesCount - 1) : setLikesCount(likesCount + 1);
+  //   };
 
   const onSubmit = (data: ReplyFormData) => {
     const newReply = {
@@ -143,11 +140,11 @@ export const Post: React.FC<PostProps> = ({
     setIsReplyDrawerOpen(false);
     reset();
   };
-
+  console.log(tags);
   return (
     <div
       onClick={() => router.push(`/posts/${postId}`)}
-      className='w-11/12 rounded-lg bg-white p-4 shadow hover:bg-gray-50'
+      className='relative w-11/12 rounded-lg bg-white p-4 shadow hover:bg-slate-100'
     >
       <div className='mb-2 flex items-center justify-start'>
         <div
@@ -155,7 +152,7 @@ export const Post: React.FC<PostProps> = ({
           onMouseEnter={() => setShowProfilePreview(true)}
           onMouseLeave={() => setShowProfilePreview(false)}
         >
-          <Link href={`/profile/${clerkId}`} onClick={(e) => e.stopPropagation()}>
+          <Link href={`/profile/${clerkId}`}>
             <Image
               src={avatar}
               alt={username}
@@ -168,7 +165,7 @@ export const Post: React.FC<PostProps> = ({
         <div className='ml-2 w-full'>
           <div className='flex w-full items-center justify-between'>
             <div className='relative'>
-              <Link href={`/profile/${clerkId}`} onClick={(e) => e.stopPropagation()}>
+              <Link href={`/profile/${clerkId}`}>
                 <div className='inline-block rounded-md hover:bg-gray-100'>
                   <h3 className='px-1 py-0.5 font-bold transition-colors duration-100 hover:text-blue-600'>
                     {username}
@@ -197,7 +194,7 @@ export const Post: React.FC<PostProps> = ({
       <div className='flex flex-wrap gap-2'>
         {tags &&
           tags.map((tag) => (
-            <Link key={tag.id} href={`/timeline/${tag.id}`} onClick={(e) => e.stopPropagation()}>
+            <Link key={tag.id} href={`/timeline/${tag.id}`}>
               <UserTag tagName={tag.name} />
             </Link>
           ))}
@@ -205,30 +202,19 @@ export const Post: React.FC<PostProps> = ({
       <div className='relative mt-6 flex w-full items-center justify-between'>
         <div className='flex items-center justify-center gap-2'>
           <button
-            onClick={(e) => {
-              e.stopPropagation(); // 親要素のクリックを防ぐ
-              handleReplyDrawerToggle();
-            }}
+            onClick={handleReplyDrawerToggle}
             className='flex items-center justify-center rounded-full bg-blue-400 px-4 py-2 text-white transition-all hover:bg-blue-600 hover:shadow-lg'
           >
             <MessageCircleReply size={20} />
-            <span className='ml-1'>{replies.length}</span>
+            {/* <span className='ml-1'>{replies.length}</span> */}
           </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation(); // 親要素のクリックを防ぐ
-              handleLike();
-            }}
-          >
+          {/* <button onClick={handleLike}>
             <Heart size={20} color={'#dc143c'} fill={isLiked ? '#dc143c' : 'white'} />
           </button>
-          <span>{likesCount}</span>
+          <span>{likesCount}</span> */}
         </div>
         <button
-          onClick={(e) => {
-            e.stopPropagation(); // 親要素のクリックを防ぐ
-            setIsDropdownOpen(!isDropdownOpen);
-          }}
+          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           className='text-gray-500 hover:text-gray-700'
         >
           <MoreVertical size={20} fill='red' />
@@ -256,7 +242,6 @@ export const Post: React.FC<PostProps> = ({
             rows={4}
             maxLength={REPLY_MAX_LENGTH}
             placeholder='リプライを入力してください'
-            onClick={(e) => e.stopPropagation()} // 親要素のクリックを防ぐ
           />
           <div className='flex justify-end'>
             <p
@@ -273,7 +258,6 @@ export const Post: React.FC<PostProps> = ({
           <div className='mb-4 mt-3 text-right'>
             <button
               type='submit'
-              onClick={(e) => e.stopPropagation()} // 親要素のクリックを防ぐ
               className='inline-flex items-center justify-center rounded-full bg-blue-500 px-4 py-2 text-white transition-all hover:bg-blue-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2'
             >
               <Send size={20} />
@@ -284,3 +268,5 @@ export const Post: React.FC<PostProps> = ({
     </div>
   );
 };
+
+export default PostReply;

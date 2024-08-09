@@ -1,7 +1,9 @@
+import { auth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { dbConnect } from '../lib/dbConnect';
 import { handleAPIError } from '../lib/handleAPIError';
 import prisma from '../lib/prisma';
+import { findSpecificUser } from '../lib/user/findSpecificUser';
 import { apiRes } from '../types';
 
 export const GET = async (req: Request, res: NextResponse) =>
@@ -34,11 +36,13 @@ export const POST = async (req: Request, res: NextResponse) =>
 
     const { title, description } = await req.json();
 
-    const userId = 'user_2kAm1CqUROhV77wXS43Td3lI3NN';
+    const { userId } = auth();
 
-    const user = await prisma.user.findUniqueOrThrow({
-      where: { clerkId: userId },
-    });
+    if (!userId) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+
+    const user = await findSpecificUser(userId);
 
     const newPost = await prisma.question.create({
       data: {
