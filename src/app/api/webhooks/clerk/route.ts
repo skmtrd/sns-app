@@ -44,6 +44,7 @@ export async function POST(req: Request) {
   if (evt.type === 'user.created') {
     const { id, email_addresses, first_name, last_name } = evt.data;
 
+    const entranceYear = parseInt(email_addresses[0].email_address.slice(5, 7)) - 16;
     try {
       const newUser = await prisma.user.create({
         data: {
@@ -51,8 +52,22 @@ export async function POST(req: Request) {
           email: email_addresses[0].email_address,
           name: `${first_name} ${last_name}`.trim(),
           introduction: '', // 空の文字列で初期化
+          tags: {
+            connect: { id: `iniad${entranceYear.toString()}` },
+          },
         },
       });
+
+      // await fetch('/api/tag', {
+      //   method: 'PUT',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({
+      //     tagNames: [`${entranceYear}期生`],
+      //     clerkId: id,
+      //   }),
+      // });
 
       console.log(`User created: ${newUser.id}`);
       return new Response(JSON.stringify({ success: true, userId: newUser.id }), {
