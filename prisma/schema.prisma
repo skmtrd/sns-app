@@ -22,6 +22,7 @@ model User {
   email     String   @unique
   introduction String @db.Text
   posts     Post[]
+  postReplies PostReply[]
   tags      Tag[]
   likes     Like[]
   assignment Assignment[]
@@ -39,6 +40,21 @@ model Post {
   author    User     @relation(fields: [authorId], references: [id])
   authorId  String
   likes     Like[]
+  replies   PostReply[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PostReply {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    String
+  parentReply     PostReply?  @relation("ParentChildReply", fields: [parentReplyId], references: [id])
+  parentReplyId   String?
+  childReplies    PostReply[] @relation("ParentChildReply")
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -86,7 +102,7 @@ model AssignmentReply {
   parentReplyId   String?
   childReplies    AssignmentReply[] @relation("ParentChildReply")
   author    User     @relation(fields: [authorId], references: [id])
-  authorId  String   @unique
+  authorId  String   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
