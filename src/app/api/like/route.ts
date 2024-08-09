@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { dbConnect } from '../lib/dbConnect';
 import { handleAPIError } from '../lib/handleAPIError';
 import prisma from '../lib/prisma';
+import { findSpecificUser } from '../lib/user/findSpecificUser';
 import { apiRes } from '../types';
 
 export const POST = async (req: Request, res: NextResponse) =>
@@ -13,9 +14,11 @@ export const POST = async (req: Request, res: NextResponse) =>
 
     const { postId } = await req.json();
 
-    const user = await prisma.user.findUniqueOrThrow({
-      where: { clerkId: userId },
-    });
+    if (!userId) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+
+    const user = await findSpecificUser(userId);
 
     const newLike = await prisma.like.create({
       data: {
@@ -38,16 +41,19 @@ export const DELETE = async (req: Request, res: NextResponse) =>
     const { postId } = await req.json();
     dbConnect();
 
+    //clerkId
     const { userId } = auth();
 
-    const { id } = await prisma.user.findUniqueOrThrow({
-      where: { clerkId: userId },
-    });
+    if (!userId) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+
+    const user = await findSpecificUser(userId);
 
     const deleteLike = await prisma.like.delete({
       where: {
         authorId_postId: {
-          authorId: id,
+          authorId: user.id,
           postId: postId,
         },
       },
