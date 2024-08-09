@@ -44,6 +44,7 @@ export async function POST(req: Request) {
   if (evt.type === 'user.created') {
     const { id, email_addresses, first_name, last_name } = evt.data;
 
+    const entranceYear = parseInt(email_addresses[0].email_address.slice(5, 7)) - 16;
     try {
       const newUser = await prisma.user.create({
         data: {
@@ -51,6 +52,9 @@ export async function POST(req: Request) {
           email: email_addresses[0].email_address,
           name: `${first_name} ${last_name}`.trim(),
           introduction: '', // 空の文字列で初期化
+          tags: {
+            connect: { id: `iniad${entranceYear.toString()}` },
+          },
         },
       });
 
