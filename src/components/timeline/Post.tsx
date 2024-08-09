@@ -73,8 +73,8 @@ export const Post: React.FC<PostProps> = ({
   const replyContent = watch('content');
 
   useEffect(() => {
-    setLikesCount(likes.length);
-    setIsLiked(likes.some((like) => like.author.clerkId === userId));
+    setLikesCount(likes?.length);
+    setIsLiked(likes?.some((like) => like.author.clerkId === userId));
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
