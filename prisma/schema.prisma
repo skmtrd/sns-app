@@ -87,7 +87,7 @@ model Assignment {
   deadLine  DateTime 
   replies   AssignmentReply[]
   author    User     @relation(fields: [authorId], references: [id]) 
-  authorId  String   @unique
+  authorId  String   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
