@@ -38,11 +38,8 @@ export const DELETE = async (req: Request, res: NextResponse) =>
     const { postId } = await req.json();
     dbConnect();
 
-    //clerkId
-
     const { userId } = auth();
 
-    //Userテーブルのid(sns上でのID)
     const { id } = await prisma.user.findUniqueOrThrow({
       where: { clerkId: userId },
     });
