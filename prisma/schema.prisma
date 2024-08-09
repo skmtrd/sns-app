@@ -54,7 +54,7 @@ model PostReply {
   parentReplyId   String?
   childReplies    PostReply[] @relation("ParentChildReply")
   author    User     @relation(fields: [authorId], references: [id])
-  authorId  String   @unique
+  authorId  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
