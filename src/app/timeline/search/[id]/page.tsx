@@ -5,6 +5,7 @@ import { Post } from '@/components/timeline/Post';
 import useData from '@/hooks/useData';
 import { LoaderCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import { toHiragana } from 'wanakana';
 import { z } from 'zod';
 
 export const postSchema = z
@@ -36,6 +37,7 @@ export const postSchema = z
 const TimelineAll = () => {
   const pathName = usePathname();
   const searchedWord = decodeURIComponent(pathName.split('/search/')[1]);
+  const hiraganaSearchWord = toHiragana(searchedWord);
   const { data, error, isLoading } = useData('/api/post', postSchema);
 
   if (error) {
@@ -52,7 +54,9 @@ const TimelineAll = () => {
   }
 
   const posts = data;
-  const filteredPosts = posts.filter((post) => post.content.includes(searchedWord));
+  const filteredPosts = posts.filter(
+    (post) => post.content.includes(hiraganaSearchWord) || post.content.includes(searchedWord),
+  );
 
   return (
     <div className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'>
