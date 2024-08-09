@@ -8,9 +8,6 @@ export const POST = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
     dbConnect();
 
-    //がんばれK
-    //成長するんだ
-
     const { content, assignmentId } = await req.json();
 
     const userId = 'user_2kAm1CqUROhV77wXS43Td3lI3NN';

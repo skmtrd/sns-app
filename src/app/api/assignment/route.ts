@@ -34,7 +34,7 @@ export const POST = async (req: Request, res: NextResponse) =>
 
     const { title, description, deadLine } = await req.json();
 
-    const userId = 'testuser';
+    const userId = 'user_2kAm1CqUROhV77wXS43Td3lI3NN';
 
     const user = await prisma.user.findUniqueOrThrow({
       where: { clerkId: userId },
