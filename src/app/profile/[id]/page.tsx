@@ -3,49 +3,25 @@
 import Button from '@/components/element/Button';
 import Header from '@/components/element/Header';
 import UserTag from '@/components/element/UserTag';
-import { UserInfo } from '@/lib/types';
-import { useUser } from '@clerk/nextjs';
+import useData from '@/hooks/useData';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { z } from 'zod';
 
-const API_BASE_URL = 'http://localhost:3000/api';
-
-const fetchUserInfo = async (userId: string): Promise<UserInfo> => {
-  const res = await fetch(`${API_BASE_URL}/profile/${userId}`, {
-    cache: 'no-cache',
-  });
-  if (!res.ok) {
-    throw new Error(`HTTP error! status: ${res.status}`);
-  }
-  const data = await res.json();
-  return data.data;
-};
+const profileSchema = z.object({
+  name: z.string(),
+  id: z.string(),
+  clerkId: z.string(),
+  introduction: z.string().nullable(),
+  avatar: z.string().nullable(),
+  tags: z.array(z.object({ name: z.string(), id: z.string() })),
+});
 
 const ProfilePage = () => {
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const pathname = usePathname();
-  const { user } = useUser();
+  const userId = usePathname().split('/profile/')[1];
 
-  useEffect(() => {
-    const getUserInfo = async () => {
-      try {
-        const userId = pathname.split('/profile/')[1];
-        const userData = await fetchUserInfo(userId);
-        setUserInfo(userData);
-      } catch (error) {
-        console.error('Failed to fetch user info:', error);
-        setError('ユーザー情報の読み込みに失敗しました。');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    getUserInfo();
-  }, [pathname]);
+  const { data, error, isLoading } = useData(`/api/profile/${userId}`, profileSchema);
 
   if (isLoading) {
     return (
@@ -57,7 +33,7 @@ const ProfilePage = () => {
   }
 
   if (error) return <div>{error}</div>;
-  if (!userInfo) return <div>ユーザー情報が見つかりません。</div>;
+  if (!data) return <div>ユーザー情報が見つかりません。</div>;
 
   return (
     <div className='flex flex-1 flex-col overflow-hidden'>
@@ -66,10 +42,10 @@ const ProfilePage = () => {
         <div className='rounded-lg bg-white p-6 shadow sm:p-8'>
           <div className='mb-6 flex flex-col items-center sm:flex-row sm:items-start'>
             <div className='mb-4 sm:mb-0 sm:mr-6'>
-              {userInfo.avatar ? (
+              {data?.avatar ? (
                 <Image
-                  src={userInfo.avatar}
-                  alt={`${userInfo.name}のアバター`}
+                  src={data.avatar}
+                  alt={`${data.name}のアバター`}
                   width={100}
                   height={100}
                   className='rounded-full'
@@ -81,26 +57,27 @@ const ProfilePage = () => {
               )}
             </div>
             <div className='w-full text-center sm:text-left'>
-              <h1 className='mb-2 text-2xl font-bold text-gray-900 sm:text-3xl'>{userInfo.name}</h1>
-              <p className='mb-2 w-full text-sm text-gray-500 sm:text-base'>@{userInfo.id}</p>
-              {userInfo.introduction && (
+              <h1 className='mb-2 text-2xl font-bold text-gray-900 sm:text-3xl'>{data?.name}</h1>
+              <p className='mb-2 w-full text-sm text-gray-500 sm:text-base'>@{data?.id}</p>
+
+              {data?.introduction && (
                 <p className='mb-4 max-w-md break-words text-sm text-gray-700 sm:text-base'>
-                  {userInfo.introduction}
+                  {data?.introduction}
                 </p>
               )}
             </div>
           </div>
           <div className='mb-4'>
             <div className='flex flex-wrap gap-2'>
-              {userInfo.tags && userInfo.tags.length > 0 ? (
-                userInfo.tags.map((tag) => <UserTag key={tag.id} tagName={tag.name} />)
+              {data?.tags && data?.tags.length > 0 ? (
+                data?.tags.map((tag) => <UserTag key={tag.id} tagName={tag.name} />)
               ) : (
                 <p className='text-sm text-gray-500'>タグが設定されていません</p>
               )}
             </div>
           </div>
         </div>
-        {user?.id === userInfo.clerkId && <Button title={'編集'} href={`${pathname}/edit`} />}
+        {userId === data.clerkId && <Button title={'編集'} href={`${userId}/edit`} />}
       </main>
     </div>
   );
