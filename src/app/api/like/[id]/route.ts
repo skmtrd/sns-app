@@ -19,11 +19,39 @@ export const GET = async (req: Request, res: NextResponse) =>
 
     const user = await findSpecificUser(clerkId);
 
+    //postのみを取得
     const likedPost = await prisma.like.findMany({
       where: {
         authorId: user.id,
+        assignmentId: null,
+        questionId: null,
       },
       include: { post: true, author: true },
     });
-    return NextResponse.json<apiRes>({ message: 'success', data: likedPost }, { status: 200 });
+    //assignmentのみを取得
+    const likedAssignment = await prisma.like.findMany({
+      where: {
+        authorId: user.id,
+        postId: null,
+        questionId: null,
+      },
+      include: { assignment: true, author: true },
+    });
+    //questionのみを取得
+    const likedQuestion = await prisma.like.findMany({
+      where: {
+        authorId: user.id,
+        assignmentId: null,
+        postId: null,
+      },
+      include: { question: true, author: true },
+    });
+
+    return NextResponse.json<apiRes>(
+      {
+        message: 'success',
+        data: { post: likedPost, assignment: likedAssignment, question: likedQuestion },
+      },
+      { status: 200 },
+    );
   });
