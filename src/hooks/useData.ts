@@ -14,12 +14,13 @@ const useData = <T>(url: string, schema: ZodType<T>) => {
 
   if (data) {
     try {
-      parsedData = schema.parse(data.data);
+      const dataToValidate = data.data !== undefined ? data.data : data;
+      parsedData = schema.parse(dataToValidate);
     } catch (e) {
       if (e instanceof ZodError) {
         console.error('Zod parsing error:', e.errors);
         parseError = new Error(
-          `Data validation failed: ${e.errors.map((err) => err.message).join(', ')}`,
+          `Data validation failed: ${e.errors.map((err) => `${err.path.join('.')}: ${err.message}`).join(', ')}`,
         );
       } else {
         console.error('Unexpected error during parsing:', e);

@@ -13,6 +13,7 @@ const profileSchema = z.object({
   name: z.string(),
   id: z.string(),
   clerkId: z.string(),
+  email: z.string(),
   introduction: z.string().nullable(),
   avatar: z.string().nullable(),
   tags: z.array(z.object({ name: z.string(), id: z.string() })),
@@ -32,7 +33,6 @@ const ProfilePage = () => {
     );
   }
 
-  if (error) return <div>{error}</div>;
   if (!data) return <div>ユーザー情報が見つかりません。</div>;
 
   return (
