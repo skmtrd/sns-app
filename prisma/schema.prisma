@@ -59,15 +59,28 @@ model PostReply {
   updatedAt DateTime @updatedAt
 }
 
-model Like{
-  id        String   @id @default(cuid())
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  String   
-  post      Post     @relation(fields: [postId] , references: [id])
-  postId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  @@unique([authorId, postId])
+
+model Like {
+  id          String   @id @default(cuid())
+  author      User     @relation(fields: [authorId], references: [id])
+  authorId    String   
+  likeableType LikeableType
+  //post assignment questionどれかのid
+  likeableId  String   
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  post Post? @relation(fields: [likeableId] , references: [id] , map: "LikePost")
+  assignment Assignment? @relation(fields: [likeableId] , references: [id] , map: "LikeAssignment")
+  question Question? @relation(fields: [likeableId] , references: [id] , map: "LikeQuestion")
+
+  @@unique([authorId, likeableType, likeableId])
+}
+
+enum LikeableType {
+  POST
+  ASSIGNMENT
+  QUESTION
 }
 
 
@@ -85,6 +98,7 @@ model Assignment {
   title     String 
   description String @db.Text
   deadLine  DateTime 
+  likes     Like[]
   replies   AssignmentReply[]
   author    User     @relation(fields: [authorId], references: [id]) 
   authorId  String   
@@ -114,6 +128,7 @@ model Question {
   description String         @db.Text 
   author      User           @relation(fields: [authorId], references: [id])
   authorId    String
+  likes     Like[]
   replies     QuestionReply[]
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
