@@ -36,7 +36,13 @@ export const postSchema = z
 
 const TimelineAll = () => {
   const pathName = usePathname();
-  const searchedWord = decodeURIComponent(pathName.split('/search/')[1]);
+  const searchedWord = decodeURIComponent(pathName.split('/search/')[1]).trim();
+  let firstWord = '';
+  let secondWord = '';
+  if (searchedWord.includes(' ')) {
+    firstWord = searchedWord.split(' ')[0];
+    secondWord = searchedWord.split(' ')[1];
+  }
   const hiraganaSearchWord = toHiragana(searchedWord);
   const { data, error, isLoading } = useData('/api/post', postSchema);
 
@@ -56,6 +62,7 @@ const TimelineAll = () => {
   const posts = data;
   const filteredPosts = posts.filter(
     (post) => post.content.includes(hiraganaSearchWord) || post.content.includes(searchedWord),
+    // (post.content.includes(firstWord) && post.content.includes(secondWord)),
   );
 
   return (
