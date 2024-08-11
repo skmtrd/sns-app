@@ -6,7 +6,6 @@ import useData from '@/hooks/useData';
 import { LoaderCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { z } from 'zod';
-import {toHiragana} from 'wanakana';
 
 export const postSchema = z
   .object({
