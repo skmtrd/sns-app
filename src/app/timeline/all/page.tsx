@@ -18,7 +18,7 @@ const postSchema = z
       name: z.string(),
       clerkId: z.string(),
       introduction: z.string(),
-      tags: z.array(z.object({ id: z.string(), name: z.string() })),
+      tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(),
     }),
     likes: z.array(
       z.object({
@@ -30,13 +30,12 @@ const postSchema = z
         id: z.string(),
         content: z.string(),
         createdAt: z.string(),
-        avatar: z.string(),
         parentReplyId: z.string().nullable(),
         author: z.object({
           id: z.string(),
           name: z.string(),
           clerkId: z.string(),
-          tags: z.array(z.object({ id: z.string(), name: z.string() })), // tagsをオプションにする
+          tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(), // tagsをオプションにする
         }),
       }),
     ),
@@ -77,7 +76,7 @@ const TimelineAll = () => {
             postId={post.id}
             avatar={post.avatar}
             likes={post.likes}
-            replies={post.replies}
+            replieCount={post.replies.filter((reply) => reply.parentReplyId === null).length}
           />
         ))}
       </div>

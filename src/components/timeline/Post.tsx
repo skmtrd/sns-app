@@ -1,7 +1,7 @@
 'use client';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
 import { deleteLike, postLike } from '@/lib/likeRequests';
-import { Reply, Tag } from '@/lib/types';
+import { Tag } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@clerk/nextjs';
 import { Heart, MessageCircleReply, MoreVertical, Send } from 'lucide-react';
@@ -26,7 +26,7 @@ type PostProps = {
   avatar: string;
   introduction?: string;
   likes: { author: { name: string; clerkId: string; id: string } }[];
-  replies: Reply[];
+  replieCount: number;
 };
 
 type ReplyFormData = {
@@ -46,7 +46,7 @@ export const Post: React.FC<PostProps> = ({
   avatar,
   introduction,
   likes,
-  replies,
+  replieCount,
 }) => {
   const router = useRouter();
   const { mutate } = useSWRConfig();
@@ -148,7 +148,7 @@ export const Post: React.FC<PostProps> = ({
   return (
     <div
       onClick={() => router.push(`/posts/${postId}`)}
-      className='w-11/12 rounded-lg bg-white p-4 shadow hover:bg-gray-50'
+      className='w-11/12 rounded-lg bg-white p-4 shadow hover:bg-blue-50'
     >
       <div className='mb-2 flex items-center justify-start'>
         <div
@@ -213,10 +213,7 @@ export const Post: React.FC<PostProps> = ({
             className='flex items-center justify-center rounded-full bg-blue-400 px-4 py-2 text-white transition-all hover:bg-blue-600 hover:shadow-lg'
           >
             <MessageCircleReply size={20} />
-            <span className='ml-1'>
-              {/* {replies.filter((reply) => reply.parentReplyId === null).length}*/}
-              {replies.filter((reply) => reply.parentReplyId === null).length}
-            </span>
+            <span className='ml-1'>{replieCount}</span>
           </button>
           <button
             onClick={(e) => {

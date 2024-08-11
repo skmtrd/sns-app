@@ -85,26 +85,29 @@ const TimelineAll = () => {
           likes={postData.likes}
           replies={postData.replies}
         />
-
-        {postData.replies
-          .filter((reply) => reply.parentReplyId === null)
-          .map((reply) => (
-            <PostReply
-              key={reply.id}
-              username={reply.author.name}
-              clerkId={reply.author.clerkId}
-              id={reply.author.id}
-              timestamp={reply.createdAt}
-              content={reply.content}
-              avatar={reply.avatar}
-              likes={reply.likes}
-              tags={reply.author.tags}
-              replyId={reply.id}
-              postId={postData.id}
-              toReplyUserId={postData.author.id}
-              replies={postData.replies}
-            />
-          ))}
+        <div className='h-0.5 w-full bg-gray-500'></div>
+        <div className='flex w-full flex-col items-center'>
+          {postData.replies
+            .filter((reply) => reply.parentReplyId === null)
+            .map((reply) => (
+              <div key={reply.id} className='mt-10 flex w-full flex-col items-center'>
+                <PostReply
+                  username={reply.author.name}
+                  clerkId={reply.author.clerkId}
+                  id={reply.author.id}
+                  timestamp={reply.createdAt}
+                  content={reply.content}
+                  avatar={reply.avatar}
+                  likes={reply.likes}
+                  tags={reply.author.tags}
+                  replyId={reply.id}
+                  postId={postData.id}
+                  toReplyUserId={postData.author.id}
+                  replies={postData.replies}
+                />
+              </div>
+            ))}
+        </div>
       </div>
     </div>
   );
