@@ -39,10 +39,13 @@ model Post {
   content   String
   author    User     @relation(fields: [authorId], references: [id])
   authorId  String
-  likes     Like[]
+  likes Like[] 
   replies   PostReply[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+
+
 }
 
 model PostReply {
@@ -64,23 +67,18 @@ model Like {
   id          String   @id @default(cuid())
   author      User     @relation(fields: [authorId], references: [id])
   authorId    String   
-  likeableType LikeableType
-  //post assignment questionどれかのid
-  likeableId  String   
+  post  Post? @relation(fields: [postId] , references: [id])
+  postId String?
+  assignment  Assignment? @relation(fields: [assignmentId] , references: [id])
+  assignmentId String?
+  question  Question? @relation(fields: [questionId] , references: [id])
+  questionId String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  post Post? @relation(fields: [likeableId] , references: [id] , map: "LikePost")
-  assignment Assignment? @relation(fields: [likeableId] , references: [id] , map: "LikeAssignment")
-  question Question? @relation(fields: [likeableId] , references: [id] , map: "LikeQuestion")
-
-  @@unique([authorId, likeableType, likeableId])
-}
-
-enum LikeableType {
-  POST
-  ASSIGNMENT
-  QUESTION
+  @@unique([authorId , postId])
+  @@unique([authorId , assignmentId])
+  @@unique([authorId , questionId])
 }
 
 
@@ -98,12 +96,13 @@ model Assignment {
   title     String 
   description String @db.Text
   deadLine  DateTime 
-  likes     Like[]
+  likes Like[] 
   replies   AssignmentReply[]
   author    User     @relation(fields: [authorId], references: [id]) 
   authorId  String   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
 }
 
 
@@ -128,10 +127,11 @@ model Question {
   description String         @db.Text 
   author      User           @relation(fields: [authorId], references: [id])
   authorId    String
-  likes     Like[]
+  likes Like[] 
   replies     QuestionReply[]
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
+
 }
 
 model QuestionReply {
