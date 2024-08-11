@@ -213,7 +213,10 @@ export const Post: React.FC<PostProps> = ({
             className='flex items-center justify-center rounded-full bg-blue-400 px-4 py-2 text-white transition-all hover:bg-blue-600 hover:shadow-lg'
           >
             <MessageCircleReply size={20} />
-            <span className='ml-1'>{replies.length}</span>
+            <span className='ml-1'>
+              {/* {replies.filter((reply) => reply.parentReplyId === null).length}*/}
+              {replies.filter((reply) => reply.parentReplyId === null).length}
+            </span>
           </button>
           <button
             onClick={(e) => {

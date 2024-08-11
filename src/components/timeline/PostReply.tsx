@@ -1,6 +1,6 @@
 'use client';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
-import { Tag } from '@/lib/types';
+import { Reply, Tag } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@clerk/nextjs';
 import { MessageCircleReply, MoreVertical, Send } from 'lucide-react';
@@ -21,9 +21,11 @@ type PostProps = {
   timestamp: string;
   content: string;
   tags: Tag[];
+  replyId: string;
   postId: string;
   avatar: string;
   introduction?: string;
+  replies: Reply[];
   likes: { author: { name: string; clerkId: string; id: string } }[];
   toReplyUserId: string;
 };
@@ -41,8 +43,10 @@ export const PostReply: React.FC<PostProps> = ({
   id,
   content,
   tags,
+  replyId,
   postId,
   avatar,
+  replies,
   introduction,
   likes,
   toReplyUserId,
@@ -127,17 +131,16 @@ export const PostReply: React.FC<PostProps> = ({
   const onSubmit = (data: ReplyFormData) => {
     const newReply = {
       content: data.content,
-      postId,
+      parentReplyId: replyId,
     };
 
-    fetch(`/api/post/${postId}/reply`, {
+    fetch(`/api/post/${postId}/reply/${replyId}/reply`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(newReply),
     });
-    console.log(data.content);
     mutate('/api/post');
     setIsReplyDrawerOpen(false);
     reset();
@@ -146,7 +149,7 @@ export const PostReply: React.FC<PostProps> = ({
   return (
     <div
       onClick={() => router.push(`/posts/${postId}`)}
-      className='relative w-11/12 rounded-lg bg-white p-4 shadow hover:bg-slate-100'
+      className='w-11/12 rounded-lg bg-white p-4 shadow hover:bg-slate-100'
     >
       <div className='flex justify-between'>
         <p className='py-2 text-blue-500'>返信先 : @{toReplyUserId}</p>
@@ -212,12 +215,14 @@ export const PostReply: React.FC<PostProps> = ({
             className='flex items-center justify-center rounded-full bg-blue-400 px-4 py-2 text-white transition-all hover:bg-blue-600 hover:shadow-lg'
           >
             <MessageCircleReply size={20} />
-            {/* <span className='ml-1'>{replies.length}</span> */}
+            <span className='ml-1'>
+              {replies.filter((reply) => reply.parentReplyId === replyId).length}
+            </span>
           </button>
           {/* <button onClick={handleLike}>
-            <Heart size={20} color={'#dc143c'} fill={isLiked ? '#dc143c' : 'white'} />
-          </button>
-          <span>{likesCount}</span> */}
+             <Heart size={20} color={'#dc143c'} fill={isLiked ? '#dc143c' : 'white'} />
+           </button>
+           <span>{likesCount}</span> */}
         </div>
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -234,7 +239,6 @@ export const PostReply: React.FC<PostProps> = ({
           />
         )}
       </div>
-
       <div
         ref={replyContentRef}
         className='overflow-hidden transition-all duration-500 ease-in-out'
@@ -270,6 +274,27 @@ export const PostReply: React.FC<PostProps> = ({
             </button>
           </div>
         </form>
+      </div>
+      <div className='mt-5'>
+        {replies
+          .filter((reply) => reply.parentReplyId === replyId)
+          .map((reply) => (
+            <PostReply
+              key={reply.id}
+              username={reply.author.name}
+              clerkId={reply.author.clerkId}
+              id={reply.author.id}
+              timestamp={reply.createdAt}
+              content={reply.content}
+              avatar={reply.avatar}
+              likes={reply.likes}
+              tags={reply.author.tags}
+              replyId={reply.id}
+              postId={postId}
+              toReplyUserId={toReplyUserId}
+              replies={replies}
+            />
+          ))}
       </div>
     </div>
   );

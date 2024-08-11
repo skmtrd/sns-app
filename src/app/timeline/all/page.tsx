@@ -6,27 +6,38 @@ import useData from '@/hooks/useData';
 import { LoaderCircle } from 'lucide-react';
 import { z } from 'zod';
 
-export const postSchema = z
+const postSchema = z
   .object({
-    author: z.object({
-      name: z.string(),
-      id: z.string(),
-      clerkId: z.string(),
-      tags: z.array(z.object({ name: z.string(), id: z.string() })),
-      introduction: z.string(),
-    }),
-    createdAt: z.string(),
     id: z.string(),
     content: z.string(),
     avatar: z.string(),
+    authorId: z.string(),
+    createdAt: z.string(),
+    author: z.object({
+      id: z.string(),
+      name: z.string(),
+      clerkId: z.string(),
+      introduction: z.string(),
+      tags: z.array(z.object({ id: z.string(), name: z.string() })),
+    }),
     likes: z.array(
-      z.object({ author: z.object({ name: z.string(), clerkId: z.string(), id: z.string() }) }),
+      z.object({
+        author: z.object({ id: z.string(), name: z.string(), clerkId: z.string() }),
+      }),
     ),
     replies: z.array(
       z.object({
         id: z.string(),
         content: z.string(),
-        author: z.object({ name: z.string(), id: z.string(), clerkId: z.string() }),
+        createdAt: z.string(),
+        avatar: z.string(),
+        parentReplyId: z.string().nullable(),
+        author: z.object({
+          id: z.string(),
+          name: z.string(),
+          clerkId: z.string(),
+          tags: z.array(z.object({ id: z.string(), name: z.string() })), // tagsをオプションにする
+        }),
       }),
     ),
   })
@@ -53,7 +64,7 @@ const TimelineAll = () => {
       <FixedHeader title={'タイムライン'} target={'すべて'} />
       <Header title={''} />
       <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>
-        {data.map((post, index) => (
+        {data.map((post) => (
           <Post
             key={post.id}
             username={post.author.name}

@@ -8,7 +8,7 @@ import { LoaderCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { z } from 'zod';
 
-const postSchema = z.object({
+const onePostSchema = z.object({
   id: z.string(),
   content: z.string(),
   avatar: z.string(),
@@ -32,6 +32,7 @@ const postSchema = z.object({
       content: z.string(),
       createdAt: z.string(),
       avatar: z.string(),
+      parentReplyId: z.string().nullable(),
       author: z.object({
         id: z.string(),
         name: z.string(),
@@ -44,7 +45,7 @@ const postSchema = z.object({
 
 const TimelineAll = () => {
   const postId = usePathname().split('/posts/')[1];
-  const { data, error, isLoading } = useData(`/api/post/${postId}`, postSchema);
+  const { data, error, isLoading } = useData(`/api/post/${postId}`, onePostSchema);
 
   if (error) {
     return <div>Error: {error.message}</div>;
@@ -84,21 +85,26 @@ const TimelineAll = () => {
           likes={postData.likes}
           replies={postData.replies}
         />
-        {postData.replies.map((reply) => (
-          <PostReply
-            key={reply.id}
-            username={reply.author.name}
-            clerkId={reply.author.clerkId}
-            id={reply.author.id}
-            timestamp={reply.createdAt}
-            content={reply.content}
-            avatar={reply.avatar}
-            likes={reply.likes}
-            tags={reply.author.tags}
-            postId={reply.id}
-            toReplyUserId={postData.author.id}
-          />
-        ))}
+
+        {postData.replies
+          .filter((reply) => reply.parentReplyId === null)
+          .map((reply) => (
+            <PostReply
+              key={reply.id}
+              username={reply.author.name}
+              clerkId={reply.author.clerkId}
+              id={reply.author.id}
+              timestamp={reply.createdAt}
+              content={reply.content}
+              avatar={reply.avatar}
+              likes={reply.likes}
+              tags={reply.author.tags}
+              replyId={reply.id}
+              postId={postData.id}
+              toReplyUserId={postData.author.id}
+              replies={postData.replies}
+            />
+          ))}
       </div>
     </div>
   );
