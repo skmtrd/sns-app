@@ -96,7 +96,8 @@ export const Post: React.FC<PostProps> = ({
     }
   }, [isReplyDrawerOpen]);
 
-  const deletePost = async (id: string) => {
+  const deletePost = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
     const toDelete = `/api/post/${id}`;
     try {
       const res = await fetch(toDelete, {

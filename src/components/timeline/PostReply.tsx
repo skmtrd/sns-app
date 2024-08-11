@@ -25,6 +25,7 @@ type PostProps = {
   avatar: string;
   introduction?: string;
   likes: { author: { name: string; clerkId: string; id: string } }[];
+  toReplyUserId: string;
 };
 
 type ReplyFormData = {
@@ -44,6 +45,7 @@ export const PostReply: React.FC<PostProps> = ({
   avatar,
   introduction,
   likes,
+  toReplyUserId,
 }) => {
   const router = useRouter();
   const { mutate } = useSWRConfig();
@@ -140,12 +142,16 @@ export const PostReply: React.FC<PostProps> = ({
     setIsReplyDrawerOpen(false);
     reset();
   };
-  console.log(tags);
+
   return (
     <div
       onClick={() => router.push(`/posts/${postId}`)}
       className='relative w-11/12 rounded-lg bg-white p-4 shadow hover:bg-slate-100'
     >
+      <div className='flex justify-between'>
+        <p className='py-2 text-blue-500'>返信先 : @{toReplyUserId}</p>
+        <p className='mr-1 text-sm text-gray-500'>{timeAgo}</p>
+      </div>
       <div className='mb-2 flex items-center justify-start'>
         <div
           className='relative'
@@ -183,7 +189,7 @@ export const PostReply: React.FC<PostProps> = ({
                 </div>
               )}
             </div>
-            <p className='mr-1 text-sm text-gray-500'>{timeAgo}</p>
+            {/* <p className='mr-1 text-sm text-gray-500'>{timeAgo}</p> */}
           </div>
           <p className='px-1 py-0.5 text-xs text-gray-500'>@{id}</p>
         </div>

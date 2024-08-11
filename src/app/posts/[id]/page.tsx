@@ -96,6 +96,7 @@ const TimelineAll = () => {
             likes={reply.likes}
             tags={reply.author.tags}
             postId={reply.id}
+            toReplyUserId={postData.author.id}
           />
         ))}
       </div>

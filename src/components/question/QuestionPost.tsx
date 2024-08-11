@@ -90,7 +90,8 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
     }
   }, [replies, isReplyDrawerOpen]);
 
-  const deletePost = async (id: string) => {
+  const deletePost = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
     const toDelete = `/api/question/${id}`;
     try {
       const res = await fetch(toDelete, {
