@@ -1,10 +1,10 @@
 import { auth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
-import { dbConnect } from '../lib/dbConnect';
-import { handleAPIError } from '../lib/handleAPIError';
-import prisma from '../lib/prisma';
-import { findSpecificUser } from '../lib/user/findSpecificUser';
-import { apiRes } from '../types';
+import { dbConnect } from '../../lib/dbConnect';
+import { handleAPIError } from '../../lib/handleAPIError';
+import prisma from '../../lib/prisma';
+import { findSpecificUser } from '../../lib/user/findSpecificUser';
+import { apiRes } from '../../types';
 
 export const POST = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
@@ -12,7 +12,7 @@ export const POST = async (req: Request, res: NextResponse) =>
 
     const { userId } = auth();
 
-    const { postId } = await req.json();
+    const { assignmentId } = await req.json();
 
     if (!userId) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
@@ -25,8 +25,8 @@ export const POST = async (req: Request, res: NextResponse) =>
         author: {
           connect: { id: user.id },
         },
-        post: {
-          connect: { id: postId },
+        assignment: {
+          connect: { id: assignmentId },
         },
       },
       include: {
@@ -38,7 +38,7 @@ export const POST = async (req: Request, res: NextResponse) =>
 
 export const DELETE = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
-    const { postId } = await req.json();
+    const { assignmentId } = await req.json();
     dbConnect();
 
     //clerkId
@@ -52,9 +52,9 @@ export const DELETE = async (req: Request, res: NextResponse) =>
 
     const deleteLike = await prisma.like.delete({
       where: {
-        authorId_postId: {
+        authorId_assignmentId: {
           authorId: user.id,
-          postId: postId,
+          assignmentId: assignmentId,
         },
       },
     });
