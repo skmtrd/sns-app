@@ -100,7 +100,7 @@ export const PostReply: React.FC<PostProps> = ({
           'Content-Type': 'application/json',
         },
       });
-      mutate('/api/post');
+      await mutate(`/api/post/${postId}`);
       setIsDropdownOpen(false);
     } catch (error) {
       console.error(error);
