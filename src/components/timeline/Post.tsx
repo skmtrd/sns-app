@@ -16,15 +16,15 @@ import UserTag from '../element/UserTag';
 import { AddReplyModal } from './AddReplyModal';
 
 type PostProps = {
-  username: string;
-  clerkId: string;
-  id: string;
+  postAuthorName: string;
+  postAuthorId: string;
+  postAuthorClerkId: string;
   timestamp: string;
-  content: string;
-  tags: Tag[] | undefined;
+  postContent: string;
+  postAuthorTags: Tag[] | undefined;
   postId: string;
-  avatar: string;
-  introduction?: string;
+  postAuthorAvatar: string;
+  postAuthorIntroduction?: string;
   likes: { author: { name: string; clerkId: string; id: string } }[];
   replyCount: number;
 };
@@ -36,15 +36,15 @@ type ReplyFormData = {
 const REPLY_MAX_LENGTH = 500;
 
 export const Post: React.FC<PostProps> = ({
-  username,
+  postAuthorName,
   timestamp,
-  clerkId,
-  id,
-  content,
-  tags,
+  postAuthorClerkId,
+  postAuthorId,
+  postContent,
+  postAuthorTags,
   postId,
-  avatar,
-  introduction,
+  postAuthorAvatar,
+  postAuthorIntroduction,
   likes,
   replyCount,
 }) => {
@@ -55,7 +55,7 @@ export const Post: React.FC<PostProps> = ({
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const profilePreviewRef = useRef<HTMLDivElement>(null);
-  const { userId } = useAuth();
+  const { userId: currentClerkId } = useAuth();
   const timeAgo = useRelativeTime(timestamp);
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
@@ -70,7 +70,7 @@ export const Post: React.FC<PostProps> = ({
 
   useEffect(() => {
     setLikesCount(likes?.length);
-    setIsLiked(likes?.some((like) => like.author.clerkId === userId));
+    setIsLiked(likes?.some((like) => like.author.clerkId === currentClerkId));
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
@@ -84,11 +84,11 @@ export const Post: React.FC<PostProps> = ({
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [likes, userId]);
+  }, [likes, currentClerkId]);
 
-  const deletePost = async (id: string, e: React.MouseEvent) => {
+  const deletePost = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    const toDelete = `/api/post/${id}`;
+    const toDelete = `/api/post/${postId}`;
     try {
       const res = await fetch(toDelete, {
         method: 'DELETE',
@@ -125,10 +125,10 @@ export const Post: React.FC<PostProps> = ({
           onMouseEnter={() => setShowProfilePreview(true)}
           onMouseLeave={() => setShowProfilePreview(false)}
         >
-          <Link href={`/profile/${clerkId}`} onClick={(e) => e.stopPropagation()}>
+          <Link href={`/profile/${postAuthorClerkId}`} onClick={(e) => e.stopPropagation()}>
             <Image
-              src={avatar}
-              alt={username}
+              src={postAuthorAvatar}
+              alt={postAuthorName}
               width={40}
               height={40}
               className='min-h-10 min-w-10 rounded-full hover:opacity-80'
@@ -138,35 +138,35 @@ export const Post: React.FC<PostProps> = ({
         <div className='ml-2 w-full'>
           <div className='flex w-full items-center justify-between'>
             <div className='relative'>
-              <Link href={`/profile/${clerkId}`} onClick={(e) => e.stopPropagation()}>
+              <Link href={`/profile/${postAuthorClerkId}`} onClick={(e) => e.stopPropagation()}>
                 <div className='inline-block rounded-md hover:bg-gray-100'>
                   <h3 className='break-words px-1 py-0.5 font-bold transition-colors duration-100 hover:text-blue-600'>
-                    {username}
+                    {postAuthorId}
                   </h3>
                 </div>
               </Link>
               {showProfilePreview && (
                 <div ref={profilePreviewRef} className='absolute left-0 top-full mt-1'>
                   <ProfilePreview
-                    username={username}
-                    avatar={avatar}
-                    id={id}
-                    introduction={introduction}
+                    authorName={postAuthorName}
+                    authorAvatar={postAuthorAvatar}
+                    authorId={postAuthorId}
+                    authorIntroduction={postAuthorIntroduction}
                   />
                 </div>
               )}
             </div>
             <p className='mr-1 whitespace-nowrap text-sm text-gray-500'>{timeAgo}</p>
           </div>
-          <p className='px-1 py-0.5 text-xs text-gray-500'>@{id}</p>
+          <p className='px-1 py-0.5 text-xs text-gray-500'>@{postAuthorId}</p>
         </div>
       </div>
       <div className='mb-4'>
-        <div className='mb-2 ml-1 w-full break-words'>{content}</div>
+        <div className='mb-2 ml-1 w-full break-words'>{postContent}</div>
       </div>
       <div className='flex flex-wrap gap-2'>
-        {tags &&
-          tags.map((tag) => (
+        {postAuthorTags &&
+          postAuthorTags.map((tag) => (
             <Link key={tag.id} href={`/timeline/${tag.id}`} onClick={(e) => e.stopPropagation()}>
               <UserTag tagName={tag.name} />
             </Link>
@@ -205,9 +205,9 @@ export const Post: React.FC<PostProps> = ({
         </button>
         {isDropdownOpen && (
           <KebabMenu
-            currentClerkId={userId}
-            postClerkId={clerkId}
-            postId={postId}
+            currentClerkId={currentClerkId}
+            authorClerkId={postAuthorClerkId}
+            contentId={postId}
             handleDelete={deletePost}
           />
         )}

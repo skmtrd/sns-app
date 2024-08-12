@@ -7,13 +7,13 @@ import { postSchema } from '@/lib/schemas';
 import { LoaderCircle } from 'lucide-react';
 
 const TimelineAll = () => {
-  const { data, error, isLoading } = useData('/api/post', postSchema);
+  const { data: posts, error, isLoading } = useData('/api/post', postSchema);
 
   if (error) {
     return <div>Error</div>;
   }
 
-  if (isLoading || !data) {
+  if (isLoading || !posts) {
     return (
       <div className='flex h-svh w-full flex-1 grow flex-col items-center justify-center gap-4 bg-gray-100'>
         <LoaderCircle size='64' className='animate-spin text-blue-600' />
@@ -38,20 +38,20 @@ const TimelineAll = () => {
       <FixedHeader title={'タイムライン'} target={'すべて'} scrollToTop={scrollToTop} />
       <Header title={''} />
       <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>
-        {data.map((post) => (
+        {posts.map((post) => (
           <Post
             key={post.id}
-            username={post.author.name}
-            clerkId={post.author.clerkId}
-            id={post.author.id}
-            timestamp={post.createdAt}
-            content={post.content}
-            tags={post.author.tags}
-            introduction={post.author.introduction}
             postId={post.id}
-            avatar={post.avatar}
+            postContent={post.content}
+            timestamp={post.createdAt}
             likes={post.likes}
             replyCount={post.replies.filter((reply) => reply.parentReplyId === null).length}
+            postAuthorName={post.author.name}
+            postAuthorId={post.author.id}
+            postAuthorClerkId={post.author.clerkId}
+            postAuthorIntroduction={post.author.introduction}
+            postAuthorTags={post.author.tags}
+            postAuthorAvatar={post.avatar}
           />
         ))}
       </div>

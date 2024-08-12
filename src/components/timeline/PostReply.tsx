@@ -5,7 +5,6 @@ import { useAuth } from '@clerk/nextjs';
 import { MessageCircleReply, MoreVertical } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSWRConfig } from 'swr';
@@ -15,19 +14,18 @@ import UserTag from '../element/UserTag';
 import { AddReplyToReplyModal } from './AddReplyToReplyModal';
 
 type PostProps = {
-  username: string;
-  clerkId: string;
-  id: string;
+  replyAuthorName: string;
+  replyAuthorClerkId: string;
+  replyAuthorId: string;
   timestamp: string;
-  content: string;
-  tags: Tag[];
+  replyContent: string;
+  replyAuthorTags: Tag[];
   replyId: string;
-  postId: string;
-  avatar: string;
-  introduction?: string;
+  parentPostId: string;
+  replyAuthorAvatar: string;
+  replyAuthorIntroduction?: string;
   replies: Reply[];
-  likes: { author: { name: string; clerkId: string; id: string } }[];
-  toReplyUserId: string;
+  toReplyPostAuthorId: string;
 };
 
 type ReplyFormData = {
@@ -37,28 +35,26 @@ type ReplyFormData = {
 const REPLY_MAX_LENGTH = 500;
 
 export const PostReply: React.FC<PostProps> = ({
-  username,
+  replyAuthorName,
   timestamp,
-  clerkId,
-  id,
-  content,
-  tags,
+  replyAuthorClerkId,
+  replyAuthorId,
+  replyContent,
+  replyAuthorTags,
   replyId,
-  postId,
-  avatar,
+  parentPostId,
+  replyAuthorAvatar,
+  replyAuthorIntroduction,
   replies,
-  introduction,
-  likes,
-  toReplyUserId,
+  toReplyPostAuthorId,
 }) => {
-  const router = useRouter();
   const { mutate } = useSWRConfig();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showProfilePreview, setShowProfilePreview] = useState(false);
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const profilePreviewRef = useRef<HTMLDivElement>(null);
-  const { userId } = useAuth();
+  const { userId: currentClerkId } = useAuth();
   const timeAgo = useRelativeTime(timestamp);
   //   const [isLiked, setIsLiked] = useState(false);
   //   const [likesCount, setLikesCount] = useState(0);
@@ -70,8 +66,6 @@ export const PostReply: React.FC<PostProps> = ({
     watch,
     reset,
   } = useForm<ReplyFormData>();
-
-  const replyContent = watch('content');
 
   useEffect(() => {
     // setLikesCount(likes.length);
@@ -90,42 +84,23 @@ export const PostReply: React.FC<PostProps> = ({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
-  // const deletePost = async (id: string) => {
-  //   const toDelete = `/api/post/${id}`;
-  //   try {
-  //     const res = await fetch(toDelete, {
-  //       method: 'DELETE',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //     });
-  //     mutate('/api/post');
-  //     setIsDropdownOpen(false);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
   //   const handleLike = async () => {
   //     setIsLiked(!isLiked);
   //     isLiked ? await deleteLike(postId) : await postLike(postId);
   //     isLiked ? setLikesCount(likesCount - 1) : setLikesCount(likesCount + 1);
   //   };
-  const deleteReply = async () => {
-    const toDelete = `/api/post/${postId}/reply/${replyId}`;
-    try {
-      const res = await fetch(toDelete, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      await mutate(`/api/post/${postId}`);
-      setIsDropdownOpen(false);
-    } catch (error) {
-      console.error(error);
-    }
+  const deleteReply = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    const toDelete = `/api/post/${parentPostId}/reply/${replyId}`;
+    fetch(toDelete, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(() => mutate(`/api/post/${parentPostId}`))
+      .catch((error) => console.error(error));
+    setIsDropdownOpen(false);
   };
 
   const handleReplyDrawerToggle = () => {
@@ -138,7 +113,7 @@ export const PostReply: React.FC<PostProps> = ({
       parentReplyId: replyId,
     };
 
-    fetch(`/api/post/${postId}/reply/${replyId}/reply`, {
+    fetch(`/api/post/${parentPostId}/reply/${replyId}/reply`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -159,12 +134,12 @@ export const PostReply: React.FC<PostProps> = ({
         {isReplyModalOpen && (
           <AddReplyToReplyModal
             closeModal={handleReplyDrawerToggle}
-            postId={postId}
+            postId={parentPostId}
             parentReplyId={replyId}
           />
         )}
         <div className='flex justify-between'>
-          <p className='py-2 text-blue-500'>返信先 : @{toReplyUserId}</p>
+          <p className='py-2 text-blue-500'>返信先 : @{toReplyPostAuthorId}</p>
           <p className='mr-1 whitespace-nowrap text-sm text-gray-500'>{timeAgo}</p>
         </div>
         <div className='mb-2 flex items-center justify-start'>
@@ -173,10 +148,10 @@ export const PostReply: React.FC<PostProps> = ({
             onMouseEnter={() => setShowProfilePreview(true)}
             onMouseLeave={() => setShowProfilePreview(false)}
           >
-            <Link href={`/profile/${clerkId}`}>
+            <Link href={`/profile/${replyAuthorClerkId}`}>
               <Image
-                src={avatar}
-                alt={username}
+                src={replyAuthorAvatar}
+                alt={replyAuthorName}
                 width={40}
                 height={40}
                 className='min-h-10 min-w-10 rounded-full hover:opacity-80'
@@ -186,34 +161,34 @@ export const PostReply: React.FC<PostProps> = ({
           <div className='ml-2 w-full'>
             <div className='flex w-full items-center justify-between'>
               <div className='relative'>
-                <Link href={`/profile/${clerkId}`}>
+                <Link href={`/profile/${replyAuthorClerkId}`}>
                   <div className='inline-block rounded-md hover:bg-gray-100'>
                     <h3 className='break-words px-1 py-0.5 font-bold transition-colors duration-100 hover:text-blue-600'>
-                      {username}
+                      {replyAuthorName}
                     </h3>
                   </div>
                 </Link>
                 {showProfilePreview && (
                   <div ref={profilePreviewRef} className='absolute left-0 top-full mt-1'>
                     <ProfilePreview
-                      username={username}
-                      avatar={avatar}
-                      id={id}
-                      introduction={introduction}
+                      authorName={replyAuthorName}
+                      authorAvatar={replyAuthorAvatar}
+                      authorId={replyAuthorId}
+                      authorIntroduction={replyAuthorIntroduction}
                     />
                   </div>
                 )}
               </div>
             </div>
-            <p className='px-1 py-0.5 text-xs text-gray-500'>@{id}</p>
+            <p className='px-1 py-0.5 text-xs text-gray-500'>@{replyAuthorId}</p>
           </div>
         </div>
         <div className='mb-4'>
-          <div className='mb-2 ml-1 w-full break-words'>{content}</div>
+          <div className='mb-2 ml-1 w-full break-words'>{replyContent}</div>
         </div>
         <div className='flex flex-wrap gap-2'>
-          {tags &&
-            tags.map((tag) => (
+          {replyAuthorTags &&
+            replyAuthorTags.map((tag) => (
               <Link key={tag.id} href={`/timeline/${tag.id}`}>
                 <UserTag tagName={tag.name} />
               </Link>
@@ -243,10 +218,10 @@ export const PostReply: React.FC<PostProps> = ({
           </button>
           {isDropdownOpen && (
             <KebabMenu
-              currentClerkId={userId}
-              postClerkId={clerkId}
-              postId={postId}
+              currentClerkId={currentClerkId}
+              authorClerkId={replyAuthorClerkId}
               handleDelete={deleteReply}
+              contentId={replyId}
             />
           )}
         </div>
@@ -257,18 +232,19 @@ export const PostReply: React.FC<PostProps> = ({
           .map((reply) => (
             <PostReply
               key={reply.id}
-              username={reply.author.name}
-              clerkId={reply.author.clerkId}
-              id={reply.author.id}
-              timestamp={reply.createdAt}
-              content={reply.content}
-              avatar={reply.avatar}
-              likes={reply.likes}
-              tags={reply.author.tags}
               replyId={reply.id}
-              postId={postId}
-              toReplyUserId={reply.author.id}
+              replyContent={reply.content}
+              timestamp={reply.createdAt}
+              // likes={reply.likes}
               replies={replies}
+              parentPostId={parentPostId}
+              toReplyPostAuthorId={reply.author.id}
+              replyAuthorName={reply.author.name}
+              replyAuthorId={reply.author.id}
+              replyAuthorClerkId={reply.author.clerkId}
+              replyAuthorAvatar={reply.avatar}
+              replyAuthorTags={reply.author.tags ?? []}
+              replyAuthorIntroduction={reply.author.introduction}
             />
           ))}
       </div>

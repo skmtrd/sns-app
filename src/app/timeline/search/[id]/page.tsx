@@ -19,13 +19,13 @@ const SearchedTimeline = () => {
     );
   };
   console.log(searchedWord);
-  const { data, error, isLoading } = useData('/api/post', postSchema);
+  const { data: posts, error, isLoading } = useData('/api/post', postSchema);
 
   if (error) {
     return <div>Error</div>;
   }
 
-  if (isLoading || !data) {
+  if (isLoading || !posts) {
     return (
       <div className='flex h-svh w-full flex-1 grow flex-col items-center justify-center gap-4 bg-gray-100'>
         <LoaderCircle size='64' className='animate-spin text-blue-600' />
@@ -42,7 +42,6 @@ const SearchedTimeline = () => {
     });
   };
 
-  const posts = data;
   const filteredPosts = posts.filter((post) => containsAllWords(post.content, searchWords));
 
   return (
@@ -53,19 +52,20 @@ const SearchedTimeline = () => {
         {filteredPosts.length === 0 ? (
           <p>検索結果に一致するポストがありません</p>
         ) : (
-          filteredPosts.map((post, index) => (
+          filteredPosts.map((post) => (
             <Post
-              key={index}
-              username={post.author.name}
-              clerkId={post.author.clerkId}
-              id={post.author.id}
-              timestamp={post.createdAt}
-              content={post.content}
-              tags={post.author.tags}
+              key={post.id}
               postId={post.id}
-              avatar={post.avatar}
+              postContent={post.content}
+              timestamp={post.createdAt}
               likes={post.likes}
               replyCount={post.replies.filter((reply) => reply.parentReplyId === null).length}
+              postAuthorName={post.author.name}
+              postAuthorId={post.author.id}
+              postAuthorClerkId={post.author.clerkId}
+              postAuthorIntroduction={post.author.introduction}
+              postAuthorTags={post.author.tags}
+              postAuthorAvatar={post.avatar}
             />
           ))
         )}

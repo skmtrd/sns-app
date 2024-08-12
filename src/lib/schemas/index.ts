@@ -88,10 +88,18 @@ export const oneOfPostSchema = z.object({
       content: z.string(),
       createdAt: z.string(),
       avatar: z.string(),
+      // likes: z
+      //   .array(
+      //     z.object({
+      //       author: z.object({ id: z.string(), name: z.string(), clerkId: z.string() }),
+      //     }),
+      //   )
+      //   .optional(),
       parentReplyId: z.string().nullable(),
       author: z.object({
         id: z.string(),
         name: z.string(),
+        introduction: z.string().optional(),
         clerkId: z.string(),
         tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(), // tagsをオプションにする
       }),
