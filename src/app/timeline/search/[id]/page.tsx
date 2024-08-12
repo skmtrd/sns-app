@@ -5,33 +5,7 @@ import { Post } from '@/components/timeline/Post';
 import useData from '@/hooks/useData';
 import { LoaderCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
-import { z } from 'zod';
-
-export const postSchema = z
-  .object({
-    author: z.object({
-      name: z.string(),
-      id: z.string(),
-      clerkId: z.string(),
-      tags: z.array(z.object({ name: z.string(), id: z.string() })),
-      introduction: z.string(),
-    }),
-    createdAt: z.string(),
-    id: z.string(),
-    content: z.string(),
-    avatar: z.string(),
-    likes: z.array(
-      z.object({ author: z.object({ name: z.string(), clerkId: z.string(), id: z.string() }) }),
-    ),
-    replies: z.array(
-      z.object({
-        id: z.string(),
-        content: z.string(),
-        author: z.object({ name: z.string(), id: z.string(), clerkId: z.string() }),
-      }),
-    ),
-  })
-  .array();
+import { postSchema } from '../../all/page';
 
 const TimelineAll = () => {
   const pathName = usePathname();
@@ -71,7 +45,7 @@ const TimelineAll = () => {
             postId={post.id}
             avatar={post.avatar}
             likes={post.likes}
-            replies={post.replies}
+            replyCount={post.replies.filter((reply) => reply.parentReplyId === null).length}
           />
         ))}
       </div>
