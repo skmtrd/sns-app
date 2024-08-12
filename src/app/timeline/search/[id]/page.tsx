@@ -33,7 +33,7 @@ export const postSchema = z
   })
   .array();
 
-const TimelineAll = () => {
+const TagFilteredTimline = () => {
   const pathName = usePathname();
   const searchedWord = decodeURIComponent(pathName.split('/search/')[1]);
   const { data, error, isLoading } = useData('/api/post', postSchema);
@@ -51,17 +51,25 @@ const TimelineAll = () => {
     );
   }
 
+  const scrollToTop = () => {
+    const element = document.getElementById('mainContent');
+    element?.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
   const posts = data;
   const filteredPosts = posts.filter((post) => post.content.includes(searchedWord));
 
   return (
     <div className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'>
-      <FixedHeader title={'検索'} target={searchedWord} />
+      <FixedHeader title={'検索'} target={searchedWord} scrollToTop={scrollToTop} />
       <Header title={''} />
       <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>
-        {filteredPosts.map((post, index) => (
+        {filteredPosts.map((post) => (
           <Post
-            key={index}
+            key={post.id}
             username={post.author.name}
             clerkId={post.author.clerkId}
             id={post.author.id}
@@ -79,4 +87,4 @@ const TimelineAll = () => {
   );
 };
 
-export default TimelineAll;
+export default TagFilteredTimline;
