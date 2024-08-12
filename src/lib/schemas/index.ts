@@ -16,7 +16,7 @@ export const postSchema = z
     }),
     likes: z.array(
       z.object({
-        author: z.object({ id: z.string(), name: z.string(), clerkId: z.string() }),
+        user: z.object({ id: z.string(), name: z.string(), clerkId: z.string() }),
       }),
     ),
     replies: z.array(
@@ -79,7 +79,7 @@ export const oneOfPostSchema = z.object({
   }),
   likes: z.array(
     z.object({
-      author: z.object({ id: z.string(), name: z.string(), clerkId: z.string() }),
+      user: z.object({ id: z.string(), name: z.string(), clerkId: z.string() }),
     }),
   ),
   replies: z.array(

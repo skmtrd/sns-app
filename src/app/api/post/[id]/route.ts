@@ -31,7 +31,7 @@ export const GET = async (req: Request, res: NextResponse) =>
         },
         likes: {
           include: {
-            author: true,
+            user: true,
           },
         },
         replies: {
