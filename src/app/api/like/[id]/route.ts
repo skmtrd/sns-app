@@ -10,7 +10,6 @@ export const GET = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
     dbConnect();
 
-    //clerkId
     const clerkId = req.url.split('/like/')[1];
 
     if (!clerkId) {
@@ -22,29 +21,26 @@ export const GET = async (req: Request, res: NextResponse) =>
     //postのみを取得
     const likedPost = await prisma.like.findMany({
       where: {
-        authorId: user.id,
-        assignmentId: null,
-        questionId: null,
+        userId: user.id,
+        postId: { not: null },
       },
-      include: { post: true, author: true },
+      include: { post: true, user: true },
     });
     //assignmentのみを取得
     const likedAssignment = await prisma.like.findMany({
       where: {
-        authorId: user.id,
-        postId: null,
-        questionId: null,
+        userId: user.id,
+        assignmentId: { not: null },
       },
-      include: { assignment: true, author: true },
+      include: { assignment: true, user: true },
     });
     //questionのみを取得
     const likedQuestion = await prisma.like.findMany({
       where: {
-        authorId: user.id,
-        assignmentId: null,
-        postId: null,
+        userId: user.id,
+        questionId: { not: null },
       },
-      include: { question: true, author: true },
+      include: { question: true, user: true },
     });
 
     return NextResponse.json<apiRes>(
