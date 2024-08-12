@@ -131,7 +131,7 @@ export const Post: React.FC<PostProps> = ({
               alt={username}
               width={40}
               height={40}
-              className='rounded-full hover:opacity-80'
+              className='min-h-10 min-w-10 rounded-full hover:opacity-80'
             />
           </Link>
         </div>
@@ -140,7 +140,7 @@ export const Post: React.FC<PostProps> = ({
             <div className='relative'>
               <Link href={`/profile/${clerkId}`} onClick={(e) => e.stopPropagation()}>
                 <div className='inline-block rounded-md hover:bg-gray-100'>
-                  <h3 className='px-1 py-0.5 font-bold transition-colors duration-100 hover:text-blue-600'>
+                  <h3 className='break-words px-1 py-0.5 font-bold transition-colors duration-100 hover:text-blue-600'>
                     {username}
                   </h3>
                 </div>
@@ -156,7 +156,7 @@ export const Post: React.FC<PostProps> = ({
                 </div>
               )}
             </div>
-            <p className='mr-1 text-sm text-gray-500'>{timeAgo}</p>
+            <p className='mr-1 whitespace-nowrap text-sm text-gray-500'>{timeAgo}</p>
           </div>
           <p className='px-1 py-0.5 text-xs text-gray-500'>@{id}</p>
         </div>
