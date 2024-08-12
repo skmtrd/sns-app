@@ -4,20 +4,10 @@ import Button from '@/components/element/Button';
 import Header from '@/components/element/Header';
 import UserTag from '@/components/element/UserTag';
 import useData from '@/hooks/useData';
+import { profileSchema } from '@/lib/schemas';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { z } from 'zod';
-
-const profileSchema = z.object({
-  name: z.string(),
-  id: z.string(),
-  clerkId: z.string(),
-  email: z.string(),
-  introduction: z.string().nullable(),
-  avatar: z.string().nullable(),
-  tags: z.array(z.object({ name: z.string(), id: z.string() })),
-});
 
 const ProfilePage = () => {
   const userId = usePathname().split('/profile/')[1];
