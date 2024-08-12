@@ -8,13 +8,18 @@ import { oneOfPostSchema } from '@/lib/schemas';
 import { Reply } from '@/lib/types';
 import { LoaderCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import { mutate } from 'swr';
 
 const TimelineAll = () => {
   const postId = usePathname().split('/posts/')[1];
   const { data: post, error, isLoading } = useData(`/api/post/${postId}`, oneOfPostSchema);
 
-  if (error) {
-    return <div>Error: {error.message}</div>;
+  if (error && error.status === 429) {
+    setTimeout(() => {
+      mutate(`/api/post/${postId}`);
+    }, 2000);
+  } else if (error) {
+    return <div>Error</div>;
   }
 
   if (isLoading || !post) {

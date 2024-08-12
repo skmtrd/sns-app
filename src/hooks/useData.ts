@@ -17,7 +17,13 @@ const useData = <T>(url: string, schema: ZodType<T>) => {
       const dataToValidate = data.data !== undefined ? data.data : data;
       parsedData = schema.parse(dataToValidate);
     } catch (e) {
-      if (e instanceof ZodError) {
+      if (data.data.status === 429) {
+        return {
+          data: undefined,
+          error: { status: 429 },
+          isLoading,
+        };
+      } else if (e instanceof ZodError) {
         console.error('Zod parsing error:', e.errors);
         parseError = new Error(
           `Data validation failed: ${e.errors.map((err) => `${err.path.join('.')}: ${err.message}`).join(', ')}`,
