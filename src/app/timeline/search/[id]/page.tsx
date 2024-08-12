@@ -70,7 +70,7 @@ const TimelineAll = () => {
       <Header title={''} />
       <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>
         {filteredPosts.length === 0 ? (
-          <p>検索結果がありません</p>
+          <p>検索結果に一致するポストがありません</p>
         ) : (
           filteredPosts.map((post, index) => (
             <Post
