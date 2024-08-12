@@ -10,7 +10,6 @@ export const GET = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
     dbConnect();
 
-    //clerkId
     const clerkId = req.url.split('/like/')[1];
 
     if (!clerkId) {
@@ -23,8 +22,7 @@ export const GET = async (req: Request, res: NextResponse) =>
     const likedPost = await prisma.like.findMany({
       where: {
         authorId: user.id,
-        assignmentId: null,
-        questionId: null,
+        postId: { not: null },
       },
       include: { post: true, author: true },
     });
@@ -32,8 +30,7 @@ export const GET = async (req: Request, res: NextResponse) =>
     const likedAssignment = await prisma.like.findMany({
       where: {
         authorId: user.id,
-        postId: null,
-        questionId: null,
+        assignmentId: { not: null },
       },
       include: { assignment: true, author: true },
     });
@@ -41,8 +38,7 @@ export const GET = async (req: Request, res: NextResponse) =>
     const likedQuestion = await prisma.like.findMany({
       where: {
         authorId: user.id,
-        assignmentId: null,
-        postId: null,
+        questionId: { not: null },
       },
       include: { question: true, author: true },
     });

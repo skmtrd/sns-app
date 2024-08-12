@@ -1,4 +1,5 @@
 import { dbConnect } from '@/app/api/lib/dbConnect';
+import { getClerkId } from '@/app/api/lib/getClerkId';
 import { handleAPIError } from '@/app/api/lib/handleAPIError';
 import prisma from '@/app/api/lib/prisma';
 import { apiRes } from '@/app/api/types';
@@ -10,10 +11,14 @@ export const POST = async (req: Request, res: NextResponse) =>
 
     const { content, parentReplyId } = await req.json();
 
-    const userId = 'testuser';
+    const clerkId = getClerkId();
+
+    if (!clerkId) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
 
     const user = await prisma.user.findUniqueOrThrow({
-      where: { clerkId: userId },
+      where: { clerkId: clerkId },
     });
 
     const parentReply = await prisma.assignmentReply.findUniqueOrThrow({

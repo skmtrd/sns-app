@@ -25,6 +25,7 @@ model User {
   postReplies PostReply[]
   tags      Tag[]
   likes     Like[]
+  likeReplys     LikeReply[]
   assignment Assignment[]
   assignmentReply AssignmentReply[]
   question  Question[]
@@ -43,9 +44,6 @@ model Post {
   replies   PostReply[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-
-
 }
 
 model PostReply {
@@ -55,6 +53,7 @@ model PostReply {
   postId    String
   parentReply     PostReply?  @relation("ParentChildReply", fields: [parentReplyId], references: [id])
   parentReplyId   String?
+  likeReplys     LikeReply[]
   childReplies    PostReply[] @relation("ParentChildReply")
   author    User     @relation(fields: [authorId], references: [id])
   authorId  String
@@ -65,8 +64,8 @@ model PostReply {
 
 model Like {
   id          String   @id @default(cuid())
-  author      User     @relation(fields: [authorId], references: [id])
-  authorId    String   
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   
   post  Post? @relation(fields: [postId] , references: [id])
   postId String?
   assignment  Assignment? @relation(fields: [assignmentId] , references: [id])
@@ -76,9 +75,27 @@ model Like {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@unique([authorId , postId])
-  @@unique([authorId , assignmentId])
-  @@unique([authorId , questionId])
+  @@unique([userId , postId])
+  @@unique([userId , assignmentId])
+  @@unique([userId , questionId])
+}
+
+model LikeReply {
+  id String @id @default(cuid())
+  user User @relation(fields: [userId] , references: [id])
+  userId String 
+  postReply PostReply? @relation(fields: [postReplyId] , references: [id])
+  postReplyId String?
+  assignmentReply AssignmentReply? @relation(fields: [assignmentReplyId] , references: [id])
+  assignmentReplyId String?
+  questionReply QuestionReply? @relation(fields: [questionReplyId] , references: [id])
+  questionReplyId String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId , postReplyId])
+  @@unique([userId , assignmentReplyId])
+  @@unique([userId , questionReplyId])
 }
 
 
@@ -109,6 +126,7 @@ model Assignment {
 model AssignmentReply {
   id        String   @id @default(cuid())
   content   String   @db.Text
+  likeReplys     LikeReply[]
   assignment Assignment @relation(fields: [assignmentId], references: [id])
   assignmentId String
   parentReply     AssignmentReply?  @relation("ParentChildReply", fields: [parentReplyId], references: [id])
@@ -137,6 +155,7 @@ model Question {
 model QuestionReply {
   id             String         @id @default(cuid())
   content        String         @db.Text 
+  likeReplys     LikeReply[]
   question       Question       @relation(fields: [questionId], references: [id])
   questionId     String
   author         User           @relation(fields: [authorId], references: [id])
