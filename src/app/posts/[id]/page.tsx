@@ -79,7 +79,7 @@ const TimelineAll = () => {
               replyAuthorId={reply.author.id}
               replyAuthorClerkId={reply.author.clerkId}
               replyAuthorAvatar={reply.avatar}
-              replyAuthorTags={reply.author.tags}
+              replyAuthorTags={reply.author.tags ?? []}
               replyAuthorIntroduction={reply.author.introduction}
             />
           ))}
