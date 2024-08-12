@@ -84,7 +84,7 @@ export const AddReplyToReplyModal: React.FC<AddPostProps> = ({
   return (
     <div
       onClick={(e) => e.stopPropagation()}
-      className='animate-fadeIn fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4'
+      className='animate-fadeIn fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-md'
     >
       <div
         className='animate-scaleIn w-full max-w-md rounded-lg bg-white shadow-xl'

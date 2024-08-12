@@ -2,20 +2,27 @@
 
 import Button from '@/components/element/Button';
 import Header from '@/components/element/Header';
+import { ImageDisplayModal } from '@/components/element/ImageDisplayModal';
 import UserTag from '@/components/element/UserTag';
 import useData from '@/hooks/useData';
 import { profileSchema } from '@/lib/schemas';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 import { mutate } from 'swr';
 
 const ProfilePage = () => {
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const userId = usePathname().split('/profile/')[1];
+
+  const handleToggleIsImageModalOpen = () => {
+    setIsImageModalOpen(!isImageModalOpen);
+  };
 
   const { data, error, isLoading } = useData(`/api/profile/${userId}`, profileSchema);
 
-  if (isLoading) {
+  if (isLoading || !data) {
     return (
       <div className='flex h-svh w-full flex-1 grow flex-col items-center justify-center gap-4 bg-gray-100'>
         <Loader2 size='64' className='animate-spin text-blue-600' />
@@ -32,23 +39,26 @@ const ProfilePage = () => {
     return <div>Error</div>;
   }
 
-  if (!data) return <div>ユーザー情報が見つかりません。</div>;
-
   return (
     <div className='flex flex-1 flex-col overflow-hidden'>
       <Header title={'プロフィール'} />
       <main className='flex-1 overflow-y-auto bg-gray-100 p-6'>
+        {isImageModalOpen && (
+          <ImageDisplayModal closeModal={handleToggleIsImageModalOpen} src={data.avatar} />
+        )}
         <div className='rounded-lg bg-white p-6 shadow sm:p-8'>
-          <div className='mb-6 flex flex-col items-center sm:flex-row sm:items-start'>
+          <div className='sm:_flex-row mb-6 flex flex-col items-center sm:items-start'>
             <div className='mb-4 sm:mb-0 sm:mr-6'>
               {data?.avatar ? (
-                <Image
-                  src={data.avatar}
-                  alt={`${data.name}のアバター`}
-                  width={100}
-                  height={100}
-                  className='rounded-full'
-                />
+                <button onClick={handleToggleIsImageModalOpen}>
+                  <Image
+                    src={data.avatar}
+                    alt={`${data.name}のアバター`}
+                    width={100}
+                    height={100}
+                    className='rounded-full'
+                  />
+                </button>
               ) : (
                 <div className='flex size-24 items-center justify-center rounded-full bg-gray-200 text-gray-500'>
                   No Image

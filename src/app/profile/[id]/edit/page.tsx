@@ -22,7 +22,7 @@ const formSchema = z.object({
   introduction: z
     .string()
     .min(1, '自己紹介は必須です')
-    .max(10, '自己紹介は100文字以内で入力してください'),
+    .max(100, '自己紹介は100文字以内で入力してください'),
   tags: z.array(
     z.object({
       id: z.string().min(1),
