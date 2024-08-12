@@ -25,7 +25,7 @@ type PostProps = {
   postId: string;
   postAuthorAvatar: string;
   postAuthorIntroduction?: string;
-  likes: { author: { name: string; clerkId: string; id: string } }[];
+  likes: { user: { name: string; clerkId: string; id: string } }[];
   replyCount: number;
 };
 
@@ -70,7 +70,7 @@ export const Post: React.FC<PostProps> = ({
 
   useEffect(() => {
     setLikesCount(likes?.length);
-    setIsLiked(likes?.some((like) => like.author.clerkId === currentClerkId));
+    setIsLiked(likes?.some((like) => like.user.clerkId === currentClerkId));
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
