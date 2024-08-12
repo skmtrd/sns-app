@@ -22,7 +22,7 @@ const ProfilePage = () => {
 
   const { data, error, isLoading } = useData(`/api/profile/${userId}`, profileSchema);
 
-  if (isLoading) {
+  if (isLoading || !data) {
     return (
       <div className='flex h-svh w-full flex-1 grow flex-col items-center justify-center gap-4 bg-gray-100'>
         <Loader2 size='64' className='animate-spin text-blue-600' />
@@ -38,8 +38,6 @@ const ProfilePage = () => {
   } else if (error) {
     return <div>Error</div>;
   }
-
-  if (!data) return <div>ユーザー情報が見つかりません。</div>;
 
   return (
     <div className='flex flex-1 flex-col overflow-hidden'>

@@ -141,7 +141,7 @@ export const Post: React.FC<PostProps> = ({
               <Link href={`/profile/${postAuthorClerkId}`} onClick={(e) => e.stopPropagation()}>
                 <div className='inline-block rounded-md hover:bg-gray-100'>
                   <h3 className='break-words px-1 py-0.5 font-bold transition-colors duration-100 hover:text-blue-600'>
-                    {postAuthorId}
+                    {postAuthorName}
                   </h3>
                 </div>
               </Link>
