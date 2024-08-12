@@ -91,6 +91,27 @@ export const PostReply: React.FC<PostProps> = ({
     };
   }, []);
 
+  // const deletePost = async (id: string) => {
+  //   const toDelete = `/api/post/${id}`;
+  //   try {
+  //     const res = await fetch(toDelete, {
+  //       method: 'DELETE',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //     });
+  //     mutate('/api/post');
+  //     setIsDropdownOpen(false);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
+  //   const handleLike = async () => {
+  //     setIsLiked(!isLiked);
+  //     isLiked ? await deleteLike(postId) : await postLike(postId);
+  //     isLiked ? setLikesCount(likesCount - 1) : setLikesCount(likesCount + 1);
+  //   };
   const deleteReply = async () => {
     const toDelete = `/api/post/${postId}/reply/${replyId}`;
     try {
