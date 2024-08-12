@@ -34,6 +34,7 @@
     "svix": "^1.25.0",
     "swr": "^2.2.5",
     "tailwind-merge": "^2.4.0",
+    "wanakana": "^5.3.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {

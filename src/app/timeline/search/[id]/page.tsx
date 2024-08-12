@@ -9,7 +9,16 @@ import { postSchema } from '../../all/page';
 
 const TimelineAll = () => {
   const pathName = usePathname();
-  const searchedWord = decodeURIComponent(pathName.split('/search/')[1]);
+  const searchedWord = decodeURIComponent(pathName.split('/search/')[1]).trim();
+  const searchWords = searchedWord.split(' ').filter((term) => term.trim() !== '');
+  const containsAllWords = (content: string, searchTerms: string[]): boolean => {
+    const hiraganaContent = toHiragana(content);
+    return searchTerms.every(
+      (term) => hiraganaContent.includes(toHiragana(term)) || content.includes(term),
+    );
+  };
+  console.log(searchedWord);
+  const hiraganaSearchWord = toHiragana(searchedWord);
   const { data, error, isLoading } = useData('/api/post', postSchema);
 
   if (error) {
@@ -26,7 +35,7 @@ const TimelineAll = () => {
   }
 
   const posts = data;
-  const filteredPosts = posts.filter((post) => post.content.includes(searchedWord));
+  const filteredPosts = posts.filter((post) => containsAllWords(post.content, searchWords));
 
   return (
     <div className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'>
@@ -45,7 +54,7 @@ const TimelineAll = () => {
             postId={post.id}
             avatar={post.avatar}
             likes={post.likes}
-            replyCount={post.replies.filter((reply) => reply.parentReplyId === null).length}
+            replies={post.replies}
           />
         ))}
       </div>
