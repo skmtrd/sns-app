@@ -6,12 +6,17 @@ import useData from '@/hooks/useData';
 import { postSchema } from '@/lib/schemas';
 import { LoaderCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import { mutate } from 'swr';
 
 const TagFilteredTimeline = () => {
   const { data: posts, error, isLoading } = useData('/api/post', postSchema);
   const tagId = usePathname().split('/timeline/')[1];
 
-  if (error) {
+  if (error && error.status === 429) {
+    setTimeout(() => {
+      mutate(`/api/post`);
+    }, 2000);
+  } else if (error) {
     return <div>Error</div>;
   }
 

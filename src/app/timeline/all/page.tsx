@@ -5,11 +5,16 @@ import { Post } from '@/components/timeline/Post';
 import useData from '@/hooks/useData';
 import { postSchema } from '@/lib/schemas';
 import { LoaderCircle } from 'lucide-react';
+import { mutate } from 'swr';
 
 const TimelineAll = () => {
   const { data: posts, error, isLoading } = useData('/api/post', postSchema);
 
-  if (error) {
+  if (error && error.status === 429) {
+    setTimeout(() => {
+      mutate(`/api/post`);
+    }, 2000);
+  } else if (error) {
     return <div>Error</div>;
   }
 

@@ -8,6 +8,7 @@ import { profileSchema } from '@/lib/schemas';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { mutate } from 'swr';
 
 const ProfilePage = () => {
   const userId = usePathname().split('/profile/')[1];
@@ -21,6 +22,14 @@ const ProfilePage = () => {
         ロード中...
       </div>
     );
+  }
+
+  if (error && error.status === 429) {
+    setTimeout(() => {
+      mutate(`/api/profile/${userId}`);
+    }, 2000);
+  } else if (error) {
+    return <div>Error</div>;
   }
 
   if (!data) return <div>ユーザー情報が見つかりません。</div>;
