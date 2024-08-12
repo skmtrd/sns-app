@@ -1,5 +1,5 @@
-export const postLike = async (postId: string) => {
-  const response = await fetch('/api/like', {
+export const addPostLike = async (postId: string) => {
+  const response = await fetch('/api/like/post', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -12,8 +12,8 @@ export const postLike = async (postId: string) => {
   }
 };
 
-export const deleteLike = async (postId: string) => {
-  const response = await fetch('/api/like', {
+export const deletePostLike = async (postId: string) => {
+  const response = await fetch('/api/like/post', {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
