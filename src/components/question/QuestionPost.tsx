@@ -111,11 +111,11 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
     <div className='relative w-11/12 rounded-lg bg-white p-6 shadow'>
       <div className='flex items-start justify-between'>
         <div>
-          <h3 className='text-2xl font-bold'>{title}</h3>
-          <p className='text-sm text-gray-600'>{username}さん</p>
+          <h3 className='break-words text-xl font-bold'>{title}</h3>
+          <p className='break-words text-sm text-gray-600'>{username}さん</p>
           <p className='mt-2'>{description}</p>
         </div>
-        <p className='mr-1 text-sm text-gray-500'>{timeAgo}</p>
+        <p className='mr-1 whitespace-nowrap text-sm text-gray-500'>{timeAgo}</p>
       </div>
       <h4 className='mt-4 font-semibold'>回答({replies.length})</h4>
       {replies.length > 0 ? (

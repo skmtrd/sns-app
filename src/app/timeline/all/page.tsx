@@ -18,7 +18,7 @@ export const postSchema = z
       name: z.string(),
       clerkId: z.string(),
       introduction: z.string(),
-      tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(), // tagsをオプションにする
+      tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(),
     }),
     likes: z.array(
       z.object({
@@ -35,7 +35,7 @@ export const postSchema = z
           id: z.string(),
           name: z.string(),
           clerkId: z.string(),
-          tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(), // tagsをオプションにする
+          tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(),
         }),
       }),
     ),
