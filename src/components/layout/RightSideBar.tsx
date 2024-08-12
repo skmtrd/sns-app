@@ -17,10 +17,17 @@ const RightSideBar = () => {
     }
     return;
   };
+  const handleClick = () => {
+    if (searchInput.trim() !== '') {
+      router.push(`/timeline/search/${searchInput}`);
+    } else if (searchInput.trim() === '') {
+      router.push(`/timeline/all`);
+    }
+  };
   return (
     <div className='z-20 ml-auto hidden w-80 border-l border-gray-200 bg-white p-4 font-bold xl:flex xl:justify-center'>
       <div className='flex h-8 w-11/12 items-center justify-center gap-4 rounded-2xl ring-1 ring-blue-500'>
-        <Radar size={20} color={'rgb(59 130 246)'} />
+        <Radar size={20} color={'rgb(59 130 246)'} onClick={handleClick} />
         <input
           className='w-9/12 outline-none'
           type='text'
