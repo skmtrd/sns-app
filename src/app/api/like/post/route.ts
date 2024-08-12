@@ -12,7 +12,7 @@ export const POST = async (req: Request, res: NextResponse) =>
 
     const { userId } = auth();
 
-    const { assignmentId } = await req.json();
+    const { postId } = await req.json();
 
     if (!userId) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
@@ -25,25 +25,22 @@ export const POST = async (req: Request, res: NextResponse) =>
         author: {
           connect: { id: user.id },
         },
-        assignment: {
-          connect: { id: assignmentId },
-        },
+        post: { connect: { id: postId } },
       },
       include: {
-        assignment: true,
+        post: true,
         author: true,
       },
     });
+
     return NextResponse.json<apiRes>({ message: 'success', data: newLike }, { status: 200 });
   });
 
 export const DELETE = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
-    const { assignmentId } = await req.json();
-    dbConnect();
-
-    //clerkId
     const { userId } = auth();
+
+    const { postId } = await req.json();
 
     if (!userId) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
@@ -53,11 +50,11 @@ export const DELETE = async (req: Request, res: NextResponse) =>
 
     const deleteLike = await prisma.like.delete({
       where: {
-        authorId_assignmentId: {
+        authorId_postId: {
           authorId: user.id,
-          assignmentId: assignmentId,
+          postId: postId,
         },
       },
     });
-    return NextResponse.json<apiRes>({ message: 'success', data: deleteLike }, { status: 200 });
+    return NextResponse.json({ message: 'success', data: deleteLike }, { status: 200 });
   });
