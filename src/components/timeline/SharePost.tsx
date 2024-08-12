@@ -14,11 +14,13 @@ export const SharePost: React.FC<SharePostProps> = ({ postId }) => {
 
   const canShare = Boolean(navigator.share) ? true : false;
 
-  const handleShareClick = () => {
+  const handleShareClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setIsModalOpen(true);
   };
 
   const handleCloseModal = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setIsModalOpen(false);
   };
 
@@ -54,14 +56,17 @@ export const SharePost: React.FC<SharePostProps> = ({ postId }) => {
     <>
       <button
         className='flex w-full items-center justify-start px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100'
-        onClick={handleShareClick}
+        onClick={(e) => handleShareClick(e)}
       >
         <Share size={16} className='mr-2 inline-block' />
         共有
       </button>
 
       {isModalOpen && (
-        <div className='fixed inset-0 z-10 flex items-center justify-center bg-black/50'>
+        <div
+          onClick={(e) => handleCloseModal(e)}
+          className='fixed inset-0 z-10 flex items-center justify-center bg-black/40'
+        >
           <div
             className='flex w-80 flex-col rounded-lg bg-white p-4 shadow-lg'
             onClick={(e) => e.stopPropagation()}

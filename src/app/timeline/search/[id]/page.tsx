@@ -34,7 +34,7 @@ export const postSchema = z
   })
   .array();
 
-const TimelineAll = () => {
+const SearchedTimeline = () => {
   const pathName = usePathname();
   const searchedWord = decodeURIComponent(pathName.split('/search/')[1]).trim();
   const searchWords = searchedWord.split(' ').filter((term) => term.trim() !== '');
@@ -93,4 +93,4 @@ const TimelineAll = () => {
   );
 };
 
-export default TimelineAll;
+export default SearchedTimeline;
