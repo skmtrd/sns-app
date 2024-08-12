@@ -3,10 +3,10 @@ import Header from '@/components/element/Header';
 import FixedHeader from '@/components/layout/FixedHeader';
 import { Post } from '@/components/timeline/Post';
 import useData from '@/hooks/useData';
+import { postSchema } from '@/lib/schemas';
 import { LoaderCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { toHiragana } from 'wanakana';
-import { postSchema } from '../../all/page';
 
 const SearchedTimeline = () => {
   const pathName = usePathname();

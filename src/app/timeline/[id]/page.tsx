@@ -3,37 +3,9 @@ import Header from '@/components/element/Header';
 import FixedHeader from '@/components/layout/FixedHeader';
 import { Post } from '@/components/timeline/Post';
 import useData from '@/hooks/useData';
+import { postSchema } from '@/lib/schemas';
 import { LoaderCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
-import { z } from 'zod';
-
-export const postSchema = z
-  .object({
-    author: z.object({
-      name: z.string(),
-      id: z.string(),
-      clerkId: z.string(),
-      tags: z.array(z.object({ name: z.string(), id: z.string() })),
-      introduction: z.string(),
-    }),
-    createdAt: z.string(),
-    id: z.string(),
-    content: z.string(),
-    avatar: z.string(),
-    likes: z.array(
-      z.object({ author: z.object({ name: z.string(), clerkId: z.string(), id: z.string() }) }),
-    ),
-    replies: z.array(
-      z.object({
-        id: z.string(),
-        createdAt: z.string(),
-        parentReplyId: z.string().nullable(),
-        content: z.string(),
-        author: z.object({ name: z.string(), id: z.string(), clerkId: z.string() }),
-      }),
-    ),
-  })
-  .array();
 
 const TagFilteredTimeline = () => {
   const { data, error, isLoading } = useData('/api/post', postSchema);

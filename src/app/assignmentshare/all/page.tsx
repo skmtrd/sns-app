@@ -3,45 +3,8 @@ import AssignmentPost from '@/components/assignmentshare/AssignmentPost';
 import Header from '@/components/element/Header';
 import FixedHeader from '@/components/layout/FixedHeader';
 import useData from '@/hooks/useData';
+import { assignmentshareSchema } from '@/lib/schemas';
 import { Loader2 } from 'lucide-react';
-import { z } from 'zod';
-
-export const assignmentshareSchema = z
-  .object({
-    id: z.string(),
-    title: z.string(),
-    description: z.string(),
-    deadLine: z.string(),
-    authorId: z.string(),
-    createdAt: z.string(),
-    author: z.object({
-      id: z.string(),
-      name: z.string(),
-      clerkId: z.string(),
-      introduction: z.string(),
-      tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(),
-    }),
-    // likes: z.array(
-    //   z.object({
-    //     author: z.object({ id: z.string(), name: z.string(), clerkId: z.string() }),
-    //   }),
-    // ),
-    // replies: z.array(
-    //   z.object({
-    //     id: z.string(),
-    //     content: z.string(),
-    //     createdAt: z.string(),
-    //     parentReplyId: z.string().nullable(),
-    //     author: z.object({
-    //       id: z.string(),
-    //       name: z.string(),
-    //       clerkId: z.string(),
-    //       tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(),
-    //     }),
-    //   }),
-    // ),
-  })
-  .array();
 
 const TimelineAll = () => {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());

@@ -4,49 +4,14 @@ import FixedHeader from '@/components/layout/FixedHeader';
 import { Post } from '@/components/timeline/Post';
 import PostReply from '@/components/timeline/PostReply';
 import useData from '@/hooks/useData';
+import { oneOfPostSchema } from '@/lib/schemas';
 import { Reply } from '@/lib/types';
 import { LoaderCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
-import { z } from 'zod';
-
-const onePostSchema = z.object({
-  id: z.string(),
-  content: z.string(),
-  avatar: z.string(),
-  authorId: z.string(),
-  createdAt: z.string(),
-  author: z.object({
-    id: z.string(),
-    name: z.string(),
-    clerkId: z.string(),
-    introduction: z.string().optional(),
-    tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(), // tagsをオプションにする
-  }),
-  likes: z.array(
-    z.object({
-      author: z.object({ id: z.string(), name: z.string(), clerkId: z.string() }),
-    }),
-  ),
-  replies: z.array(
-    z.object({
-      id: z.string(),
-      content: z.string(),
-      createdAt: z.string(),
-      avatar: z.string(),
-      parentReplyId: z.string().nullable(),
-      author: z.object({
-        id: z.string(),
-        name: z.string(),
-        clerkId: z.string(),
-        tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(), // tagsをオプションにする
-      }),
-    }),
-  ),
-});
 
 const TimelineAll = () => {
   const postId = usePathname().split('/posts/')[1];
-  const { data, error, isLoading } = useData(`/api/post/${postId}`, onePostSchema);
+  const { data, error, isLoading } = useData(`/api/post/${postId}`, oneOfPostSchema);
 
   if (error) {
     return <div>Error: {error.message}</div>;

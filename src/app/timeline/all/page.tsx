@@ -3,44 +3,8 @@ import Header from '@/components/element/Header';
 import FixedHeader from '@/components/layout/FixedHeader';
 import { Post } from '@/components/timeline/Post';
 import useData from '@/hooks/useData';
+import { postSchema } from '@/lib/schemas';
 import { LoaderCircle } from 'lucide-react';
-import { z } from 'zod';
-
-export const postSchema = z
-  .object({
-    id: z.string(),
-    content: z.string(),
-    avatar: z.string(),
-    authorId: z.string(),
-    createdAt: z.string(),
-    author: z.object({
-      id: z.string(),
-      name: z.string(),
-      clerkId: z.string(),
-      introduction: z.string(),
-      tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(),
-    }),
-    likes: z.array(
-      z.object({
-        author: z.object({ id: z.string(), name: z.string(), clerkId: z.string() }),
-      }),
-    ),
-    replies: z.array(
-      z.object({
-        id: z.string(),
-        content: z.string(),
-        createdAt: z.string(),
-        parentReplyId: z.string().nullable(),
-        author: z.object({
-          id: z.string(),
-          name: z.string(),
-          clerkId: z.string(),
-          tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(),
-        }),
-      }),
-    ),
-  })
-  .array();
 
 const TimelineAll = () => {
   const { data, error, isLoading } = useData('/api/post', postSchema);
