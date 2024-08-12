@@ -37,14 +37,13 @@ export const postSchema = z
 const TimelineAll = () => {
   const pathName = usePathname();
   const searchedWord = decodeURIComponent(pathName.split('/search/')[1]).trim();
-  let firstWord = '';
-  let secondWord = '';
-  if (searchedWord.includes(' ')) {
-    firstWord = searchedWord.split(' ')[0];
-    secondWord = searchedWord.split(' ')[1];
-  }
-  console.log(firstWord);
-  console.log(secondWord);
+  const searchWords = searchedWord.split(' ').filter((term) => term.trim() !== '');
+  const containsAllWords = (content: string, searchTerms: string[]): boolean => {
+    const hiraganaContent = toHiragana(content);
+    return searchTerms.every(
+      (term) => hiraganaContent.includes(toHiragana(term)) || content.includes(term),
+    );
+  };
   console.log(searchedWord);
   const hiraganaSearchWord = toHiragana(searchedWord);
   const { data, error, isLoading } = useData('/api/post', postSchema);
@@ -63,12 +62,7 @@ const TimelineAll = () => {
   }
 
   const posts = data;
-  const filteredPosts = posts.filter(
-    (post) =>
-      post.content.includes(hiraganaSearchWord) ||
-      post.content.includes(searchedWord) ||
-      (post.content.includes(firstWord) && post.content.includes(secondWord)),
-  );
+  const filteredPosts = posts.filter((post) => containsAllWords(post.content, searchWords));
 
   return (
     <div className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'>
@@ -90,7 +84,7 @@ const TimelineAll = () => {
               postId={post.id}
               avatar={post.avatar}
               likes={post.likes}
-              replyCount={0}
+              replyCount={post.replies.length}
             />
           ))
         )}
