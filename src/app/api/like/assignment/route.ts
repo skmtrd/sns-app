@@ -21,7 +21,7 @@ export const POST = async (req: Request, res: NextResponse) =>
 
     const newLike = await prisma.like.create({
       data: {
-        author: {
+        user: {
           connect: { id: user.id },
         },
         assignment: {
@@ -30,7 +30,7 @@ export const POST = async (req: Request, res: NextResponse) =>
       },
       include: {
         assignment: true,
-        author: true,
+        user: true,
       },
     });
     return NextResponse.json<apiRes>({ message: 'success', data: newLike }, { status: 200 });
@@ -51,8 +51,8 @@ export const DELETE = async (req: Request, res: NextResponse) =>
 
     const deleteLike = await prisma.like.delete({
       where: {
-        authorId_assignmentId: {
-          authorId: user.id,
+        userId_assignmentId: {
+          userId: user.id,
           assignmentId: assignmentId,
         },
       },
