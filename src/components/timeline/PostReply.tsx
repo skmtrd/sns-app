@@ -112,6 +112,21 @@ export const PostReply: React.FC<PostProps> = ({
   //     isLiked ? await deleteLike(postId) : await postLike(postId);
   //     isLiked ? setLikesCount(likesCount - 1) : setLikesCount(likesCount + 1);
   //   };
+  const deleteReply = async () => {
+    const toDelete = `/api/post/${postId}/reply/${replyId}`;
+    try {
+      const res = await fetch(toDelete, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      await mutate(`/api/post/${postId}`);
+      setIsDropdownOpen(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleReplyDrawerToggle = () => {
     setIsReplyModalOpen(!isReplyModalOpen);
@@ -231,7 +246,7 @@ export const PostReply: React.FC<PostProps> = ({
               currentClerkId={userId}
               postClerkId={clerkId}
               postId={postId}
-              handleDelete={deletePost}
+              handleDelete={deleteReply}
             />
           )}
         </div>

@@ -50,7 +50,7 @@ export const AddReplyModal: React.FC<AddPostProps> = ({ closeModal, postId }) =>
         throw new Error('投稿に失敗しました');
       }
 
-      mutate('/api/post');
+      mutate(`/api/post/${postId}`);
       closeModal();
     } catch (err: any) {
       setError('root', {

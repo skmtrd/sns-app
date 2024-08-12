@@ -19,7 +19,6 @@ const SearchedTimeline = () => {
     );
   };
   console.log(searchedWord);
-  const hiraganaSearchWord = toHiragana(searchedWord);
   const { data, error, isLoading } = useData('/api/post', postSchema);
 
   if (error) {
