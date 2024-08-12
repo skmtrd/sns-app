@@ -4,6 +4,7 @@ import FixedHeader from '@/components/layout/FixedHeader';
 import { Post } from '@/components/timeline/Post';
 import PostReply from '@/components/timeline/PostReply';
 import useData from '@/hooks/useData';
+import { Reply } from '@/lib/types';
 import { LoaderCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { z } from 'zod';
@@ -83,31 +84,30 @@ const TimelineAll = () => {
           postId={postData.id}
           avatar={postData.avatar}
           likes={postData.likes}
-          replies={postData.replies}
+          replyCount={
+            postData.replies.filter((reply: Reply) => reply.parentReplyId === null).length
+          }
         />
         <div className='h-0.5 w-full bg-gray-500'></div>
-        <div className='flex w-full flex-col items-center'>
-          {postData.replies
-            .filter((reply) => reply.parentReplyId === null)
-            .map((reply) => (
-              <div key={reply.id} className='mt-10 flex w-full flex-col items-center'>
-                <PostReply
-                  username={reply.author.name}
-                  clerkId={reply.author.clerkId}
-                  id={reply.author.id}
-                  timestamp={reply.createdAt}
-                  content={reply.content}
-                  avatar={reply.avatar}
-                  likes={reply.likes}
-                  tags={reply.author.tags}
-                  replyId={reply.id}
-                  postId={postData.id}
-                  toReplyUserId={postData.author.id}
-                  replies={postData.replies}
-                />
-              </div>
-            ))}
-        </div>
+        {postData.replies
+          .filter((reply: Reply) => reply.parentReplyId === null)
+          .map((reply: Reply) => (
+            <PostReply
+              key={reply.id}
+              username={reply.author.name}
+              clerkId={reply.author.clerkId}
+              id={reply.author.id}
+              timestamp={reply.createdAt}
+              content={reply.content}
+              avatar={reply.avatar}
+              likes={reply.likes}
+              tags={reply.author.tags}
+              replyId={reply.id}
+              postId={postData.id}
+              toReplyUserId={postData.author.id}
+              replies={postData.replies}
+            />
+          ))}
       </div>
     </div>
   );

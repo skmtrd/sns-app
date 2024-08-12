@@ -1,9 +1,8 @@
 'use client';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
 import { Reply, Tag } from '@/lib/types';
-import { cn } from '@/lib/utils';
 import { useAuth } from '@clerk/nextjs';
-import { MessageCircleReply, MoreVertical, Send } from 'lucide-react';
+import { MessageCircleReply, MoreVertical } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -13,6 +12,7 @@ import { useSWRConfig } from 'swr';
 import KebabMenu from '../element/KebabMenu';
 import ProfilePreview from '../element/ProfilePreview';
 import UserTag from '../element/UserTag';
+import { AddReplyToReplyModal } from './AddReplyToReplyModal';
 
 type PostProps = {
   username: string;
@@ -55,11 +55,9 @@ export const PostReply: React.FC<PostProps> = ({
   const { mutate } = useSWRConfig();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showProfilePreview, setShowProfilePreview] = useState(false);
-  const [isReplyDrawerOpen, setIsReplyDrawerOpen] = useState(false);
-  const [replyContentHeight, setReplyContentHeight] = useState(0);
+  const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const profilePreviewRef = useRef<HTMLDivElement>(null);
-  const replyContentRef = useRef<HTMLDivElement>(null);
   const { userId } = useAuth();
   const timeAgo = useRelativeTime(timestamp);
   //   const [isLiked, setIsLiked] = useState(false);
@@ -93,40 +91,31 @@ export const PostReply: React.FC<PostProps> = ({
     };
   }, []);
 
-  useEffect(() => {
-    if (replyContentRef.current) {
-      setReplyContentHeight(replyContentRef.current.scrollHeight);
-    }
-  }, [isReplyDrawerOpen]);
-
-  const deletePost = async (id: string) => {
-    const toDelete = `/api/post/${id}`;
-    try {
-      const res = await fetch(toDelete, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      mutate('/api/post');
-      setIsDropdownOpen(false);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleReplyDrawerToggle = () => {
-    setTimeout(() => {
-      document.getElementById(postId)?.focus();
-    }, 400);
-    setIsReplyDrawerOpen(!isReplyDrawerOpen);
-  };
+  // const deletePost = async (id: string) => {
+  //   const toDelete = `/api/post/${id}`;
+  //   try {
+  //     const res = await fetch(toDelete, {
+  //       method: 'DELETE',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //     });
+  //     mutate('/api/post');
+  //     setIsDropdownOpen(false);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   //   const handleLike = async () => {
   //     setIsLiked(!isLiked);
   //     isLiked ? await deleteLike(postId) : await postLike(postId);
   //     isLiked ? setLikesCount(likesCount - 1) : setLikesCount(likesCount + 1);
   //   };
+
+  const handleReplyDrawerToggle = () => {
+    setIsReplyModalOpen(!isReplyModalOpen);
+  };
 
   const onSubmit = (data: ReplyFormData) => {
     const newReply = {
@@ -142,7 +131,7 @@ export const PostReply: React.FC<PostProps> = ({
       body: JSON.stringify(newReply),
     });
     mutate('/api/post');
-    setIsReplyDrawerOpen(false);
+
     reset();
   };
 
@@ -152,6 +141,13 @@ export const PostReply: React.FC<PostProps> = ({
         // onClick={() => router.push(`/posts/${postId}`)}
         className='w-11/12 rounded-lg bg-white p-4 shadow hover:bg-blue-50'
       >
+        {isReplyModalOpen && (
+          <AddReplyToReplyModal
+            closeModal={handleReplyDrawerToggle}
+            postId={postId}
+            parentReplyId={replyId}
+          />
+        )}
         <div className='flex justify-between'>
           <p className='py-2 text-blue-500'>返信先 : @{toReplyUserId}</p>
           <p className='mr-1 text-sm text-gray-500'>{timeAgo}</p>
@@ -193,7 +189,6 @@ export const PostReply: React.FC<PostProps> = ({
                   </div>
                 )}
               </div>
-              {/* <p className='mr-1 text-sm text-gray-500'>{timeAgo}</p> */}
             </div>
             <p className='px-1 py-0.5 text-xs text-gray-500'>@{id}</p>
           </div>
@@ -221,9 +216,9 @@ export const PostReply: React.FC<PostProps> = ({
               </span>
             </button>
             {/* <button onClick={handleLike}>
-               <Heart size={20} color={'#dc143c'} fill={isLiked ? '#dc143c' : 'white'} />
-             </button>
-             <span>{likesCount}</span> */}
+                 <Heart size={20} color={'#dc143c'} fill={isLiked ? '#dc143c' : 'white'} />
+               </button>
+               <span>{likesCount}</span> */}
           </div>
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -240,44 +235,8 @@ export const PostReply: React.FC<PostProps> = ({
             />
           )}
         </div>
-        <div
-          ref={replyContentRef}
-          className='overflow-hidden transition-all duration-500 ease-in-out'
-          style={{ height: isReplyDrawerOpen ? `${replyContentHeight}px` : '0' }}
-        >
-          <form onSubmit={handleSubmit(onSubmit)} className='mt-4'>
-            <textarea
-              id={postId}
-              {...register('content', { required: 'リプライを入力してください' })}
-              className='w-full rounded-lg border p-3 focus:border-blue-500 focus:outline-none'
-              rows={4}
-              maxLength={REPLY_MAX_LENGTH}
-              placeholder='リプライを入力してください'
-            />
-            <div className='flex justify-end'>
-              <p
-                className={cn(
-                  'text-sm',
-                  replyContent?.length === REPLY_MAX_LENGTH || replyContent?.length === 0
-                    ? 'text-red-500'
-                    : 'text-gray-400',
-                )}
-              >
-                {replyContent?.length || 0} / {REPLY_MAX_LENGTH}
-              </p>
-            </div>
-            <div className='mb-4 mt-3 text-right'>
-              <button
-                type='submit'
-                className='inline-flex items-center justify-center rounded-full bg-blue-500 px-4 py-2 text-white transition-all hover:bg-blue-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2'
-              >
-                <Send size={20} />
-              </button>
-            </div>
-          </form>
-        </div>
       </div>
-      {/* <div className='flex w-full flex-col items-center gap-1'>
+      <div className='flex w-full flex-col items-center'>
         {replies
           .filter((reply) => reply.parentReplyId === replyId)
           .map((reply) => (
@@ -293,11 +252,11 @@ export const PostReply: React.FC<PostProps> = ({
               tags={reply.author.tags}
               replyId={reply.id}
               postId={postId}
-              toReplyUserId={toReplyUserId}
+              toReplyUserId={reply.author.id}
               replies={replies}
             />
           ))}
-      </div> */}
+      </div>
     </>
   );
 };

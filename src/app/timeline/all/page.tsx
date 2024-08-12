@@ -6,7 +6,7 @@ import useData from '@/hooks/useData';
 import { LoaderCircle } from 'lucide-react';
 import { z } from 'zod';
 
-const postSchema = z
+export const postSchema = z
   .object({
     id: z.string(),
     content: z.string(),
@@ -18,7 +18,7 @@ const postSchema = z
       name: z.string(),
       clerkId: z.string(),
       introduction: z.string(),
-      tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(),
+      tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(), // tagsをオプションにする
     }),
     likes: z.array(
       z.object({
@@ -76,7 +76,7 @@ const TimelineAll = () => {
             postId={post.id}
             avatar={post.avatar}
             likes={post.likes}
-            replieCount={post.replies.filter((reply) => reply.parentReplyId === null).length}
+            replyCount={post.replies.filter((reply) => reply.parentReplyId === null).length}
           />
         ))}
       </div>
