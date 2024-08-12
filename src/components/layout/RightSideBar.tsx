@@ -27,7 +27,9 @@ const RightSideBar = () => {
   return (
     <div className='z-20 ml-auto hidden w-80 border-l border-gray-200 bg-white p-4 font-bold xl:flex xl:justify-center'>
       <div className='flex h-8 w-11/12 items-center justify-center gap-4 rounded-2xl ring-1 ring-blue-500'>
-        <Radar size={20} color={'rgb(59 130 246)'} onClick={handleClick} />
+        <button onClick={handleClick}>
+          <Radar size={20} color={'rgb(59 130 246)'} />
+        </button>
         <input
           className='w-9/12 outline-none'
           type='text'
