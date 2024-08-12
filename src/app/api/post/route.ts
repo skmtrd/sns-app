@@ -1,6 +1,7 @@
-import { auth, clerkClient } from '@clerk/nextjs/server';
+import { clerkClient } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { dbConnect } from '../lib/dbConnect';
+import { getClerkId } from '../lib/getClerkId';
 import { handleAPIError } from '../lib/handleAPIError';
 import prisma from '../lib/prisma';
 import { findSpecificUser } from '../lib/user/findSpecificUser';
@@ -52,15 +53,13 @@ export const POST = async (req: Request, res: NextResponse) =>
 
     const { content } = await req.json();
     //clerkのuserIdからUserテーブルのuserIdを取得
-    const { userId } = auth();
+    const clerkId = getClerkId();
 
-    // const userId = process.env.clerkId;
-
-    if (!userId) {
+    if (!clerkId) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
-    const user = await findSpecificUser(userId);
+    const user = await findSpecificUser(clerkId);
 
     //postgresqlに投稿
     const newPost = await prisma.post.create({

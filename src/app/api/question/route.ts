@@ -1,6 +1,6 @@
-import { auth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { dbConnect } from '../lib/dbConnect';
+import { getClerkId } from '../lib/getClerkId';
 import { handleAPIError } from '../lib/handleAPIError';
 import prisma from '../lib/prisma';
 import { findSpecificUser } from '../lib/user/findSpecificUser';
@@ -36,13 +36,13 @@ export const POST = async (req: Request, res: NextResponse) =>
 
     const { title, description } = await req.json();
 
-    const { userId } = auth();
+    const clerkId = getClerkId();
 
-    if (!userId) {
+    if (!clerkId) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
-    const user = await findSpecificUser(userId);
+    const user = await findSpecificUser(clerkId);
 
     const newPost = await prisma.question.create({
       data: {
