@@ -7,17 +7,22 @@ import { useAuth, useUser } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import useSWR from 'swr';
 import { z } from 'zod';
 
 const formSchema = z.object({
-  name: z.string().min(1, '名前は必須です'),
+  name: z.string().min(1, '名前は必須です').max(20, '名前は15文字以内で入力してください'),
   userId: z
     .string()
     .regex(/^[a-zA-Z0-9_]+$/, 'ユーザーIDは半角英数字とアンダースコアのみ使用できます')
-    .min(1, 'ユーザーIDは必須です'),
-  introduction: z.string().min(1, '自己紹介は必須です'),
+    .min(1, 'ユーザーIDは必須です')
+    .max(20, 'ユーザーIDは15文字以内で入力してください'),
+  introduction: z
+    .string()
+    .min(1, '自己紹介は必須です')
+    .max(10, '自己紹介は100文字以内で入力してください'),
   tags: z.array(
     z.object({
       id: z.string().min(1),
@@ -76,6 +81,13 @@ const ProfileEditPage = () => {
       tags: userInfo?.tags,
     },
   });
+
+  useEffect(() => {
+    setTimeout(() => {
+      mutateUserInfo();
+      mutateTags();
+    }, 500);
+  }, [mutateUserInfo, mutateTags]);
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (data) => {
     const pathUserId = pathname.split('/profile/')[1].split('/')[0];

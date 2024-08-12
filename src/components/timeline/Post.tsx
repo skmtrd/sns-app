@@ -1,10 +1,9 @@
 'use client';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
-import { deleteLike, postLike } from '@/lib/likeRequests';
-import { Reply, Tag } from '@/lib/types';
-import { cn } from '@/lib/utils';
+import { addPostLike, deletePostLike } from '@/lib/likeRequests';
+import { Tag } from '@/lib/types';
 import { useAuth } from '@clerk/nextjs';
-import { Heart, MessageCircleReply, MoreVertical, Send } from 'lucide-react';
+import { Heart, MessageCircleReply, MoreVertical } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -14,6 +13,7 @@ import { useSWRConfig } from 'swr';
 import KebabMenu from '../element/KebabMenu';
 import ProfilePreview from '../element/ProfilePreview';
 import UserTag from '../element/UserTag';
+import { AddReplyModal } from './AddReplyModal';
 
 type PostProps = {
   username: string;
@@ -21,12 +21,12 @@ type PostProps = {
   id: string;
   timestamp: string;
   content: string;
-  tags: Tag[];
+  tags: Tag[] | undefined;
   postId: string;
   avatar: string;
   introduction?: string;
   likes: { author: { name: string; clerkId: string; id: string } }[];
-  replies: Reply[];
+  replyCount: number;
 };
 
 type ReplyFormData = {
@@ -46,17 +46,15 @@ export const Post: React.FC<PostProps> = ({
   avatar,
   introduction,
   likes,
-  replies,
+  replyCount,
 }) => {
   const router = useRouter();
   const { mutate } = useSWRConfig();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showProfilePreview, setShowProfilePreview] = useState(false);
-  const [isReplyDrawerOpen, setIsReplyDrawerOpen] = useState(false);
-  const [replyContentHeight, setReplyContentHeight] = useState(0);
+  const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const profilePreviewRef = useRef<HTMLDivElement>(null);
-  const replyContentRef = useRef<HTMLDivElement>(null);
   const { userId } = useAuth();
   const timeAgo = useRelativeTime(timestamp);
   const [isLiked, setIsLiked] = useState(false);
@@ -69,8 +67,6 @@ export const Post: React.FC<PostProps> = ({
     watch,
     reset,
   } = useForm<ReplyFormData>();
-
-  const replyContent = watch('content');
 
   useEffect(() => {
     setLikesCount(likes?.length);
@@ -88,15 +84,10 @@ export const Post: React.FC<PostProps> = ({
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [likes, userId]);
 
-  useEffect(() => {
-    if (replyContentRef.current) {
-      setReplyContentHeight(replyContentRef.current.scrollHeight);
-    }
-  }, [isReplyDrawerOpen]);
-
-  const deletePost = async (id: string) => {
+  const deletePost = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
     const toDelete = `/api/post/${id}`;
     try {
       const res = await fetch(toDelete, {
@@ -112,43 +103,22 @@ export const Post: React.FC<PostProps> = ({
     }
   };
 
-  const handleReplyDrawerToggle = () => {
-    setTimeout(() => {
-      document.getElementById(postId)?.focus();
-    }, 400);
-    setIsReplyDrawerOpen(!isReplyDrawerOpen);
-  };
-
   const handleLike = async () => {
     setIsLiked(!isLiked);
-    isLiked ? await deleteLike(postId) : await postLike(postId);
+    isLiked ? await deletePostLike(postId) : await addPostLike(postId);
     isLiked ? setLikesCount(likesCount - 1) : setLikesCount(likesCount + 1);
   };
 
-  const onSubmit = (data: ReplyFormData) => {
-    const newReply = {
-      content: data.content,
-      postId,
-    };
-
-    fetch(`/api/post/${postId}/reply`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(newReply),
-    });
-    console.log(data.content);
-    mutate('/api/post');
-    setIsReplyDrawerOpen(false);
-    reset();
+  const handleReplyModalToggle = () => {
+    setIsReplyModalOpen(!isReplyModalOpen);
   };
 
   return (
     <div
       onClick={() => router.push(`/posts/${postId}`)}
-      className='w-11/12 rounded-lg bg-white p-4 shadow hover:bg-gray-50'
+      className='w-11/12 rounded-lg bg-white p-4 shadow hover:bg-blue-50'
     >
+      {isReplyModalOpen && <AddReplyModal closeModal={handleReplyModalToggle} postId={postId} />}
       <div className='mb-2 flex items-center justify-start'>
         <div
           className='relative'
@@ -161,7 +131,7 @@ export const Post: React.FC<PostProps> = ({
               alt={username}
               width={40}
               height={40}
-              className='rounded-full hover:opacity-80'
+              className='min-h-10 min-w-10 rounded-full hover:opacity-80'
             />
           </Link>
         </div>
@@ -170,7 +140,7 @@ export const Post: React.FC<PostProps> = ({
             <div className='relative'>
               <Link href={`/profile/${clerkId}`} onClick={(e) => e.stopPropagation()}>
                 <div className='inline-block rounded-md hover:bg-gray-100'>
-                  <h3 className='px-1 py-0.5 font-bold transition-colors duration-100 hover:text-blue-600'>
+                  <h3 className='break-words px-1 py-0.5 font-bold transition-colors duration-100 hover:text-blue-600'>
                     {username}
                   </h3>
                 </div>
@@ -186,7 +156,7 @@ export const Post: React.FC<PostProps> = ({
                 </div>
               )}
             </div>
-            <p className='mr-1 text-sm text-gray-500'>{timeAgo}</p>
+            <p className='mr-1 whitespace-nowrap text-sm text-gray-500'>{timeAgo}</p>
           </div>
           <p className='px-1 py-0.5 text-xs text-gray-500'>@{id}</p>
         </div>
@@ -206,17 +176,17 @@ export const Post: React.FC<PostProps> = ({
         <div className='flex items-center justify-center gap-2'>
           <button
             onClick={(e) => {
-              e.stopPropagation(); // 親要素のクリックを防ぐ
-              handleReplyDrawerToggle();
+              e.stopPropagation();
+              handleReplyModalToggle();
             }}
             className='flex items-center justify-center rounded-full bg-blue-400 px-4 py-2 text-white transition-all hover:bg-blue-600 hover:shadow-lg'
           >
             <MessageCircleReply size={20} />
-            <span className='ml-1'>{replies.length}</span>
+            <span className='ml-1'>{replyCount}</span>
           </button>
           <button
             onClick={(e) => {
-              e.stopPropagation(); // 親要素のクリックを防ぐ
+              e.stopPropagation();
               handleLike();
             }}
           >
@@ -226,7 +196,7 @@ export const Post: React.FC<PostProps> = ({
         </div>
         <button
           onClick={(e) => {
-            e.stopPropagation(); // 親要素のクリックを防ぐ
+            e.stopPropagation();
             setIsDropdownOpen(!isDropdownOpen);
           }}
           className='text-gray-500 hover:text-gray-700'
@@ -241,45 +211,6 @@ export const Post: React.FC<PostProps> = ({
             handleDelete={deletePost}
           />
         )}
-      </div>
-
-      <div
-        ref={replyContentRef}
-        className='overflow-hidden transition-all duration-500 ease-in-out'
-        style={{ height: isReplyDrawerOpen ? `${replyContentHeight}px` : '0' }}
-      >
-        <form onSubmit={handleSubmit(onSubmit)} className='mt-4'>
-          <textarea
-            id={postId}
-            {...register('content', { required: 'リプライを入力してください' })}
-            className='w-full rounded-lg border p-3 focus:border-blue-500 focus:outline-none'
-            rows={4}
-            maxLength={REPLY_MAX_LENGTH}
-            placeholder='リプライを入力してください'
-            onClick={(e) => e.stopPropagation()} // 親要素のクリックを防ぐ
-          />
-          <div className='flex justify-end'>
-            <p
-              className={cn(
-                'text-sm',
-                replyContent?.length === REPLY_MAX_LENGTH || replyContent?.length === 0
-                  ? 'text-red-500'
-                  : 'text-gray-400',
-              )}
-            >
-              {replyContent?.length || 0} / {REPLY_MAX_LENGTH}
-            </p>
-          </div>
-          <div className='mb-4 mt-3 text-right'>
-            <button
-              type='submit'
-              onClick={(e) => e.stopPropagation()} // 親要素のクリックを防ぐ
-              className='inline-flex items-center justify-center rounded-full bg-blue-500 px-4 py-2 text-white transition-all hover:bg-blue-600 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2'
-            >
-              <Send size={20} />
-            </button>
-          </div>
-        </form>
       </div>
     </div>
   );

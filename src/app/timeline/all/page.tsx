@@ -8,25 +8,35 @@ import { z } from 'zod';
 
 export const postSchema = z
   .object({
-    author: z.object({
-      name: z.string(),
-      id: z.string(),
-      clerkId: z.string(),
-      tags: z.array(z.object({ name: z.string(), id: z.string() })),
-      introduction: z.string(),
-    }),
-    createdAt: z.string(),
     id: z.string(),
     content: z.string(),
     avatar: z.string(),
+    authorId: z.string(),
+    createdAt: z.string(),
+    author: z.object({
+      id: z.string(),
+      name: z.string(),
+      clerkId: z.string(),
+      introduction: z.string(),
+      tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(),
+    }),
     likes: z.array(
-      z.object({ author: z.object({ name: z.string(), clerkId: z.string(), id: z.string() }) }),
+      z.object({
+        author: z.object({ id: z.string(), name: z.string(), clerkId: z.string() }),
+      }),
     ),
     replies: z.array(
       z.object({
         id: z.string(),
         content: z.string(),
-        author: z.object({ name: z.string(), id: z.string(), clerkId: z.string() }),
+        createdAt: z.string(),
+        parentReplyId: z.string().nullable(),
+        author: z.object({
+          id: z.string(),
+          name: z.string(),
+          clerkId: z.string(),
+          tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(),
+        }),
       }),
     ),
   })
@@ -77,7 +87,7 @@ const TimelineAll = () => {
             postId={post.id}
             avatar={post.avatar}
             likes={post.likes}
-            replies={post.replies}
+            replyCount={post.replies.filter((reply) => reply.parentReplyId === null).length}
           />
         ))}
       </div>
