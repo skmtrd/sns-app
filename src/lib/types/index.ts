@@ -18,5 +18,9 @@ export type Tag = {
 export type Reply = {
   id: string;
   content: string;
-  author: { name: string; id: string; clerkId: string };
+  author: { name: string; id: string; clerkId: string; tags: Tag[] };
+  parentReplyId: string | null;
+  avatar: string;
+  likes: { author: { name: string; id: string; clerkId: string } }[];
+  createdAt: string;
 };

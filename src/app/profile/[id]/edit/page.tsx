@@ -7,6 +7,7 @@ import { useAuth, useUser } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import useSWR from 'swr';
 import { z } from 'zod';
@@ -76,6 +77,13 @@ const ProfileEditPage = () => {
       tags: userInfo?.tags,
     },
   });
+
+  useEffect(() => {
+    setTimeout(() => {
+      mutateUserInfo();
+      mutateTags();
+    }, 500);
+  }, [mutateUserInfo, mutateTags]);
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (data) => {
     const pathUserId = pathname.split('/profile/')[1].split('/')[0];

@@ -43,6 +43,9 @@ const TimelineAll = () => {
     firstWord = searchedWord.split(' ')[0];
     secondWord = searchedWord.split(' ')[1];
   }
+  console.log(firstWord);
+  console.log(secondWord);
+  console.log(searchedWord);
   const hiraganaSearchWord = toHiragana(searchedWord);
   const { data, error, isLoading } = useData('/api/post', postSchema);
 
@@ -61,8 +64,10 @@ const TimelineAll = () => {
 
   const posts = data;
   const filteredPosts = posts.filter(
-    (post) => post.content.includes(hiraganaSearchWord) || post.content.includes(searchedWord),
-    // (post.content.includes(firstWord) && post.content.includes(secondWord)),
+    (post) =>
+      post.content.includes(hiraganaSearchWord) ||
+      post.content.includes(searchedWord) ||
+      (post.content.includes(firstWord) && post.content.includes(secondWord)),
   );
 
   return (
@@ -70,21 +75,25 @@ const TimelineAll = () => {
       <FixedHeader title={'検索'} target={searchedWord} />
       <Header title={''} />
       <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>
-        {filteredPosts.map((post, index) => (
-          <Post
-            key={index}
-            username={post.author.name}
-            clerkId={post.author.clerkId}
-            id={post.author.id}
-            timestamp={post.createdAt}
-            content={post.content}
-            tags={post.author.tags}
-            postId={post.id}
-            avatar={post.avatar}
-            likes={post.likes}
-            replies={post.replies}
-          />
-        ))}
+        {filteredPosts.length === 0 ? (
+          <p>検索結果がありません</p>
+        ) : (
+          filteredPosts.map((post, index) => (
+            <Post
+              key={index}
+              username={post.author.name}
+              clerkId={post.author.clerkId}
+              id={post.author.id}
+              timestamp={post.createdAt}
+              content={post.content}
+              tags={post.author.tags}
+              postId={post.id}
+              avatar={post.avatar}
+              likes={post.likes}
+              replyCount={0}
+            />
+          ))
+        )}
       </div>
     </div>
   );

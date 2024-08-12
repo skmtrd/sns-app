@@ -4,11 +4,12 @@ import FixedHeader from '@/components/layout/FixedHeader';
 import { Post } from '@/components/timeline/Post';
 import PostReply from '@/components/timeline/PostReply';
 import useData from '@/hooks/useData';
+import { Reply } from '@/lib/types';
 import { LoaderCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { z } from 'zod';
 
-const postSchema = z.object({
+const onePostSchema = z.object({
   id: z.string(),
   content: z.string(),
   avatar: z.string(),
@@ -32,6 +33,7 @@ const postSchema = z.object({
       content: z.string(),
       createdAt: z.string(),
       avatar: z.string(),
+      parentReplyId: z.string().nullable(),
       author: z.object({
         id: z.string(),
         name: z.string(),
@@ -44,7 +46,7 @@ const postSchema = z.object({
 
 const TimelineAll = () => {
   const postId = usePathname().split('/posts/')[1];
-  const { data, error, isLoading } = useData(`/api/post/${postId}`, postSchema);
+  const { data, error, isLoading } = useData(`/api/post/${postId}`, onePostSchema);
 
   if (error) {
     return <div>Error: {error.message}</div>;
@@ -82,22 +84,30 @@ const TimelineAll = () => {
           postId={postData.id}
           avatar={postData.avatar}
           likes={postData.likes}
-          replies={postData.replies}
+          replyCount={
+            postData.replies.filter((reply: Reply) => reply.parentReplyId === null).length
+          }
         />
-        {postData.replies.map((reply) => (
-          <PostReply
-            key={reply.id}
-            username={reply.author.name}
-            clerkId={reply.author.clerkId}
-            id={reply.author.id}
-            timestamp={reply.createdAt}
-            content={reply.content}
-            avatar={reply.avatar}
-            likes={reply.likes}
-            tags={reply.author.tags}
-            postId={reply.id}
-          />
-        ))}
+        <div className='h-0.5 w-full bg-gray-500'></div>
+        {postData.replies
+          .filter((reply: Reply) => reply.parentReplyId === null)
+          .map((reply: Reply) => (
+            <PostReply
+              key={reply.id}
+              username={reply.author.name}
+              clerkId={reply.author.clerkId}
+              id={reply.author.id}
+              timestamp={reply.createdAt}
+              content={reply.content}
+              avatar={reply.avatar}
+              likes={reply.likes}
+              tags={reply.author.tags}
+              replyId={reply.id}
+              postId={postData.id}
+              toReplyUserId={postData.author.id}
+              replies={postData.replies}
+            />
+          ))}
       </div>
     </div>
   );

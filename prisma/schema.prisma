@@ -39,10 +39,13 @@ model Post {
   content   String
   author    User     @relation(fields: [authorId], references: [id])
   authorId  String
-  likes     Like[]
+  likes Like[] 
   replies   PostReply[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+
+
 }
 
 model PostReply {
@@ -59,15 +62,23 @@ model PostReply {
   updatedAt DateTime @updatedAt
 }
 
-model Like{
-  id        String   @id @default(cuid())
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  String   
-  post      Post     @relation(fields: [postId] , references: [id])
-  postId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  @@unique([authorId, postId])
+
+model Like {
+  id          String   @id @default(cuid())
+  author      User     @relation(fields: [authorId], references: [id])
+  authorId    String   
+  post  Post? @relation(fields: [postId] , references: [id])
+  postId String?
+  assignment  Assignment? @relation(fields: [assignmentId] , references: [id])
+  assignmentId String?
+  question  Question? @relation(fields: [questionId] , references: [id])
+  questionId String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([authorId , postId])
+  @@unique([authorId , assignmentId])
+  @@unique([authorId , questionId])
 }
 
 
@@ -85,11 +96,13 @@ model Assignment {
   title     String 
   description String @db.Text
   deadLine  DateTime 
+  likes Like[] 
   replies   AssignmentReply[]
   author    User     @relation(fields: [authorId], references: [id]) 
   authorId  String   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
 }
 
 
@@ -114,9 +127,11 @@ model Question {
   description String         @db.Text 
   author      User           @relation(fields: [authorId], references: [id])
   authorId    String
+  likes Like[] 
   replies     QuestionReply[]
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
+
 }
 
 model QuestionReply {

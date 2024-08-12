@@ -8,8 +8,12 @@ const RightSideBar = () => {
   const router = useRouter();
   const handleKeyInput = (event: React.KeyboardEvent) => {
     const key = event.key;
-    if (key === 'Enter') {
+
+    if (key === 'Enter' && searchInput.trim() !== '') {
       router.push(`/timeline/search/${searchInput}`);
+    } else if (key === 'Enter' && searchInput.trim() === '') {
+      // 空白の場合は/timeline/allに遷移
+      router.push(`/timeline/all`);
     }
     return;
   };
