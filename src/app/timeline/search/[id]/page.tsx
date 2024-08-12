@@ -6,33 +6,7 @@ import useData from '@/hooks/useData';
 import { LoaderCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { toHiragana } from 'wanakana';
-import { z } from 'zod';
-
-export const postSchema = z
-  .object({
-    author: z.object({
-      name: z.string(),
-      id: z.string(),
-      clerkId: z.string(),
-      tags: z.array(z.object({ name: z.string(), id: z.string() })),
-      introduction: z.string(),
-    }),
-    createdAt: z.string(),
-    id: z.string(),
-    content: z.string(),
-    avatar: z.string(),
-    likes: z.array(
-      z.object({ author: z.object({ name: z.string(), clerkId: z.string(), id: z.string() }) }),
-    ),
-    replies: z.array(
-      z.object({
-        id: z.string(),
-        content: z.string(),
-        author: z.object({ name: z.string(), id: z.string(), clerkId: z.string() }),
-      }),
-    ),
-  })
-  .array();
+import { postSchema } from '../../all/page';
 
 const SearchedTimeline = () => {
   const pathName = usePathname();
@@ -61,12 +35,20 @@ const SearchedTimeline = () => {
     );
   }
 
+  const scrollToTop = () => {
+    const element = document.getElementById('mainContent');
+    element?.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
   const posts = data;
   const filteredPosts = posts.filter((post) => containsAllWords(post.content, searchWords));
 
   return (
     <div className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'>
-      <FixedHeader title={'検索'} target={searchedWord} />
+      <FixedHeader title={'検索'} target={searchedWord} scrollToTop={scrollToTop} />
       <Header title={''} />
       <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>
         {filteredPosts.length === 0 ? (
@@ -84,7 +66,7 @@ const SearchedTimeline = () => {
               postId={post.id}
               avatar={post.avatar}
               likes={post.likes}
-              replyCount={post.replies.length}
+              replyCount={post.replies.filter((reply) => reply.parentReplyId === null).length}
             />
           ))
         )}
