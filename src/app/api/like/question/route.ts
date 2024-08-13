@@ -43,8 +43,7 @@ export const DELETE = async (req: Request, res: NextResponse) =>
     dbConnect();
 
     //clerkId
-    // const { userId } = auth();
-    const userId = "testuser";
+    const { userId } = auth();
 
     if (!userId) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
