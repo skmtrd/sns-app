@@ -32,3 +32,29 @@ export const POST = async (req: Request, res: NextResponse) =>
 
     return NextResponse.json<apiRes>({ message: 'success', data: newLike }, { status: 200 });
   });
+
+export const DELETE = async (req: Request, res: NextResponse) =>
+  handleAPIError(async () => {
+    dbConnect();
+
+    const { postReplyId } = await req.json();
+
+    const clerkId = getClerkId();
+
+    if (!clerkId) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+
+    const user = await findSpecificUser(clerkId);
+
+    const deleteLike = await prisma.likeReply.delete({
+      where: {
+        userId_postReplyId: {
+          userId: user.id,
+          postReplyId: postReplyId,
+        },
+      },
+    });
+
+    return NextResponse.json({ message: 'success', data: deleteLike }, { status: 200 });
+  });
