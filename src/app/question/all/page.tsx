@@ -7,13 +7,13 @@ import { questionSchema } from '@/lib/schemas';
 import { LoaderCircle } from 'lucide-react';
 
 const TimelineAll = () => {
-  const { data, error, isLoading } = useData('/api/question', questionSchema);
+  const { data: questions, error, isLoading } = useData('/api/question', questionSchema);
 
   if (error) {
     return <div>Error</div>;
   }
 
-  if (isLoading || !data) {
+  if (isLoading || !questions) {
     return (
       <div className='flex h-svh w-full flex-1 grow flex-col items-center justify-center gap-4 bg-gray-100'>
         <LoaderCircle size='64' className='animate-spin text-blue-600' />
@@ -35,18 +35,18 @@ const TimelineAll = () => {
       <FixedHeader title={'質問'} target={'すべて'} scrollToTop={scrollToTop} />
       <Header title={''} />
       <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>
-        {data.map((question, index) => (
+        {questions.map((question) => (
           <QuestionPost
             key={question.id}
-            title={question.title}
-            description={question.description}
+            questionId={question.id}
+            questionTitle={question.title}
+            questionDescription={question.description}
             replies={question.replies}
-            username={question.author.name}
-            clerkId={question.author.clerkId}
-            userId={question.author.id}
+            questionAuthorName={question.author.name}
+            questionAuthorId={question.author.id}
+            questionAuthorClerkId={question.author.clerkId}
             timestamp={question.createdAt}
             // tags={question.author.tags}
-            postId={question.id}
           />
         ))}
       </div>

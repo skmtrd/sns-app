@@ -49,7 +49,17 @@ export const questionSchema = z
     title: z.string(),
     description: z.string(),
     replies: z.array(
-      z.object({ id: z.string(), content: z.string(), author: z.object({ name: z.string() }) }),
+      z.object({
+        id: z.string(),
+        content: z.string(),
+        parentReplyId: z.string().nullable(),
+        createdAt: z.string(),
+        author: z.object({
+          id: z.string(),
+          name: z.string(),
+          clerkId: z.string(),
+        }),
+      }),
     ),
   })
   .array();
