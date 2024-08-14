@@ -72,6 +72,33 @@ export const profileSchema = z.object({
   introduction: z.string().nullable(),
   avatar: z.string().nullable(),
   tags: z.array(z.object({ name: z.string(), id: z.string() })),
+  posts: z.array(
+    z.object({
+      content: z.string(),
+      id: z.string(),
+      authorId: z.string(),
+      createdAt: z.string(),
+      likes: z.array(
+        z.object({
+          user: z.object({ id: z.string(), name: z.string(), clerkId: z.string() }),
+        }),
+      ),
+      replies: z.array(
+        z.object({
+          id: z.string(),
+          content: z.string(),
+          createdAt: z.string(),
+          parentReplyId: z.string().nullable(),
+          author: z.object({
+            id: z.string(),
+            name: z.string(),
+            clerkId: z.string(),
+            tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(),
+          }),
+        }),
+      ),
+    }),
+  ),
 });
 
 export const oneOfPostSchema = z.object({

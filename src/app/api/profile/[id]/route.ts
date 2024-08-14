@@ -22,6 +22,21 @@ export const GET = async (req: Request, res: NextResponse) =>
         tags: {
           select: { id: true, name: true },
         },
+        posts: {
+          orderBy: { createdAt: 'desc' },
+          include: {
+            likes: {
+              include: {
+                user: true,
+              },
+            },
+            replies: {
+              include: {
+                author: true,
+              },
+            },
+          },
+        },
       },
     });
 
