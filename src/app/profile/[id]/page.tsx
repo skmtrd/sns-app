@@ -88,8 +88,12 @@ const ProfilePage = () => {
               )}
             </div>
           </div>
+          {userId === data.clerkId && (
+            <div className='flex w-full justify-end'>
+              <Button title={'編集'} href={`${userId}/edit`} />
+            </div>
+          )}
         </div>
-        {userId === data.clerkId && <Button title={'編集'} href={`${userId}/edit`} />}
         <div
           id='mainContent'
           className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'

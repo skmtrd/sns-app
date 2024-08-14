@@ -56,6 +56,7 @@ export const PUT = async (req: Request, res: NextResponse) =>
 
     //新しく登録するuserIdが存在するかを確認する
     //存在したら、エラーメッセージを返す
+
     const isUserIdExists = await checkUserIdExists(userId, clerkId);
     if (isUserIdExists) {
       return NextResponse.json<apiRes>({ message: 'userId already exits' }, { status: 404 });
