@@ -67,7 +67,7 @@ const TimelineAll = () => {
           postAuthorTags={post.author.tags}
           postAuthorAvatar={post.avatar}
         />
-        <div className='h-0.5 w-full bg-gray-500'></div>
+        <div className='h-0.5 w-full bg-gray-500 shadow-md'></div>
         {postData.replies
           .filter((reply: Reply) => reply.parentReplyId === null)
           .map((reply: Reply) => (

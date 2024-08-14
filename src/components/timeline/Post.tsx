@@ -23,8 +23,8 @@ type PostProps = {
   postContent: string;
   postAuthorTags: Tag[] | undefined;
   postId: string;
-  postAuthorAvatar: string;
-  postAuthorIntroduction?: string;
+  postAuthorAvatar: string | null;
+  postAuthorIntroduction?: string | undefined | null;
   likes: { user: { name: string; clerkId: string; id: string } }[];
   replyCount: number;
 };
@@ -112,6 +112,10 @@ export const Post: React.FC<PostProps> = ({
   const handleReplyModalToggle = () => {
     setIsReplyModalOpen(!isReplyModalOpen);
   };
+
+  if (!postAuthorAvatar) {
+    return;
+  }
 
   return (
     <div

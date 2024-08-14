@@ -11,14 +11,14 @@ import KebabMenu from '../element/KebabMenu';
 import QuestionReply from './QuestionReply';
 
 type QuestionPostProps = {
-  username: string;
-  clerkId: string;
-  userId: string;
-  postId: string;
-  timestamp: string;
-  title: string;
-  description: string;
+  questionId: string;
+  questionTitle: string;
+  questionDescription: string;
   replies: Reply[];
+  questionAuthorName: string;
+  questionAuthorId: string;
+  questionAuthorClerkId: string;
+  timestamp: string;
 };
 
 type ReplyFormData = {
@@ -26,14 +26,14 @@ type ReplyFormData = {
 };
 
 const QuestionPost: React.FC<QuestionPostProps> = ({
-  username,
-  clerkId,
-  postId,
-  userId,
-  timestamp,
-  title,
-  description,
+  questionId,
+  questionTitle,
+  questionDescription,
   replies,
+  questionAuthorName,
+  questionAuthorId,
+  questionAuthorClerkId,
+  timestamp,
 }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isReplyDrawerOpen, setIsReplyDrawerOpen] = useState(false);
@@ -63,10 +63,10 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
   const onSubmit = async (data: ReplyFormData) => {
     const newReply = {
       content: data.content,
-      questionId: postId,
+      questionId: questionId,
     };
     try {
-      const response = await fetch(`/api/question/${postId}/reply`, {
+      const response = await fetch(`/api/question/${questionId}/reply`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -90,9 +90,9 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
     }
   }, [replies, isReplyDrawerOpen]);
 
-  const deletePost = async (id: string, e: React.MouseEvent) => {
+  const deletePost = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    const toDelete = `/api/question/${id}`;
+    const toDelete = `/api/question/${questionId}`;
     try {
       const res = await fetch(toDelete, {
         method: 'DELETE',
@@ -111,9 +111,9 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
     <div className='relative w-11/12 rounded-lg bg-white p-6 shadow'>
       <div className='flex items-start justify-between'>
         <div>
-          <h3 className='break-words text-xl font-bold'>{title}</h3>
-          <p className='break-words text-sm text-gray-600'>{username}さん</p>
-          <p className='mt-2'>{description}</p>
+          <h3 className='break-words text-xl font-bold'>{questionTitle}</h3>
+          <p className='break-words text-sm text-gray-600'>{questionAuthorName}さん</p>
+          <p className='mt-2'>{questionDescription}</p>
         </div>
         <p className='mr-1 whitespace-nowrap text-sm text-gray-500'>{timeAgo}</p>
       </div>
@@ -154,8 +154,8 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
                     {isDropdownOpen && (
                       <KebabMenu
                         currentClerkId={currentClerkId}
-                        postClerkId={clerkId}
-                        postId={postId}
+                        authorClerkId={questionAuthorClerkId}
+                        contentId={questionId}
                         handleDelete={deletePost}
                       />
                     )}
@@ -184,10 +184,10 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
             <MoreVertical size={20} />
             {isDropdownOpen && (
               <KebabMenu
+                contentId={questionId}
                 currentClerkId={currentClerkId}
-                postClerkId={clerkId}
+                authorClerkId={questionAuthorClerkId}
                 handleDelete={deletePost}
-                postId={postId}
               />
             )}
           </button>

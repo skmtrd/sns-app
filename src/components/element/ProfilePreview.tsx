@@ -2,10 +2,13 @@ import Image from 'next/image';
 
 const ProfilePreview: React.FC<{
   authorName: string;
-  authorAvatar: string;
+  authorAvatar: string | null;
   authorId: string;
-  authorIntroduction?: string;
+  authorIntroduction?: string | undefined | null;
 }> = ({ authorName, authorAvatar, authorId, authorIntroduction }) => {
+  if (!authorAvatar) {
+    return null;
+  }
   return (
     <div className='absolute z-10 w-80 rounded-lg bg-white p-4 shadow-lg ring-1 ring-black/20'>
       <div className='flex items-center'>

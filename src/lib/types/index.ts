@@ -18,7 +18,7 @@ export type Tag = {
 export type Reply = {
   id: string;
   content: string;
-  avatar: string;
+  // avatar: string;
   createdAt: string;
   author: {
     id: string;

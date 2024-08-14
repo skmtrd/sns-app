@@ -4,6 +4,7 @@ import Button from '@/components/element/Button';
 import Header from '@/components/element/Header';
 import { ImageDisplayModal } from '@/components/element/ImageDisplayModal';
 import UserTag from '@/components/element/UserTag';
+import { Post } from '@/components/timeline/Post';
 import useData from '@/hooks/useData';
 import { profileSchema } from '@/lib/schemas';
 import { Loader2 } from 'lucide-react';
@@ -38,6 +39,8 @@ const ProfilePage = () => {
   } else if (error) {
     return <div>Error</div>;
   }
+
+  const posts = data.posts;
 
   return (
     <div className='flex flex-1 flex-col overflow-hidden'>
@@ -85,8 +88,36 @@ const ProfilePage = () => {
               )}
             </div>
           </div>
+          {userId === data.clerkId && (
+            <div className='flex w-full justify-end'>
+              <Button title={'編集'} href={`${userId}/edit`} />
+            </div>
+          )}
         </div>
-        {userId === data.clerkId && <Button title={'編集'} href={`${userId}/edit`} />}
+        <div
+          id='mainContent'
+          className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'
+        >
+          <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>
+            <div className='h-0.5 w-full bg-gray-500 shadow-md'></div>
+            {posts.map((post) => (
+              <Post
+                key={post.id}
+                postId={post.id}
+                postContent={post.content}
+                timestamp={post.createdAt}
+                likes={post.likes}
+                replyCount={post.replies.filter((reply) => reply.parentReplyId === null).length}
+                postAuthorName={data.name}
+                postAuthorId={data.id}
+                postAuthorClerkId={data.clerkId}
+                postAuthorIntroduction={data.introduction}
+                postAuthorTags={data.tags}
+                postAuthorAvatar={data.avatar}
+              />
+            ))}
+          </div>
+        </div>
       </main>
     </div>
   );
