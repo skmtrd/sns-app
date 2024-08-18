@@ -1,10 +1,6 @@
 import DOMPurify from 'dompurify';
 import React from 'react';
 
-type PostContentProps = {
-  textContent: string;
-};
-
 const URL_REGEX = /(https?:\/\/[^\s]+)/g;
 
 const Url = ({ url }: { url: string }) => {
@@ -20,7 +16,7 @@ const Url = ({ url }: { url: string }) => {
   );
 };
 
-const PostContent: React.FC<PostContentProps> = ({ textContent }) => {
+const PostContent: React.FC<PostContentProps> = ({ textContent }: { textContent: string }) => {
   const sanitizedText = DOMPurify.sanitize(textContent);
   const lines: string[] = sanitizedText.split('\n');
   return (
