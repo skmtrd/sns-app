@@ -1,9 +1,17 @@
 'use client';
 
 import { useRelativeTime } from '@/hooks/useRelativeTime';
+import { addQuestionLike, deleteQuestionLike } from '@/lib/likeRequests';
 import { Reply } from '@/lib/types';
 import { useAuth } from '@clerk/nextjs';
-import { ChevronDown, ChevronUp, MessageCircleReply, MoreVertical, Send } from 'lucide-react';
+import {
+  ChevronDown,
+  ChevronUp,
+  Heart,
+  MessageCircleReply,
+  MoreVertical,
+  Send,
+} from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { mutate } from 'swr';
@@ -19,6 +27,7 @@ type QuestionPostProps = {
   questionAuthorId: string;
   questionAuthorClerkId: string;
   timestamp: string;
+  likes: { user: { name: string; clerkId: string; id: string } }[];
 };
 
 type ReplyFormData = {
@@ -34,6 +43,7 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
   questionAuthorId,
   questionAuthorClerkId,
   timestamp,
+  likes,
 }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isReplyDrawerOpen, setIsReplyDrawerOpen] = useState(false);
@@ -44,6 +54,11 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
   const replyContentRef = useRef<HTMLDivElement>(null);
   const { userId: currentClerkId } = useAuth();
   const timeAgo = useRelativeTime(timestamp);
+  const [likesCount, setLikesCount] = useState(likes.length);
+  const [isLiked, setIsLiked] = useState(
+    likes.some((like) => like.user.clerkId === currentClerkId),
+  );
+  const [isLiking, setIsLiking] = useState(false);
 
   const {
     register,
@@ -90,6 +105,27 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
     }
   }, [replies, isReplyDrawerOpen]);
 
+  const handleLike = async () => {
+    if (isLiking) return;
+
+    setIsLiking(true);
+    setIsLiked(!isLiked);
+    setLikesCount(isLiked ? likesCount - 1 : likesCount + 1);
+
+    try {
+      if (isLiked) {
+        await deleteQuestionLike(questionId);
+      } else {
+        await addQuestionLike(questionId);
+      }
+    } catch (error) {
+      setIsLiked(isLiked);
+      setLikesCount(likesCount);
+    } finally {
+      setIsLiking(false);
+    }
+  };
+
   const deletePost = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     const toDelete = `/api/question/${questionId}`;
@@ -133,12 +169,23 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
                 ))}
               </div>
               <div className='mt-6 flex w-full items-center justify-between'>
-                <button
-                  onClick={handleReplyDrawerToggle}
-                  className='flex items-center justify-center rounded-full bg-blue-400 px-4 py-2 text-white transition-all hover:bg-blue-600 hover:shadow-lg'
-                >
-                  <MessageCircleReply size={20} />
-                </button>
+                <div className='flex items-center justify-center gap-2'>
+                  <button
+                    onClick={handleReplyDrawerToggle}
+                    className='flex items-center justify-center rounded-full bg-blue-400 px-4 py-2 text-white transition-all hover:bg-blue-600 hover:shadow-lg'
+                  >
+                    <MessageCircleReply size={20} />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleLike();
+                    }}
+                  >
+                    <Heart size={20} color={'#dc143c'} fill={isLiked ? '#dc143c' : 'white'} />
+                  </button>
+                  <span>{likesCount}</span>
+                </div>
                 <div className='relative flex gap-2'>
                   <button
                     onClick={handleDrawerToggle}
@@ -171,12 +218,23 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
 
       {replies.length <= 1 && (
         <div className='relative mt-6 flex w-full justify-between'>
-          <button
-            onClick={handleReplyDrawerToggle}
-            className='flex items-center justify-center rounded-full bg-blue-400 px-4 py-2 text-white transition-all hover:bg-blue-600 hover:shadow-lg'
-          >
-            <MessageCircleReply size={20} />
-          </button>
+          <div className='flex items-center justify-center gap-2'>
+            <button
+              onClick={handleReplyDrawerToggle}
+              className='flex items-center justify-center rounded-full bg-blue-400 px-4 py-2 text-white transition-all hover:bg-blue-600 hover:shadow-lg'
+            >
+              <MessageCircleReply size={20} />
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleLike();
+              }}
+            >
+              <Heart size={20} color={'#dc143c'} fill={isLiked ? '#dc143c' : 'white'} />
+            </button>
+            <span>{likesCount}</span>
+          </div>
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             className='text-gray-500 hover:text-gray-700'
