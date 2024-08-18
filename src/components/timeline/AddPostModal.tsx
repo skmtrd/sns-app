@@ -47,7 +47,7 @@ export const AddPost: React.FC<AddPostProps> = ({ closeModal }) => {
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     clearErrors();
-
+    console.log(data);
     const newPost = {
       createdAt: new Date().toISOString(),
       content: data.content,
