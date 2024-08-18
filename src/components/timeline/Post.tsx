@@ -57,8 +57,11 @@ export const Post: React.FC<PostProps> = ({
   const profilePreviewRef = useRef<HTMLDivElement>(null);
   const { userId: currentClerkId } = useAuth();
   const timeAgo = useRelativeTime(timestamp);
-  const [isLiked, setIsLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(0);
+  const [likesCount, setLikesCount] = useState(likes.length);
+  const [isLiked, setIsLiked] = useState(
+    likes.some((like) => like.user.clerkId === currentClerkId),
+  );
+  const [isLiking, setIsLiking] = useState(false);
 
   const {
     register,
@@ -69,8 +72,6 @@ export const Post: React.FC<PostProps> = ({
   } = useForm<ReplyFormData>();
 
   useEffect(() => {
-    setLikesCount(likes?.length);
-    setIsLiked(likes?.some((like) => like.user.clerkId === currentClerkId));
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
@@ -84,7 +85,7 @@ export const Post: React.FC<PostProps> = ({
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [likes, currentClerkId]);
+  }, []);
 
   const deletePost = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -104,9 +105,24 @@ export const Post: React.FC<PostProps> = ({
   };
 
   const handleLike = async () => {
+    if (isLiking) return;
+
+    setIsLiking(true);
     setIsLiked(!isLiked);
-    isLiked ? await deletePostLike(postId) : await addPostLike(postId);
-    isLiked ? setLikesCount(likesCount - 1) : setLikesCount(likesCount + 1);
+    setLikesCount(isLiked ? likesCount - 1 : likesCount + 1);
+
+    try {
+      if (isLiked) {
+        await deletePostLike(postId);
+      } else {
+        await addPostLike(postId);
+      }
+    } catch (error) {
+      setIsLiked(isLiked);
+      setLikesCount(likesCount);
+    } finally {
+      setIsLiking(false);
+    }
   };
 
   const handleReplyModalToggle = () => {
