@@ -60,7 +60,7 @@ export const AddPost: React.FC<AddPostProps> = ({ closeModal }) => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && e.ctrlKey) {
+    if ((e.key === 'Enter' && e.ctrlKey) || (e.key === 'Enter' && e.metaKey)) {
       e.preventDefault();
       handleSubmit(onSubmit)();
     }

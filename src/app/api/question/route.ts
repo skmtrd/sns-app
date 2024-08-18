@@ -8,7 +8,6 @@ import { apiRes } from '../types';
 
 export const GET = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
-    // const { getUser } = clerkClient().users;
     await dbConnect();
     const posts = await prisma.question.findMany({
       include: {
@@ -21,6 +20,11 @@ export const GET = async (req: Request, res: NextResponse) =>
         author: {
           include: {
             tags: true,
+          },
+        },
+        likes: {
+          include: {
+            user: true,
           },
         },
       },

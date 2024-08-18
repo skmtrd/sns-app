@@ -49,7 +49,7 @@ const TimelineAll = () => {
             questionAuthorId={question.author.id}
             questionAuthorClerkId={question.author.clerkId}
             timestamp={question.createdAt}
-            // tags={question.author.tags}
+            likes={question.likes}
           />
         ))}
       </div>

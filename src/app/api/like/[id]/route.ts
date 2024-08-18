@@ -18,7 +18,6 @@ export const GET = async (req: Request, res: NextResponse) =>
 
     const user = await findSpecificUser(clerkId);
 
-    //postのみを取得
     const likedPost = await prisma.like.findMany({
       where: {
         userId: user.id,
@@ -26,7 +25,7 @@ export const GET = async (req: Request, res: NextResponse) =>
       },
       include: { post: true, user: true },
     });
-    //assignmentのみを取得
+
     const likedAssignment = await prisma.like.findMany({
       where: {
         userId: user.id,
@@ -34,7 +33,6 @@ export const GET = async (req: Request, res: NextResponse) =>
       },
       include: { assignment: true, user: true },
     });
-    //questionのみを取得
     const likedQuestion = await prisma.like.findMany({
       where: {
         userId: user.id,

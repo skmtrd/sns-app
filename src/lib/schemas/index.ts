@@ -61,6 +61,11 @@ export const questionSchema = z
         }),
       }),
     ),
+    likes: z.array(
+      z.object({
+        user: z.object({ id: z.string(), name: z.string(), clerkId: z.string() }),
+      }),
+    ),
   })
   .array();
 
