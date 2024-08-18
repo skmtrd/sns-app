@@ -16,12 +16,12 @@ const Url = ({ url }: { url: string }) => {
   );
 };
 
-const PostContent: React.FC<PostContentProps> = ({ textContent }: { textContent: string }) => {
+const PostContent = ({ textContent }: { textContent: string }) => {
   const sanitizedText = DOMPurify.sanitize(textContent);
   const lines: string[] = sanitizedText.split('\n');
   return (
     <span>
-      <span>
+      <span className='break-words'>
         {lines.map((line, lineIndex) => {
           const parts = line.split(URL_REGEX);
           return (
