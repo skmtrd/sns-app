@@ -63,6 +63,10 @@ export const AddQuestion: React.FC<AddQuestionProps> = ({ closeModal }) => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    if ((e.key === 'Enter' && e.ctrlKey) || (e.key === 'Enter' && e.metaKey)) {
+      e.preventDefault();
+      handleSubmit(onSubmit)();
+    }
     if (e.key === 'Escape') {
       e.preventDefault();
       closeModal();
