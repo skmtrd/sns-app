@@ -1,4 +1,6 @@
 'use client';
+import useData from '@/hooks/useData';
+import { postSchema } from '@/lib/schemas';
 import { cn } from '@/lib/utils';
 import { X } from 'lucide-react';
 import React, { useEffect } from 'react';
@@ -15,8 +17,23 @@ type FormInputs = {
 
 const MAX_CONTENT_LENGTH = 500;
 
+const addPost = async (newPost: { createdAt: string; content: string }) => {
+  const response = await fetch('/api/post', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(newPost),
+  });
+
+  if (!response.ok) {
+    throw new Error('投稿に失敗しました');
+  }
+};
+
 export const AddPost: React.FC<AddPostProps> = ({ closeModal }) => {
   const { mutate } = useSWRConfig();
+  const { data: posts, error, isLoading } = useData('/api/post', postSchema);
   const {
     register,
     handleSubmit,
@@ -37,24 +54,13 @@ export const AddPost: React.FC<AddPostProps> = ({ closeModal }) => {
     };
 
     try {
-      const response = await fetch('/api/post', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newPost),
-      });
-
-      if (!response.ok) {
-        throw new Error('投稿に失敗しました');
-      }
-
+      await addPost(newPost);
       mutate('/api/post');
       closeModal();
-    } catch (err: any) {
+    } catch (error) {
       setError('root', {
         type: 'manual',
-        message: err.message,
+        message: '投稿に失敗しました',
       });
     }
   };
