@@ -1,10 +1,10 @@
 'use client';
 import Header from '@/components/element/Header';
 import FixedHeader from '@/components/layout/FixedHeader';
+import TimelineSkeltonLoading from '@/components/loading/TimelineSkeltonLoading';
 import { Post } from '@/components/timeline/Post';
 import useData from '@/hooks/useData';
 import { postSchema } from '@/lib/schemas';
-import { LoaderCircle } from 'lucide-react';
 import { mutate } from 'swr';
 
 const TimelineAll = () => {
@@ -18,15 +18,6 @@ const TimelineAll = () => {
     return <div>Error</div>;
   }
 
-  if (isLoading || !posts) {
-    return (
-      <div className='flex h-svh w-full flex-1 grow flex-col items-center justify-center gap-4 bg-gray-100'>
-        <LoaderCircle size='64' className='animate-spin text-blue-600' />
-        ロード中...
-      </div>
-    );
-  }
-
   const scrollToTop = () => {
     const element = document.getElementById('mainContent');
     element?.scrollTo({
@@ -34,6 +25,10 @@ const TimelineAll = () => {
       behavior: 'smooth',
     });
   };
+
+  if (isLoading || !posts) {
+    return <TimelineSkeltonLoading title={'タイムライン'} subtitle={'すべて'} />;
+  }
 
   return (
     <div
