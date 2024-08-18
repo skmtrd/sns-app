@@ -5,7 +5,7 @@ type KebabMenuProps = {
   currentClerkId: string | null | undefined;
   authorClerkId: string;
   contentId: string;
-  handleDelete: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  handleDelete: (e: React.MouseEvent<HTMLButtonElement>, contentId: string) => void;
 };
 
 const KebabMenu: React.FC<KebabMenuProps> = ({
@@ -19,7 +19,7 @@ const KebabMenu: React.FC<KebabMenuProps> = ({
       <div className='py-1'>
         {currentClerkId === authorClerkId && (
           <button
-            onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleDelete(e)}
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => handleDelete(e, contentId)}
             className='flex w-full items-center justify-start px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100'
           >
             <Trash size={16} className='mr-2 inline-block' />

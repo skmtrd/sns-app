@@ -6,9 +6,23 @@ import { Post } from '@/components/timeline/Post';
 import useData from '@/hooks/useData';
 import { postSchema } from '@/lib/schemas';
 import { usePathname } from 'next/navigation';
-import { mutate } from 'swr';
+import { useSWRConfig } from 'swr';
+
+const deletePost = async (postId: string) => {
+  try {
+    const res = await fetch(`/api/post/${postId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 const TagFilteredTimeline = () => {
+  const { mutate } = useSWRConfig();
   const { data: posts, error, isLoading } = useData('/api/post', postSchema);
   const tagId = usePathname().split('/timeline/')[1];
 
@@ -19,6 +33,29 @@ const TagFilteredTimeline = () => {
   } else if (error) {
     return <div>Error</div>;
   }
+
+  const handleDeletePost = async (e: React.MouseEvent<HTMLButtonElement>, postId: string) => {
+    e.stopPropagation();
+    if (!posts) return;
+    const optimisticData = posts.filter((post) => post.id !== postId);
+    try {
+      await mutate(
+        '/api/post',
+        async () => {
+          await deletePost(postId);
+          return optimisticData;
+        },
+        {
+          optimisticData,
+          revalidate: false,
+          populateCache: true,
+          rollbackOnError: true,
+        },
+      );
+    } catch (error) {
+      console.error('Failed to delete post:', error);
+    }
+  };
 
   if (isLoading || !posts) {
     return <TimelineSkeltonLoading title={'検索'} subtitle={'...'} />;
@@ -54,6 +91,7 @@ const TagFilteredTimeline = () => {
             postAuthorIntroduction={post.author.introduction}
             postAuthorTags={post.author.tags}
             postAuthorAvatar={post.avatar}
+            handleDeletePost={handleDeletePost}
           />
         ))}
       </div>

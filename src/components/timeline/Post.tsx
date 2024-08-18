@@ -27,6 +27,7 @@ type PostProps = {
   postAuthorIntroduction?: string | undefined | null;
   likes: { user: { name: string; clerkId: string; id: string } }[];
   replyCount: number;
+  handleDeletePost: (e: React.MouseEvent<HTMLButtonElement>, postId: string) => void;
 };
 
 type ReplyFormData = {
@@ -47,6 +48,7 @@ export const Post: React.FC<PostProps> = ({
   postAuthorIntroduction,
   likes,
   replyCount,
+  handleDeletePost,
 }) => {
   const router = useRouter();
   const { mutate } = useSWRConfig();
@@ -86,23 +88,6 @@ export const Post: React.FC<PostProps> = ({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
-  const deletePost = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    const toDelete = `/api/post/${postId}`;
-    try {
-      const res = await fetch(toDelete, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      mutate('/api/post');
-      setIsDropdownOpen(false);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const handleLike = async () => {
     if (isLiking) return;
@@ -228,7 +213,7 @@ export const Post: React.FC<PostProps> = ({
             currentClerkId={currentClerkId}
             authorClerkId={postAuthorClerkId}
             contentId={postId}
-            handleDelete={deletePost}
+            handleDelete={handleDeletePost}
           />
         )}
       </div>
