@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSWRConfig } from 'swr';
 import KebabMenu from '../element/KebabMenu';
+import PostContent from '../element/PostContent';
 import ProfilePreview from '../element/ProfilePreview';
 import UserTag from '../element/UserTag';
 import { AddReplyModal } from './AddReplyModal';
@@ -27,6 +28,7 @@ type PostProps = {
   postAuthorIntroduction?: string | undefined | null;
   likes: { user: { name: string; clerkId: string; id: string } }[];
   replyCount: number;
+  handleDeletePost: (e: React.MouseEvent<HTMLButtonElement>, postId: string) => void;
 };
 
 type ReplyFormData = {
@@ -47,6 +49,7 @@ export const Post: React.FC<PostProps> = ({
   postAuthorIntroduction,
   likes,
   replyCount,
+  handleDeletePost,
 }) => {
   const router = useRouter();
   const { mutate } = useSWRConfig();
@@ -86,23 +89,6 @@ export const Post: React.FC<PostProps> = ({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
-  const deletePost = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    const toDelete = `/api/post/${postId}`;
-    try {
-      const res = await fetch(toDelete, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      mutate('/api/post');
-      setIsDropdownOpen(false);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const handleLike = async () => {
     if (isLiking) return;
@@ -182,7 +168,8 @@ export const Post: React.FC<PostProps> = ({
         </div>
       </div>
       <div className='mb-4'>
-        <div className='mb-2 ml-1 w-full break-words'>{postContent}</div>
+        {/* <div className='mb-2 ml-1 w-full break-words'>{postContent}</div> */}
+        <PostContent textContent={postContent} />
       </div>
       <div className='flex flex-wrap gap-2'>
         {postAuthorTags &&
@@ -228,7 +215,7 @@ export const Post: React.FC<PostProps> = ({
             currentClerkId={currentClerkId}
             authorClerkId={postAuthorClerkId}
             contentId={postId}
-            handleDelete={deletePost}
+            handleDelete={handleDeletePost}
           />
         )}
       </div>
