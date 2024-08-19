@@ -11,8 +11,8 @@ import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import { Toaster } from 'react-hot-toast';
 import { mutate } from 'swr';
-
 const deletePost = async (postId: string) => {
   try {
     const res = await fetch(`/api/post/${postId}`, {
@@ -84,6 +84,7 @@ const ProfilePage = () => {
         {isImageModalOpen && (
           <ImageDisplayModal closeModal={handleToggleIsImageModalOpen} src={data.avatar} />
         )}
+        <Toaster />
         <div className='rounded-lg bg-white p-6 shadow sm:p-8'>
           <div className='mb-6 flex flex-col items-center sm:flex-row sm:items-start'>
             <div className='mb-4 sm:mb-0 sm:mr-6'>

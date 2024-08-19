@@ -10,6 +10,7 @@ import { Loader2 } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import toast, { Toaster } from 'react-hot-toast';
 import useSWR from 'swr';
 import { z } from 'zod';
 
@@ -76,41 +77,69 @@ const ProfileEditPage = () => {
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (data) => {
     const pathUserId = pathname.split('/profile/')[1].split('/')[0];
-    console.log(userInfo?.tags.map((tag: Tag) => tag.name));
 
     if (data.avatar) {
       user?.setProfileImage({ file: data.avatar });
     }
     delete data.avatar;
 
+    const updatePromise = toast.promise(
+      (async () => {
+        const userInfoRes = await fetch(`/api/profile/${pathUserId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (!userInfoRes.ok) {
+          throw new Error('Failed to update user info');
+        }
+
+        const tagRes = await fetch('/api/tag', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            tagNames: userInfo?.tags.map((tag: Tag) => tag.name),
+            clerkId: pathUserId,
+          }),
+        });
+
+        if (!tagRes.ok) {
+          throw new Error('Failed to update tags');
+        }
+
+        return await tagRes.json();
+      })(),
+      {
+        loading: 'プロフィールを更新中...',
+        success: 'プロフィールを更新しました！',
+        error: '更新に失敗しました。もう一度お試しください。',
+      },
+      {
+        style: {
+          fontSize: '1rem',
+          fontWeight: 'bold',
+          borderRadius: '10px',
+          background: '#e8e9fc',
+          color: '#3147d4',
+          padding: '1rem',
+        },
+      },
+    );
+
     try {
-      const userInfoRes = await fetch(`/api/profile/${pathUserId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      const tagRes = await fetch('/api/tag', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          tagNames: userInfo?.tags.map((tag: Tag) => tag.name),
-          clerkId: pathUserId,
-        }),
-      });
-
-      const tagData = await tagRes.json();
-      console.log('Tag update response:', tagData);
+      await updatePromise;
       router.push(`/profile/${pathUserId}`);
     } catch (error) {
       console.error('Failed to update user info:', error);
       setError('root.error', { message: 'ユーザー情報の更新に失敗しました。' });
     }
   };
+
   const onFileChange = async (file: File) => {
     setValue('avatar', file);
   };
@@ -132,6 +161,7 @@ const ProfileEditPage = () => {
     <div className='flex flex-1 flex-col overflow-hidden'>
       <Header title={'プロフィール編集'} />
       <main className='flex-1 overflow-y-auto bg-gray-100 p-6'>
+        <Toaster />
         <form
           className='space-y-4 rounded-lg bg-white p-6 shadow'
           onSubmit={handleSubmit(onSubmit)}
