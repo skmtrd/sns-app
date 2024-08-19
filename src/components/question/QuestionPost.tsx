@@ -28,6 +28,7 @@ type QuestionPostProps = {
   questionAuthorClerkId: string;
   timestamp: string;
   likes: { user: { name: string; clerkId: string; id: string } }[];
+  handleDeletePost: (e: React.MouseEvent<HTMLButtonElement>, questionId: string) => void;
 };
 
 type ReplyFormData = {
@@ -44,6 +45,7 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
   questionAuthorClerkId,
   timestamp,
   likes,
+  handleDeletePost,
 }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isReplyDrawerOpen, setIsReplyDrawerOpen] = useState(false);
@@ -126,23 +128,6 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
     }
   };
 
-  const deletePost = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    const toDelete = `/api/question/${questionId}`;
-    try {
-      const res = await fetch(toDelete, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      mutate('/api/question');
-      setIsDropdownOpen(false);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   return (
     <div className='relative w-11/12 rounded-lg bg-white p-6 shadow'>
       <div className='flex items-start justify-between'>
@@ -203,7 +188,7 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
                         currentClerkId={currentClerkId}
                         authorClerkId={questionAuthorClerkId}
                         contentId={questionId}
-                        handleDelete={deletePost}
+                        handleDelete={handleDeletePost}
                       />
                     )}
                   </button>
@@ -245,7 +230,7 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
                 contentId={questionId}
                 currentClerkId={currentClerkId}
                 authorClerkId={questionAuthorClerkId}
-                handleDelete={deletePost}
+                handleDelete={handleDeletePost}
               />
             )}
           </button>

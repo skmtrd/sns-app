@@ -4,10 +4,13 @@ import FixedHeader from '@/components/layout/FixedHeader';
 import QuestionSkeltonLoading from '@/components/loading/QuestionSkeltonLoading';
 import QuestionPost from '@/components/question/QuestionPost';
 import useData from '@/hooks/useData';
+import { deleteQuestion } from '@/lib/deleteRequests';
 import { questionSchema } from '@/lib/schemas';
 import { scrollToTop } from '@/lib/scrollToTop';
+import { useSWRConfig } from 'swr';
 
 const TimelineAll = () => {
+  const { mutate } = useSWRConfig();
   const { data: questions, error, isLoading } = useData('/api/question', questionSchema);
 
   if (error) {
@@ -17,6 +20,32 @@ const TimelineAll = () => {
   if (isLoading || !questions) {
     return <QuestionSkeltonLoading title={'質問'} subtitle={'すべて'} />;
   }
+
+  const handleDeleteQuestion = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    questionId: string,
+  ) => {
+    e.stopPropagation();
+    if (!questions) return;
+    const optimisticData = questions.filter((question) => question.id !== questionId);
+    try {
+      await mutate(
+        '/api/question',
+        async () => {
+          await deleteQuestion(questionId);
+          return optimisticData;
+        },
+        {
+          optimisticData,
+          revalidate: false,
+          populateCache: true,
+          rollbackOnError: true,
+        },
+      );
+    } catch (error) {
+      console.error('Failed to delete post:', error);
+    }
+  };
 
   return (
     <div
@@ -38,6 +67,7 @@ const TimelineAll = () => {
             questionAuthorClerkId={question.author.clerkId}
             timestamp={question.createdAt}
             likes={question.likes}
+            handleDeletePost={handleDeleteQuestion}
           />
         ))}
       </div>
