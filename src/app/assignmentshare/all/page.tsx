@@ -4,6 +4,7 @@ import Header from '@/components/element/Header';
 import FixedHeader from '@/components/layout/FixedHeader';
 import useData from '@/hooks/useData';
 import { assignmentshareSchema } from '@/lib/schemas';
+import { scrollToTop } from '@/lib/scrollToTop';
 import { Loader2 } from 'lucide-react';
 
 const TimelineAll = () => {
@@ -18,20 +19,15 @@ const TimelineAll = () => {
       </div>
     );
   }
-  if (error) {
+  if (error || !data) {
     return <div>Error</div>;
   }
 
-  const scrollToTop = () => {
-    const element = document.getElementById('mainContent');
-    element?.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
-  };
-
   return (
-    <div className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'>
+    <div
+      id='mainContent'
+      className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'
+    >
       <FixedHeader title={'課題共有'} target={'すべて'} scrollToTop={scrollToTop} />
       <Header title={''} />
       <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>

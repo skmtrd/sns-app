@@ -5,6 +5,7 @@ import QuestionSkeltonLoading from '@/components/loading/QuestionSkeltonLoading'
 import QuestionPost from '@/components/question/QuestionPost';
 import useData from '@/hooks/useData';
 import { questionSchema } from '@/lib/schemas';
+import { scrollToTop } from '@/lib/scrollToTop';
 
 const TimelineAll = () => {
   const { data: questions, error, isLoading } = useData('/api/question', questionSchema);
@@ -16,14 +17,6 @@ const TimelineAll = () => {
   if (isLoading || !questions) {
     return <QuestionSkeltonLoading title={'質問'} subtitle={'すべて'} />;
   }
-
-  const scrollToTop = () => {
-    const element = document.getElementById('mainContent');
-    element?.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
-  };
 
   return (
     <div
