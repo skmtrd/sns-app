@@ -1,6 +1,4 @@
 'use client';
-import useData from '@/hooks/useData';
-import { postSchema } from '@/lib/schemas';
 import { cn } from '@/lib/utils';
 import { X } from 'lucide-react';
 import React, { useEffect } from 'react';
@@ -33,7 +31,6 @@ const addPost = async (newPost: { createdAt: string; content: string }) => {
 
 export const AddPost: React.FC<AddPostProps> = ({ closeModal }) => {
   const { mutate } = useSWRConfig();
-  const { data: posts, error, isLoading } = useData('/api/post', postSchema);
   const {
     register,
     handleSubmit,

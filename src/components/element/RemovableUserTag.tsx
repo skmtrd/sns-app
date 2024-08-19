@@ -12,12 +12,16 @@ const RemovableUserTag: React.FC<Props> = ({ tagName, handleRemoveTag }) => {
     <div>
       <span className='mb-2 mr-2 inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-sm text-blue-800 shadow hover:bg-blue-300'>
         <span className='mr-1'>{tagName}</span>
-        <div
+        <button
           className='rounded-full p-1 hover:bg-blue-200 focus:outline-none'
-          onClick={() => handleRemoveTag(tagName)}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleRemoveTag(tagName);
+          }}
         >
           <X size={15} />
-        </div>
+        </button>
       </span>
     </div>
   );

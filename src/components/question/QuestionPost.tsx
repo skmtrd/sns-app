@@ -16,6 +16,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { mutate } from 'swr';
 import KebabMenu from '../element/KebabMenu';
+import TextContent from '../element/TextContent';
 import QuestionReply from './QuestionReply';
 
 type QuestionPostProps = {
@@ -28,6 +29,7 @@ type QuestionPostProps = {
   questionAuthorClerkId: string;
   timestamp: string;
   likes: { user: { name: string; clerkId: string; id: string } }[];
+  handleDeletePost: (e: React.MouseEvent<HTMLButtonElement>, questionId: string) => void;
 };
 
 type ReplyFormData = {
@@ -44,6 +46,7 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
   questionAuthorClerkId,
   timestamp,
   likes,
+  handleDeletePost,
 }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isReplyDrawerOpen, setIsReplyDrawerOpen] = useState(false);
@@ -126,30 +129,15 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
     }
   };
 
-  const deletePost = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    const toDelete = `/api/question/${questionId}`;
-    try {
-      const res = await fetch(toDelete, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      mutate('/api/question');
-      setIsDropdownOpen(false);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   return (
     <div className='relative w-11/12 rounded-lg bg-white p-6 shadow'>
       <div className='flex items-start justify-between'>
         <div>
           <h3 className='break-words text-xl font-bold'>{questionTitle}</h3>
           <p className='break-words text-sm text-gray-600'>{questionAuthorName}さん</p>
-          <p className='mt-2'>{questionDescription}</p>
+          <div className='mt-2'>
+            <TextContent textContent={questionDescription} />
+          </div>
         </div>
         <p className='mr-1 whitespace-nowrap text-sm text-gray-500'>{timeAgo}</p>
       </div>
@@ -203,7 +191,7 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
                         currentClerkId={currentClerkId}
                         authorClerkId={questionAuthorClerkId}
                         contentId={questionId}
-                        handleDelete={deletePost}
+                        handleDelete={handleDeletePost}
                       />
                     )}
                   </button>
@@ -245,7 +233,7 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
                 contentId={questionId}
                 currentClerkId={currentClerkId}
                 authorClerkId={questionAuthorClerkId}
-                handleDelete={deletePost}
+                handleDelete={handleDeletePost}
               />
             )}
           </button>

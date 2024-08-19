@@ -11,8 +11,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSWRConfig } from 'swr';
 import KebabMenu from '../element/KebabMenu';
-import PostContent from '../element/PostContent';
 import ProfilePreview from '../element/ProfilePreview';
+import TextContent from '../element/TextContent';
 import UserTag from '../element/UserTag';
 import { AddReplyModal } from './AddReplyModal';
 
@@ -167,9 +167,8 @@ export const Post: React.FC<PostProps> = ({
           <p className='px-1 py-0.5 text-xs text-gray-500'>@{postAuthorId}</p>
         </div>
       </div>
-      <div className='mb-4'>
-        {/* <div className='mb-2 ml-1 w-full break-words'>{postContent}</div> */}
-        <PostContent textContent={postContent} />
+      <div className='mb-4' onClick={(e) => e.stopPropagation()}>
+        <TextContent textContent={postContent} />
       </div>
       <div className='flex flex-wrap gap-2'>
         {postAuthorTags &&

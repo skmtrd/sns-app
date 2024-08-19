@@ -4,23 +4,12 @@ import FixedHeader from '@/components/layout/FixedHeader';
 import TimelineSkeltonLoading from '@/components/loading/TimelineSkeltonLoading';
 import { Post } from '@/components/timeline/Post';
 import useData from '@/hooks/useData';
+import { deletePost } from '@/lib/deleteRequests';
 import { postSchema } from '@/lib/schemas';
+import { scrollToTop } from '@/lib/scrollToTop';
 import { usePathname } from 'next/navigation';
 import { useSWRConfig } from 'swr';
 import { toHiragana } from 'wanakana';
-
-const deletePost = async (postId: string) => {
-  try {
-    const res = await fetch(`/api/post/${postId}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-  } catch (error) {
-    console.error(error);
-  }
-};
 
 const SearchedTimeline = () => {
   const pathName = usePathname();
@@ -47,14 +36,6 @@ const SearchedTimeline = () => {
   if (isLoading || !posts) {
     return <TimelineSkeltonLoading title={'検索'} subtitle={'...'} />;
   }
-
-  const scrollToTop = () => {
-    const element = document.getElementById('mainContent');
-    element?.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
-  };
 
   const handleDeletePost = async (e: React.MouseEvent<HTMLButtonElement>, postId: string) => {
     e.stopPropagation();

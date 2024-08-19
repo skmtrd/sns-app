@@ -4,21 +4,10 @@ import FixedHeader from '@/components/layout/FixedHeader';
 import TimelineSkeltonLoading from '@/components/loading/TimelineSkeltonLoading';
 import { Post } from '@/components/timeline/Post';
 import useData from '@/hooks/useData';
+import { deletePost } from '@/lib/deleteRequests';
 import { postSchema } from '@/lib/schemas';
+import { scrollToTop } from '@/lib/scrollToTop';
 import { useSWRConfig } from 'swr';
-
-const deletePost = async (postId: string) => {
-  try {
-    const res = await fetch(`/api/post/${postId}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-  } catch (error) {
-    console.error(error);
-  }
-};
 
 const TimelineAll = () => {
   const { mutate } = useSWRConfig();
@@ -31,14 +20,6 @@ const TimelineAll = () => {
   } else if (error) {
     return <div>Error</div>;
   }
-
-  const scrollToTop = () => {
-    const element = document.getElementById('mainContent');
-    element?.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
-  };
 
   const handleDeletePost = async (e: React.MouseEvent<HTMLButtonElement>, postId: string) => {
     e.stopPropagation();
