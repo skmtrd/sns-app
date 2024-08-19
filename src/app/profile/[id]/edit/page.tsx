@@ -3,12 +3,11 @@
 import { ChangeAvatar } from '@/components/element/ChangeAvatar';
 import Header from '@/components/element/Header';
 import { TagPicker } from '@/components/element/TagPicker';
+import { useUserInfo } from '@/hooks/useUserInfo';
 import { Tag } from '@/lib/types';
-import { useAuth, useUser } from '@clerk/nextjs';
+import { useUser } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2 } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast, { Toaster } from 'react-hot-toast';
 import useSWR from 'swr';
@@ -28,11 +27,6 @@ const formSchema = z.object({
   avatar: z.custom<File>((value) => value instanceof File).optional(),
 });
 
-const profileFetcher = (url: string) =>
-  fetch(url)
-    .then((res) => res.json())
-    .then((data) => data.data);
-
 const tagFetcher = (url: string) =>
   fetch(url)
     .then((res) => res.json())
@@ -41,24 +35,20 @@ const tagFetcher = (url: string) =>
       tags.map((tag: { id: string; name: string }) => ({ id: tag.id, name: tag.name })),
     );
 
-const ProfileEditPage = () => {
+const ProfileEditForm = ({
+  userInfo,
+  tags,
+  clerkId,
+}: {
+  userInfo: any;
+  tags: Tag[];
+  clerkId: string;
+}) => {
   const router = useRouter();
   const pathname = usePathname();
-  const { userId: clerkId } = useAuth();
-  const {
-    data: userInfo,
-    error: userInfoError,
-    isLoading: isUserInfoLoading,
-    mutate: mutateUserInfo,
-  } = useSWR(`/api/profile/${clerkId}`, profileFetcher);
-  const {
-    data: tags,
-    error: tagError,
-    isLoading: isTagLoading,
-    mutate: mutateTags,
-  } = useSWR('/api/tag', tagFetcher);
 
   const { user } = useUser();
+
   const {
     register,
     handleSubmit,
@@ -69,9 +59,9 @@ const ProfileEditPage = () => {
     resolver: zodResolver(formSchema),
     mode: 'onChange',
     values: {
-      name: userInfo?.name,
-      userId: userInfo?.id,
-      introduction: userInfo?.introduction,
+      name: userInfo.name,
+      userId: userInfo.id,
+      introduction: userInfo.introduction,
     },
   });
 
@@ -143,18 +133,7 @@ const ProfileEditPage = () => {
   const onFileChange = async (file: File) => {
     setValue('avatar', file);
   };
-  useEffect(() => {
-    console.log(userInfo);
-  }, []);
-  if (userInfoError || tagError) return <div>プロフィール読み込みエラー</div>;
 
-  if (isUserInfoLoading || isTagLoading || !userInfo || !tags || !clerkId)
-    return (
-      <div className='flex h-svh w-full flex-1 grow flex-col items-center justify-center gap-4 bg-gray-100'>
-        <Loader2 size='64' className='animate-spin text-blue-600' />
-        ロード中...
-      </div>
-    );
   if (!user) return <div>ログインしてください。</div>;
 
   return (
@@ -218,12 +197,7 @@ const ProfileEditPage = () => {
             )}
           </div>
           <div>
-            <TagPicker
-              tags={tags}
-              selectedTags={userInfo.tags}
-              clerkId={clerkId}
-              userInfo={userInfo}
-            />
+            <TagPicker tags={tags} clerkId={clerkId} userInfo={userInfo} />
           </div>
         </form>
         <button
@@ -235,6 +209,25 @@ const ProfileEditPage = () => {
       </main>
     </div>
   );
+};
+
+const ProfileEditPage = () => {
+  const clerkId = usePathname().split('/profile/')[1].split('/')[0];
+
+  const { userInfo, isLoading, isError } = useUserInfo(clerkId);
+
+  const {
+    data: tags,
+    error: tagError,
+    isLoading: isTagLoading,
+    mutate: mutateTags,
+  } = useSWR('/api/tag', tagFetcher);
+
+  if (userInfo && tags && clerkId) {
+    return <ProfileEditForm userInfo={userInfo} tags={tags} clerkId={clerkId} />;
+  }
+
+  return <div>ロード中...</div>;
 };
 
 export default ProfileEditPage;

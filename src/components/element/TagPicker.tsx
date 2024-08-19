@@ -2,52 +2,49 @@
 
 import { Tag } from '@/lib/types';
 import { ChevronDown, ChevronUp, Plus } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useSWRConfig } from 'swr';
 import RemovableUserTag from './RemovableUserTag';
 import UserTag from './UserTag';
 
 type TagPickerProps = {
   tags: Tag[];
-  selectedTags: Tag[];
   clerkId: string;
   userInfo: any;
 };
 
-export const TagPicker: React.FC<TagPickerProps> = ({ tags, selectedTags, clerkId, userInfo }) => {
-  useEffect(() => {
-    console.log(tags);
-  }, []);
-
+export const TagPicker: React.FC<TagPickerProps> = ({ tags, clerkId, userInfo }) => {
   const { mutate } = useSWRConfig();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
+  console.log('userInfo', userInfo);
+
   const handleAddTag = useCallback(
     (tag: Tag) => {
-      const newSelectedTags = [...selectedTags, tag];
+      const newSelectedTags = [...userInfo.tags, tag];
       mutate(`/api/profile/${clerkId}`, { ...userInfo, tags: newSelectedTags }, false);
     },
-    [selectedTags, clerkId, userInfo, mutate],
+    [clerkId, userInfo, mutate],
   );
 
   const handleRemoveTag = useCallback(
     (tagName: string) => {
-      const newSelectedTags = selectedTags.filter((tag) => tag.name !== tagName);
+      const newSelectedTags = userInfo.tags.filter((tag) => tag.name !== tagName);
       mutate(`/api/profile/${clerkId}`, { ...userInfo, tags: newSelectedTags }, false);
     },
-    [selectedTags, clerkId, userInfo, mutate],
+    [clerkId, userInfo, mutate],
   );
 
-  if (!selectedTags) {
-    mutate(`/api/profile/${clerkId}`);
-    return <div>Loading...</div>;
-  }
+  // if (!selectedTags) {
+  //   mutate(`/api/profile/${clerkId}`);
+  //   return <div>Loading...</div>;
+  // }
 
   return (
     <div>
       <label className='block text-sm font-medium text-gray-700'>タグ</label>
       <div className='mt-2 flex flex-wrap'>
-        {selectedTags.map((tag) => (
+        {userInfo.tags.map((tag) => (
           <RemovableUserTag key={tag.id} tagName={tag.name} handleRemoveTag={handleRemoveTag} />
         ))}
       </div>
@@ -76,7 +73,7 @@ export const TagPicker: React.FC<TagPickerProps> = ({ tags, selectedTags, clerkI
           />
           <div className='flex flex-wrap gap-2'>
             {tags
-              .filter((tag) => !selectedTags.some((t) => t.id === tag.id))
+              .filter((tag) => !userInfo.tags.some((t) => t.id === tag.id))
               .map((tag) => (
                 <div
                   key={tag.id}
