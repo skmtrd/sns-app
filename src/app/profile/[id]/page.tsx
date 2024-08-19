@@ -13,6 +13,19 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { mutate } from 'swr';
 
+const deletePost = async (postId: string) => {
+  try {
+    const res = await fetch(`/api/post/${postId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 const ProfilePage = () => {
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const userId = usePathname().split('/profile/')[1];
@@ -32,6 +45,8 @@ const ProfilePage = () => {
     );
   }
 
+  console.log(error);
+
   if (error && error.status === 429) {
     setTimeout(() => {
       mutate(`/api/profile/${userId}`);
@@ -40,7 +55,29 @@ const ProfilePage = () => {
     return <div>Error</div>;
   }
 
-  const posts = data.posts;
+  const handleDeletePost = async (e: React.MouseEvent<HTMLButtonElement>, postId: string) => {
+    e.stopPropagation();
+    if (!data.posts) return;
+    const optimisticPostData = data.posts.filter((post) => post.id !== postId);
+    const optimisticData = { ...data, posts: optimisticPostData };
+    try {
+      await mutate(
+        `/api/profile/${userId}`,
+        async () => {
+          await deletePost(postId);
+          return optimisticData;
+        },
+        {
+          optimisticData,
+          revalidate: false,
+          populateCache: true,
+          rollbackOnError: true,
+        },
+      );
+    } catch (error) {
+      console.error('Failed to delete post:', error);
+    }
+  };
 
   return (
     <div className='flex flex-1 flex-col overflow-hidden'>
@@ -50,7 +87,7 @@ const ProfilePage = () => {
           <ImageDisplayModal closeModal={handleToggleIsImageModalOpen} src={data.avatar} />
         )}
         <div className='rounded-lg bg-white p-6 shadow sm:p-8'>
-          <div className='sm:_flex-row mb-6 flex flex-col items-center sm:items-start'>
+          <div className='mb-6 flex flex-col items-center sm:flex-row sm:items-start'>
             <div className='mb-4 sm:mb-0 sm:mr-6'>
               {data?.avatar ? (
                 <button onClick={handleToggleIsImageModalOpen}>
@@ -100,7 +137,7 @@ const ProfilePage = () => {
         >
           <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>
             <div className='h-0.5 w-full bg-gray-500 shadow-md'></div>
-            {posts.map((post) => (
+            {data.posts.map((post) => (
               <Post
                 key={post.id}
                 postId={post.id}
@@ -114,6 +151,7 @@ const ProfilePage = () => {
                 postAuthorIntroduction={data.introduction}
                 postAuthorTags={data.tags}
                 postAuthorAvatar={data.avatar}
+                handleDeletePost={handleDeletePost}
               />
             ))}
           </div>

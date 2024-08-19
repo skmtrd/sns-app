@@ -167,8 +167,7 @@ export const Post: React.FC<PostProps> = ({
           <p className='px-1 py-0.5 text-xs text-gray-500'>@{postAuthorId}</p>
         </div>
       </div>
-      <div className='mb-4'>
-        {/* <div className='mb-2 ml-1 w-full break-words'>{postContent}</div> */}
+      <div className='mb-4' onClick={(e) => e.stopPropagation()}>
         <PostContent textContent={postContent} />
       </div>
       <div className='flex flex-wrap gap-2'>

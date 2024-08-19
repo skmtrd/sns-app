@@ -5,12 +5,7 @@ const URL_REGEX = /(https?:\/\/[^\s]+)/g;
 
 const Url = ({ url }: { url: string }) => {
   return (
-    <a
-      href={url}
-      onClick={(e) => e.stopPropagation()}
-      target='_blank'
-      className='text-blue-500 hover:text-blue-800 hover:underline'
-    >
+    <a href={url} target='_blank' className='text-blue-500 hover:text-blue-800 hover:underline'>
       {url}
     </a>
   );
@@ -21,7 +16,7 @@ const PostContent = ({ textContent }: { textContent: string }) => {
   const lines: string[] = sanitizedText.split('\n');
   return (
     <span>
-      <span className='break-words'>
+      <span className='break-words' onClick={(e) => e.stopPropagation()}>
         {lines.map((line, lineIndex) => {
           const parts = line.split(URL_REGEX);
           return (
