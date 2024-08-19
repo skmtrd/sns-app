@@ -11,7 +11,7 @@ const Url = ({ url }: { url: string }) => {
   );
 };
 
-const PostContent = ({ textContent }: { textContent: string }) => {
+const TextContent = ({ textContent }: { textContent: string }) => {
   const sanitizedText = DOMPurify.sanitize(textContent);
   const lines: string[] = sanitizedText.split('\n');
   return (
@@ -33,4 +33,4 @@ const PostContent = ({ textContent }: { textContent: string }) => {
   );
 };
 
-export default PostContent;
+export default TextContent;

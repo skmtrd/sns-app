@@ -16,6 +16,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { mutate } from 'swr';
 import KebabMenu from '../element/KebabMenu';
+import TextContent from '../element/TextContent';
 import QuestionReply from './QuestionReply';
 
 type QuestionPostProps = {
@@ -134,7 +135,9 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
         <div>
           <h3 className='break-words text-xl font-bold'>{questionTitle}</h3>
           <p className='break-words text-sm text-gray-600'>{questionAuthorName}さん</p>
-          <p className='mt-2'>{questionDescription}</p>
+          <div className='mt-2'>
+            <TextContent textContent={questionDescription} />
+          </div>
         </div>
         <p className='mr-1 whitespace-nowrap text-sm text-gray-500'>{timeAgo}</p>
       </div>
