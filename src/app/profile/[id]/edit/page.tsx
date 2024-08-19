@@ -3,6 +3,7 @@
 import { ChangeAvatar } from '@/components/element/ChangeAvatar';
 import Header from '@/components/element/Header';
 import { TagPicker } from '@/components/element/TagPicker';
+import { Tag } from '@/lib/types';
 import { useAuth, useUser } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
@@ -23,16 +24,8 @@ const formSchema = z.object({
     .string()
     .min(1, '自己紹介は必須です')
     .max(100, '自己紹介は100文字以内で入力してください'),
-  tags: z.array(
-    z.object({
-      id: z.string().min(1),
-      name: z.string().min(1),
-    }),
-  ),
   avatar: z.custom<File>((value) => value instanceof File).optional(),
 });
-
-export type Tag = z.infer<typeof formSchema>['tags'][0];
 
 const profileFetcher = (url: string) =>
   fetch(url)
@@ -50,13 +43,13 @@ const tagFetcher = (url: string) =>
 const ProfileEditPage = () => {
   const router = useRouter();
   const pathname = usePathname();
-  const { userId, isLoaded } = useAuth();
+  const { userId: clerkId } = useAuth();
   const {
     data: userInfo,
     error: userInfoError,
     isLoading: isUserInfoLoading,
     mutate: mutateUserInfo,
-  } = useSWR(`/api/profile/${userId}`, profileFetcher);
+  } = useSWR(`/api/profile/${clerkId}`, profileFetcher);
   const {
     data: tags,
     error: tagError,
@@ -78,19 +71,12 @@ const ProfileEditPage = () => {
       name: userInfo?.name,
       userId: userInfo?.id,
       introduction: userInfo?.introduction,
-      tags: userInfo?.tags,
     },
   });
 
-  useEffect(() => {
-    setTimeout(() => {
-      mutateUserInfo();
-      mutateTags();
-    }, 500);
-  }, [mutateUserInfo, mutateTags]);
-
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (data) => {
     const pathUserId = pathname.split('/profile/')[1].split('/')[0];
+    console.log(userInfo?.tags.map((tag: Tag) => tag.name));
 
     if (data.avatar) {
       user?.setProfileImage({ file: data.avatar });
@@ -105,7 +91,6 @@ const ProfileEditPage = () => {
         },
         body: JSON.stringify(data),
       });
-      mutateUserInfo();
 
       const tagRes = await fetch('/api/tag', {
         method: 'PUT',
@@ -113,11 +98,10 @@ const ProfileEditPage = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          tagNames: data.tags?.map((tag) => tag.name),
+          tagNames: userInfo?.tags.map((tag: Tag) => tag.name),
           clerkId: pathUserId,
         }),
       });
-      mutateTags();
 
       const tagData = await tagRes.json();
       console.log('Tag update response:', tagData);
@@ -127,25 +111,21 @@ const ProfileEditPage = () => {
       setError('root.error', { message: 'ユーザー情報の更新に失敗しました。' });
     }
   };
-
-  const onTagChange = (tags: Tag[]) => {
-    setValue('tags', tags);
-  };
-
   const onFileChange = async (file: File) => {
     setValue('avatar', file);
   };
-
+  useEffect(() => {
+    console.log(userInfo);
+  }, []);
   if (userInfoError || tagError) return <div>プロフィール読み込みエラー</div>;
 
-  if (isUserInfoLoading || isTagLoading || !isLoaded)
+  if (isUserInfoLoading || isTagLoading || !userInfo || !tags || !clerkId)
     return (
       <div className='flex h-svh w-full flex-1 grow flex-col items-center justify-center gap-4 bg-gray-100'>
         <Loader2 size='64' className='animate-spin text-blue-600' />
         ロード中...
       </div>
     );
-
   if (!user) return <div>ログインしてください。</div>;
 
   return (
@@ -208,8 +188,12 @@ const ProfileEditPage = () => {
             )}
           </div>
           <div>
-            <TagPicker tags={tags} defaultTags={userInfo?.tags} onChange={onTagChange} />
-            {errors.tags && <p className='mt-2 text-sm text-red-500'>{errors.tags.message}</p>}
+            <TagPicker
+              tags={tags}
+              selectedTags={userInfo.tags}
+              clerkId={clerkId}
+              userInfo={userInfo}
+            />
           </div>
         </form>
         <button

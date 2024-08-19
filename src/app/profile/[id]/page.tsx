@@ -45,8 +45,6 @@ const ProfilePage = () => {
     );
   }
 
-  console.log(error);
-
   if (error && error.status === 429) {
     setTimeout(() => {
       mutate(`/api/profile/${userId}`);
