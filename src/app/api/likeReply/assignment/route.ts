@@ -6,7 +6,7 @@ import prisma from '../../lib/prisma';
 import { findSpecificUser } from '../../lib/user/findSpecificUser';
 import { apiRes } from '../../types';
 
-export const POST = async (req: Request, res: NextResponse) => {
+export const POST = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
     dbConnect();
 
@@ -35,8 +35,6 @@ export const POST = async (req: Request, res: NextResponse) => {
     });
     return NextResponse.json<apiRes>({ message: 'success', data: newReplyLike }, { status: 200 });
   });
-};
-
 export const DELETE = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
     const { assignmentReplyId } = await req.json();
