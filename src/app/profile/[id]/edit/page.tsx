@@ -3,7 +3,8 @@
 import { ChangeAvatar } from '@/components/element/ChangeAvatar';
 import Header from '@/components/element/Header';
 import { TagPicker } from '@/components/element/TagPicker';
-import { useUserInfo } from '@/hooks/useUserInfo';
+import useUserInfo from '@/hooks/useUserInfo';
+import { profileSchema } from '@/lib/schemas';
 import { Tag } from '@/lib/types';
 import { useUser } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -214,7 +215,7 @@ const ProfileEditForm = ({
 const ProfileEditPage = () => {
   const clerkId = usePathname().split('/profile/')[1].split('/')[0];
 
-  const { userInfo, isLoading, isError } = useUserInfo(clerkId);
+  const { userInfo, isLoading, isError } = useUserInfo(clerkId, profileSchema);
 
   const {
     data: tags,
