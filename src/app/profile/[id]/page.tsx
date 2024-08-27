@@ -6,12 +6,18 @@ import { ImageDisplayModal } from '@/components/element/ImageDisplayModal';
 import UserTag from '@/components/element/UserTag';
 import { Post } from '@/components/timeline/Post';
 import { useUserInfo } from '@/hooks/useUserInfo';
+import { Tag } from '@/lib/types';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { mutate } from 'swr';
+
+import { oneOfPostSchema } from '@/lib/schemas';
+import { z } from 'zod';
+
+type Post = z.infer<typeof oneOfPostSchema>;
 
 const deletePost = async (postId: string) => {
   try {
@@ -56,7 +62,7 @@ const ProfilePage = () => {
   const handleDeletePost = async (e: React.MouseEvent<HTMLButtonElement>, postId: string) => {
     e.stopPropagation();
     if (userInfo) return;
-    const optimisticPostData = userInfo.posts.filter((post) => post.id !== postId);
+    const optimisticPostData = userInfo.posts.filter((post: Post) => post.id !== postId);
     const optimisticData = { ...userInfo, posts: optimisticPostData };
     try {
       await mutate(
@@ -120,7 +126,7 @@ const ProfilePage = () => {
           <div className='mb-4'>
             <div className='flex flex-wrap gap-2'>
               {userInfo?.tags && userInfo?.tags.length > 0 ? (
-                userInfo?.tags.map((tag) => <UserTag key={tag.id} tagName={tag.name} />)
+                userInfo?.tags.map((tag: Tag) => <UserTag key={tag.id} tagName={tag.name} />)
               ) : (
                 <p className='text-sm text-gray-500'>タグが設定されていません</p>
               )}
@@ -138,7 +144,7 @@ const ProfilePage = () => {
         >
           <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>
             <div className='h-0.5 w-full bg-gray-500 shadow-md'></div>
-            {userInfo.posts.map((post) => (
+            {userInfo.posts.map((post: Post) => (
               <Post
                 key={post.id}
                 postId={post.id}

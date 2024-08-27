@@ -29,22 +29,17 @@ export const TagPicker: React.FC<TagPickerProps> = ({ tags, clerkId, userInfo })
 
   const handleRemoveTag = useCallback(
     (tagName: string) => {
-      const newSelectedTags = userInfo.tags.filter((tag) => tag.name !== tagName);
+      const newSelectedTags = userInfo.tags.filter((tag: Tag) => tag.name !== tagName);
       mutate(`/api/profile/${clerkId}`, { ...userInfo, tags: newSelectedTags }, false);
     },
     [clerkId, userInfo, mutate],
   );
 
-  // if (!selectedTags) {
-  //   mutate(`/api/profile/${clerkId}`);
-  //   return <div>Loading...</div>;
-  // }
-
   return (
     <div>
       <label className='block text-sm font-medium text-gray-700'>タグ</label>
       <div className='mt-2 flex flex-wrap'>
-        {userInfo.tags.map((tag) => (
+        {userInfo.tags.map((tag: Tag) => (
           <RemovableUserTag key={tag.id} tagName={tag.name} handleRemoveTag={handleRemoveTag} />
         ))}
       </div>
@@ -73,7 +68,7 @@ export const TagPicker: React.FC<TagPickerProps> = ({ tags, clerkId, userInfo })
           />
           <div className='flex flex-wrap gap-2'>
             {tags
-              .filter((tag) => !userInfo.tags.some((t) => t.id === tag.id))
+              .filter((tag) => !userInfo.tags.some((t: Tag) => t.id === tag.id))
               .map((tag) => (
                 <div
                   key={tag.id}
