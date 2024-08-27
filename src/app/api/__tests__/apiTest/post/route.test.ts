@@ -6,13 +6,11 @@
 // import { PrismaClient } from '@prisma/client'
 // import { GET } from "@/app/api/post/route";
 
-
 // describe("/api/post", () => {
 //   test("GET /api/post", async () => {
 //     const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
 //       method: "GET",
 //     });
-
 
 //     jest.mock('@prisma/client', () => {
 //       return {
