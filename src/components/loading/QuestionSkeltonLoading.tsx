@@ -25,18 +25,18 @@ const SkeltonPost = () => {
 
       <div className='mt-6 flex w-full items-center justify-between'>
         <div className='flex items-center justify-center gap-2'>
-          <div className='flex h-10 w-10 animate-pulse items-center justify-center rounded-full bg-gray-200'>
+          <div className='flex size-10 animate-pulse items-center justify-center rounded-full bg-gray-200'>
             <MessageCircleReply size={20} className='text-gray-300' />
           </div>
-          <div className='flex h-10 w-10 animate-pulse items-center justify-center rounded-full bg-gray-200'>
+          <div className='flex size-10 animate-pulse items-center justify-center rounded-full bg-gray-200'>
             <Heart size={20} className='text-gray-300' />
           </div>
         </div>
         <div className='flex gap-2'>
-          <div className='flex h-10 w-10 animate-pulse items-center justify-center rounded-full bg-gray-200'>
+          <div className='flex size-10 animate-pulse items-center justify-center rounded-full bg-gray-200'>
             <ChevronDown size={20} className='text-gray-300' />
           </div>
-          <div className='flex h-10 w-10 animate-pulse items-center justify-center rounded-full bg-gray-200'>
+          <div className='flex size-10 animate-pulse items-center justify-center rounded-full bg-gray-200'>
             <MoreVertical size={20} className='text-gray-300' />
           </div>
         </div>
@@ -50,7 +50,7 @@ const QuestionSkeltonLoading = ({ title, subtitle }: { title: string; subtitle: 
     return;
   };
   return (
-    <div className='flex w-full flex-1 grow flex-col items-center gap-4 gap-y-4 overflow-y-auto bg-gray-100'>
+    <div className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-auto bg-gray-100'>
       <FixedHeader title={title} target={subtitle} scrollToTop={duummy} />
       <Header title={''} />
       <div className='h-1 w-full'></div>

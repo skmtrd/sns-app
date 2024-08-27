@@ -7,13 +7,13 @@ import UserTag from '@/components/element/UserTag';
 import { Post } from '@/components/timeline/Post';
 import useUserInfo from '@/hooks/useUserInfo';
 import { Tag } from '@/lib/types';
-import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { mutate } from 'swr';
 
+import ProfileSkeltonLoading from '@/components/loading/ProfileSkeltonLoading';
 import { profileSchema } from '@/lib/schemas';
 
 const deletePost = async (postId: string) => {
@@ -40,12 +40,7 @@ const ProfilePage = () => {
   const { userInfo, isLoading, isError } = useUserInfo(userId, profileSchema);
 
   if (isLoading || !userInfo) {
-    return (
-      <div className='flex h-svh w-full flex-1 grow flex-col items-center justify-center gap-4 bg-gray-100'>
-        <Loader2 size='64' className='animate-spin text-blue-600' />
-        ロード中...
-      </div>
-    );
+    return <ProfileSkeltonLoading title={'タイムライン'} subtitle={'すべて'} />;
   }
 
   if (isError && isError.status === 429) {
@@ -147,8 +142,8 @@ const ProfilePage = () => {
           id='mainContent'
           className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'
         >
-          <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>
-            <div className='h-0.5 w-full bg-gray-500 shadow-md'></div>
+          <div className='absolute mt-4 h-0.5 w-full bg-gray-500 shadow-md'></div>
+          <div className='mt-5 flex w-full grow flex-col items-center gap-y-4 p-3'>
             {userInfo.posts.map((post) => (
               <Post
                 key={post.id}

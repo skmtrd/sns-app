@@ -39,7 +39,7 @@ const SideBar: React.FC<Props> = ({ userId }) => {
   };
 
   return (
-    <div className='flex w-16 flex-col items-center border-r border-gray-200 bg-white p-4 transition-all duration-300 ease-in-out xl:w-80'>
+    <div className='z-20 flex w-16 flex-col items-center border-r border-gray-200 bg-white p-4 transition-all duration-300 ease-in-out xl:w-80'>
       {isPostModalOpen && <AddPost closeModal={handleTogglePostModal} />}
       {isQuestionModalOpen && <AddQuestion closeModal={handleToggleQuestionModal} />}
       <Link href={'/timeline/all'}>
