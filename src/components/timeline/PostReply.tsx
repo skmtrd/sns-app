@@ -56,8 +56,6 @@ export const PostReply: React.FC<PostProps> = ({
   const profilePreviewRef = useRef<HTMLDivElement>(null);
   const { userId: currentClerkId } = useAuth();
   const timeAgo = useRelativeTime(timestamp);
-  //   const [isLiked, setIsLiked] = useState(false);
-  //   const [likesCount, setLikesCount] = useState(0);
 
   const {
     register,
@@ -68,8 +66,6 @@ export const PostReply: React.FC<PostProps> = ({
   } = useForm<ReplyFormData>();
 
   useEffect(() => {
-    // setLikesCount(likes.length);
-    // setIsLiked(likes.some((like) => like.author.clerkId === userId));
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
@@ -242,7 +238,7 @@ export const PostReply: React.FC<PostProps> = ({
               replyAuthorName={reply.author.name}
               replyAuthorId={reply.author.id}
               replyAuthorClerkId={reply.author.clerkId}
-              replyAuthorAvatar={reply.avatar}
+              replyAuthorAvatar={reply.avatar ?? ''}
               replyAuthorTags={reply.author.tags ?? []}
               replyAuthorIntroduction={reply.author.introduction}
             />

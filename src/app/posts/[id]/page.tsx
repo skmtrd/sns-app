@@ -7,10 +7,24 @@ import useData from '@/hooks/useData';
 import { oneOfPostSchema } from '@/lib/schemas';
 import { Reply } from '@/lib/types';
 import { LoaderCircle } from 'lucide-react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { mutate } from 'swr';
 
+const deletePost = async (postId: string) => {
+  try {
+    const res = await fetch(`/api/post/${postId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 const TimelineAll = () => {
+  const router = useRouter();
   const postId = usePathname().split('/posts/')[1];
   const { data: post, error, isLoading } = useData(`/api/post/${postId}`, oneOfPostSchema);
 
@@ -30,6 +44,12 @@ const TimelineAll = () => {
       </div>
     );
   }
+
+  const handleDeletePost = async (e: React.MouseEvent<HTMLButtonElement>, postId: string) => {
+    e.stopPropagation();
+    await deletePost(postId);
+    router.push('/timeline/all');
+  };
 
   const postData = Array.isArray(post) ? post[0] : post;
 
@@ -66,6 +86,7 @@ const TimelineAll = () => {
           postAuthorIntroduction={post.author.introduction}
           postAuthorTags={post.author.tags}
           postAuthorAvatar={post.avatar}
+          handleDeletePost={handleDeletePost}
         />
         <div className='h-0.5 w-full bg-gray-500 shadow-md'></div>
         {postData.replies
@@ -83,7 +104,7 @@ const TimelineAll = () => {
               replyAuthorName={reply.author.name}
               replyAuthorId={reply.author.id}
               replyAuthorClerkId={reply.author.clerkId}
-              replyAuthorAvatar={reply.avatar}
+              replyAuthorAvatar={reply.avatar ?? ''}
               replyAuthorTags={reply.author.tags ?? []}
               replyAuthorIntroduction={reply.author.introduction}
             />

@@ -17,23 +17,15 @@ export type Tag = {
 
 export type Reply = {
   id: string;
-  content: string;
-  // avatar: string;
   createdAt: string;
   author: {
     id: string;
-    name: string;
     clerkId: string;
-    introduction?: string;
-    tags?: Tag[] | undefined;
+    name: string;
+    introduction?: string | undefined;
+    tags?: { id: string; name: string }[] | undefined;
   };
-  // likes?: {
-  //   // likes をオプショナルに変更
-  //   author: {
-  //     id: string;
-  //     name: string;
-  //     clerkId: string;
-  //   };
-  // }[];
+  avatar: string | null;
+  content: string;
   parentReplyId: string | null;
 };

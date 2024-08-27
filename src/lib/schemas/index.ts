@@ -129,7 +129,7 @@ export const oneOfPostSchema = z.object({
       id: z.string(),
       content: z.string(),
       createdAt: z.string(),
-      avatar: z.string(),
+      avatar: z.string().nullable(),
       // likes: z
       //   .array(
       //     z.object({

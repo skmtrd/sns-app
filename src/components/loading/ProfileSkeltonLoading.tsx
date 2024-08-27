@@ -2,9 +2,46 @@ import { Heart, MessageCircleReply, MoreVertical } from 'lucide-react';
 import Header from '../element/Header';
 import FixedHeader from '../layout/FixedHeader';
 
-const SkeltonPost = () => {
+const SkeltonProfile = () => {
   return (
     <div className='w-11/12 rounded-lg bg-white p-4 shadow'>
+      <div className='mb-2 flex items-center justify-start'>
+        <div className='relative'>
+          <div className='size-10 animate-pulse rounded-full bg-gray-200'></div>
+        </div>
+        <div className='ml-2 w-full'>
+          <div className='flex w-full items-center justify-between'>
+            <div className='h-4 w-1/4 animate-pulse rounded bg-gray-200'></div>
+            <div className='h-4 w-16 animate-pulse rounded bg-gray-200'></div>
+          </div>
+          <div className='mt-1 h-3 w-1/5 animate-pulse rounded bg-gray-200'></div>
+        </div>
+      </div>
+      <div className='mb-4'>
+        <div className='mb-2 ml-1 w-full'>
+          <div className='h-4 w-full animate-pulse rounded bg-gray-200'></div>
+          <div className='mt-2 h-4 w-3/4 animate-pulse rounded bg-gray-200'></div>
+          <div className='mt-2 h-4 w-1/2 animate-pulse rounded bg-gray-200'></div>
+        </div>
+      </div>
+      <div className='flex flex-wrap gap-2'>
+        <div className='h-6 w-16 animate-pulse rounded-full bg-gray-200'></div>
+        <div className='h-6 w-20 animate-pulse rounded-full bg-gray-200'></div>
+        <div className='h-6 w-24 animate-pulse rounded-full bg-gray-200'></div>
+      </div>
+      <div className='relative mt-6 flex w-full items-center justify-between'>
+        <div className='flex items-center justify-center gap-2'></div>
+      </div>
+      <div className='mt-4 flex w-full justify-end'>
+        <div className='h-10 w-16 animate-pulse rounded-md bg-gray-200'></div>
+      </div>
+    </div>
+  );
+};
+
+const SkeltonPost = () => {
+  return (
+    <div className='w-10/12 rounded-lg bg-white p-4 shadow'>
       <div className='mb-2 flex items-center justify-start'>
         <div className='relative'>
           <div className='size-10 animate-pulse rounded-full bg-gray-200'></div>
@@ -46,7 +83,7 @@ const SkeltonPost = () => {
   );
 };
 
-const TimelineSkeltonLoading = ({ title, subtitle }: { title: string; subtitle: string }) => {
+const ProfileSkeltonLoading = ({ title, subtitle }: { title: string; subtitle: string }) => {
   const duummy = () => {
     return;
   };
@@ -56,7 +93,8 @@ const TimelineSkeltonLoading = ({ title, subtitle }: { title: string; subtitle: 
       <Header title={''} />
       <div className='h-1 w-full'></div>
       <div className='flex w-full flex-col items-center gap-y-4'>
-        <SkeltonPost />
+        <SkeltonProfile />
+        <div className='h-0.5 w-full bg-gray-500 shadow-md'></div>
         <SkeltonPost />
         <SkeltonPost />
         <SkeltonPost />
@@ -67,4 +105,4 @@ const TimelineSkeltonLoading = ({ title, subtitle }: { title: string; subtitle: 
   );
 };
 
-export default TimelineSkeltonLoading;
+export default ProfileSkeltonLoading;
