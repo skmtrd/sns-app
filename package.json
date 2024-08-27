@@ -3,10 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"npm run dev:next\" \"npm run prisma:studio\"",
-    "dev:next": "next dev",
-    "prisma:studio": "prisma studio",
+    "dev": "next dev",
     "build": "next build",
+    "postinstall": "prisma generate",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
