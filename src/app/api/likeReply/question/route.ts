@@ -13,7 +13,6 @@ export const POST = async (req: Request, res: NextResponse) =>
 
     const clerkId = getClerkId();
 
-
     if (!clerkId) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
