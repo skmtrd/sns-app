@@ -9,7 +9,7 @@ import { Loader2 } from 'lucide-react';
 
 const TimelineAll = () => {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
-  const { data, error, isLoading } = useData('/api/assignment', assignmentshareSchema);
+  const { data: assignments, error, isLoading } = useData('/api/assignment', assignmentshareSchema);
 
   if (isLoading) {
     return (
@@ -19,7 +19,7 @@ const TimelineAll = () => {
       </div>
     );
   }
-  if (error || !data) {
+  if (error || !assignments) {
     return <div>Error</div>;
   }
 
@@ -31,18 +31,18 @@ const TimelineAll = () => {
       <FixedHeader title={'課題共有'} target={'すべて'} scrollToTop={scrollToTop} />
       <Header title={''} />
       <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>
-        {data.map((assignment) => (
+        {assignments.map((assignment) => (
           <AssignmentPost
             key={assignment.id}
             assignmentId={assignment.id}
             title={assignment.title}
             description={assignment.description}
             deadline={assignment.deadLine}
-            authorId={assignment.authorId}
             createdAt={assignment.createdAt}
-            authorName={assignment.author.name}
-            authorClerkId={assignment.author.clerkId}
-            authorIntroduction={assignment.author.introduction}
+            assignmentAuthorId={assignment.authorId}
+            assignmentAuthorName={assignment.author.name}
+            assignmentAuthorClerkId={assignment.author.clerkId}
+            assignmentAuthorIntroduction={assignment.author.introduction}
           />
         ))}
       </div>
