@@ -30,7 +30,7 @@ const TimelineAll = () => {
     >
       <FixedHeader title={'課題共有'} target={'すべて'} scrollToTop={scrollToTop} />
       <Header title={''} />
-      <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>
+      <div className='flex w-full grow flex-col items-center gap-y-1 p-3'>
         {assignments.map((assignment) => (
           <AssignmentPost
             key={assignment.id}
@@ -38,7 +38,7 @@ const TimelineAll = () => {
             title={assignment.title}
             description={assignment.description}
             deadline={assignment.deadLine}
-            createdAt={assignment.createdAt}
+            timestamp={assignment.createdAt}
             assignmentAuthorId={assignment.authorId}
             assignmentAuthorName={assignment.author.name}
             assignmentAuthorClerkId={assignment.author.clerkId}
