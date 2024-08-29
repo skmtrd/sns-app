@@ -12,7 +12,8 @@ type AddAssignmentProps = {
 type FormInputs = {
   title: string;
   description: string;
-  deadline: string;
+  deadlineDate: string;
+  deadlineTime: string;
 };
 
 const MAX_TITLE_LENGTH = 100;
@@ -29,7 +30,8 @@ export const AddAssignment: React.FC<AddAssignmentProps> = ({ closeModal }) => {
     clearErrors,
   } = useForm<FormInputs>({
     defaultValues: {
-      deadline: new Date().toISOString().split('T')[0],
+      deadlineDate: new Date().toISOString().split('T')[0],
+      deadlineTime: '23:59',
     },
   });
 
@@ -39,10 +41,14 @@ export const AddAssignment: React.FC<AddAssignmentProps> = ({ closeModal }) => {
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     clearErrors();
 
+    const deadlineDateTime = `${data.deadlineDate}/${data.deadlineTime}`;
+
+    console.log(deadlineDateTime);
+
     const newAssignment = {
       title: data.title,
       description: data.description,
-      deadLine: data.deadline,
+      deadLine: deadlineDateTime,
     };
 
     console.log(newAssignment);
@@ -172,19 +178,35 @@ export const AddAssignment: React.FC<AddAssignmentProps> = ({ closeModal }) => {
               )}
             </div>
 
-            <div>
-              <input
-                id='deadline'
-                type='date'
-                {...register('deadline', {
-                  required: '締め切りを入力してください',
-                })}
-                className='w-full rounded-md border p-2 outline-none'
-                aria-invalid={errors.deadline ? 'true' : 'false'}
-              />
-              {errors.deadline && (
-                <p className='mt-1 text-sm text-red-500'>{errors.deadline.message}</p>
-              )}
+            <div className='flex gap-2'>
+              <div className='flex-1'>
+                <input
+                  id='deadlineDate'
+                  type='date'
+                  {...register('deadlineDate', {
+                    required: '締め切り日を入力してください',
+                  })}
+                  className='w-full rounded-md border p-2 outline-none'
+                  aria-invalid={errors.deadlineDate ? 'true' : 'false'}
+                />
+                {errors.deadlineDate && (
+                  <p className='mt-1 text-sm text-red-500'>{errors.deadlineDate.message}</p>
+                )}
+              </div>
+              <div className='flex-1'>
+                <input
+                  id='deadlineTime'
+                  type='time'
+                  {...register('deadlineTime', {
+                    required: '締め切り時刻を入力してください',
+                  })}
+                  className='w-full rounded-md border p-2 outline-none'
+                  aria-invalid={errors.deadlineTime ? 'true' : 'false'}
+                />
+                {errors.deadlineTime && (
+                  <p className='mt-1 text-sm text-red-500'>{errors.deadlineTime.message}</p>
+                )}
+              </div>
             </div>
 
             <button
