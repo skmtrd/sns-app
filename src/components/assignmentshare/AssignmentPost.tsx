@@ -1,6 +1,7 @@
 import { useDeadline } from '@/hooks/useDeadline';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
 import { Calendar } from 'lucide-react';
+import TextContent from '../element/TextContent';
 
 type AssignmentPostProps = {
   assignmentId: string;
@@ -36,8 +37,8 @@ const AssignmentPost = ({
         </div>
         <p className='mr-1 whitespace-nowrap text-sm text-gray-500'>{timeAgo}</p>
       </div>
-      <p className='mb-3 break-words text-black'>{description}</p>
-      <div className='items-center text-sm'>
+      <TextContent textContent={description} />
+      <div className='mt-4 items-center text-sm'>
         <div className='flex items-center'>
           <Calendar size={20} className='mr-1 text-red-500' />
           {limited === 'over' ? (

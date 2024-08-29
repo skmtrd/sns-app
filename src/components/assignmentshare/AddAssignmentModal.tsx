@@ -16,7 +16,7 @@ type FormInputs = {
   deadlineTime: string;
 };
 
-const MAX_TITLE_LENGTH = 100;
+const MAX_TITLE_LENGTH = 20;
 const MAX_DESCRIPTION_LENGTH = 500;
 
 export const AddAssignment: React.FC<AddAssignmentProps> = ({ closeModal }) => {
