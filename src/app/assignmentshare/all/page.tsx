@@ -2,22 +2,17 @@
 import AssignmentPost from '@/components/assignmentshare/AssignmentPost';
 import Header from '@/components/element/Header';
 import FixedHeader from '@/components/layout/FixedHeader';
+import QuestionSkeltonLoading from '@/components/loading/QuestionSkeltonLoading';
 import useData from '@/hooks/useData';
 import { assignmentshareSchema } from '@/lib/schemas';
 import { scrollToTop } from '@/lib/scrollToTop';
-import { Loader2 } from 'lucide-react';
 
 const TimelineAll = () => {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
   const { data: assignments, error, isLoading } = useData('/api/assignment', assignmentshareSchema);
 
   if (isLoading) {
-    return (
-      <div className='flex h-svh w-full flex-1 grow flex-col items-center justify-center gap-4 bg-gray-100'>
-        <Loader2 size='64' className='animate-spin text-blue-600' />
-        ロード中...
-      </div>
-    );
+    return <QuestionSkeltonLoading title={'課題共有'} subtitle={'すべて'} />;
   }
   if (error || !assignments) {
     return <div>Error</div>;
