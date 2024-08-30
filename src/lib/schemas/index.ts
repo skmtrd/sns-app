@@ -157,6 +157,11 @@ export const assignmentshareSchema = z
     deadLine: z.string(),
     authorId: z.string(),
     createdAt: z.string(),
+    likes: z.array(
+      z.object({
+        user: z.object({ id: z.string(), name: z.string(), clerkId: z.string() }),
+      }),
+    ),
     author: z.object({
       id: z.string(),
       name: z.string(),

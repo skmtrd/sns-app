@@ -16,6 +16,11 @@ export const GET = async (req: Request, res: NextResponse) =>
             childReplies: true,
           },
         },
+        likes: {
+          include: {
+            user: true,
+          },
+        },
         author: {
           include: {
             tags: true,

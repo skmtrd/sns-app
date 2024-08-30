@@ -1,6 +1,9 @@
 import { useDeadline } from '@/hooks/useDeadline';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
-import { Calendar } from 'lucide-react';
+import { addAssignmentLike, deleteAssignmentLike } from '@/lib/likeRequests';
+import { useAuth } from '@clerk/nextjs';
+import { BookmarkPlus } from 'lucide-react';
+import { useState } from 'react';
 import TextContent from '../element/TextContent';
 
 type AssignmentPostProps = {
@@ -9,6 +12,7 @@ type AssignmentPostProps = {
   description: string;
   deadline: string;
   timestamp: string;
+  likes: { user: { name: string; clerkId: string; id: string } }[];
   assignmentAuthorId: string;
   assignmentAuthorName: string;
   assignmentAuthorClerkId: string;
@@ -21,6 +25,7 @@ const AssignmentPost = ({
   description,
   deadline,
   timestamp,
+  likes,
   assignmentAuthorId,
   assignmentAuthorName,
   assignmentAuthorClerkId,
@@ -28,6 +33,30 @@ const AssignmentPost = ({
 }: AssignmentPostProps) => {
   const timeAgo = useRelativeTime(timestamp);
   const limited = useDeadline(deadline);
+  const { userId: currentClerkId } = useAuth();
+  const [isLiked, setIsLiked] = useState(
+    likes.some((like) => like.user.clerkId === currentClerkId),
+  );
+  const [isLiking, setIsLiking] = useState(false);
+
+  const [year, month, day] = deadline.split('/')[0].split('-');
+  const [hour, minute] = deadline.split('/')[1].split(':');
+  const deadlineContent = `${year}年${month}月${day}日 ${hour}時${minute}分`;
+
+  const handleLike = async () => {
+    if (isLiking) return;
+    setIsLiking(true);
+    setIsLiked(!isLiked);
+
+    try {
+      isLiked ? await deleteAssignmentLike(assignmentId) : await addAssignmentLike(assignmentId);
+    } catch (error) {
+      setIsLiked(isLiked);
+    } finally {
+      setIsLiking(false);
+    }
+  };
+
   return (
     <div className='relative mb-4 w-11/12 rounded-lg bg-white p-6 shadow'>
       <div className='flex justify-between'>
@@ -39,12 +68,21 @@ const AssignmentPost = ({
       </div>
       <TextContent textContent={description} />
       <div className='mt-4 items-center text-sm'>
+        <p className='text-base text-red-500'>{deadlineContent}まで</p>
         <div className='flex items-center'>
-          <Calendar size={20} className='mr-1 text-red-500' />
           {limited === 'over' ? (
             <p className='text-base font-bold text-red-500'>締め切りを過ぎています！！！</p>
           ) : (
             <p className='text-base font-bold text-red-500'>あと{limited}</p>
+          )}
+        </div>
+      </div>
+      <div className='mt-3 flex justify-start text-blue-600'>
+        <div onClick={handleLike}>
+          {isLiked ? (
+            <BookmarkPlus size={27} fill={'rgb(37 99 235)'} />
+          ) : (
+            <BookmarkPlus size={27} />
           )}
         </div>
       </div>

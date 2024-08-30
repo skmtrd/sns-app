@@ -33,6 +33,7 @@ const TimelineAll = () => {
             title={assignment.title}
             description={assignment.description}
             deadline={assignment.deadLine}
+            likes={assignment.likes}
             timestamp={assignment.createdAt}
             assignmentAuthorId={assignment.authorId}
             assignmentAuthorName={assignment.author.name}

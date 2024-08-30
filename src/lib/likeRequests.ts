@@ -53,3 +53,31 @@ export const deleteQuestionLike = async (questionId: string) => {
     throw new Error('いいね解除に失敗しました');
   }
 };
+
+export const addAssignmentLike = async (assignmentId: string) => {
+  const response = await fetch('/api/like/assignment', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ assignmentId }),
+  });
+
+  if (!response.ok) {
+    throw new Error('いいねに失敗しました');
+  }
+};
+
+export const deleteAssignmentLike = async (assignmentId: string) => {
+  const response = await fetch('/api/like/assignment', {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ assignmentId }),
+  });
+
+  if (!response.ok) {
+    throw new Error('いいね解除に失敗しました');
+  }
+};
