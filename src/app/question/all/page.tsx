@@ -9,7 +9,7 @@ import { questionSchema } from '@/lib/schemas';
 import { scrollToTop } from '@/lib/scrollToTop';
 import { useSWRConfig } from 'swr';
 
-const TimelineAll = () => {
+const QuestionAll = () => {
   const { mutate } = useSWRConfig();
   const { data: questions, error, isLoading } = useData('/api/question', questionSchema);
 
@@ -75,4 +75,4 @@ const TimelineAll = () => {
   );
 };
 
-export default TimelineAll;
+export default QuestionAll;

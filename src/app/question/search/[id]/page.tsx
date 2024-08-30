@@ -11,7 +11,7 @@ import { scrollToTop } from '@/lib/scrollToTop';
 import { usePathname } from 'next/navigation';
 import { useSWRConfig } from 'swr';
 
-const TimelineAll = () => {
+const QuestionSearched = () => {
   const { mutate } = useSWRConfig();
   const { data: questions, error, isLoading } = useData('/api/question', questionSchema);
   const pathName = usePathname();
@@ -23,7 +23,7 @@ const TimelineAll = () => {
   }
 
   if (isLoading || !questions) {
-    return <QuestionSkeltonLoading title={'質問'} subtitle={'すべて'} />;
+    return <QuestionSkeltonLoading title={'質問'} subtitle={`検索-"${searchWords}"`} />;
   }
 
   const handleDeleteQuestion = async (
@@ -61,7 +61,7 @@ const TimelineAll = () => {
       id='mainContent'
       className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'
     >
-      <FixedHeader title={'質問'} target={'すべて'} scrollToTop={scrollToTop} />
+      <FixedHeader title={'質問'} target={`検索-"${searchWords}"`} scrollToTop={scrollToTop} />
       <Header title={''} />
       <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>
         {filteredQuestions.map((question) => (
@@ -84,4 +84,4 @@ const TimelineAll = () => {
   );
 };
 
-export default TimelineAll;
+export default QuestionSearched;

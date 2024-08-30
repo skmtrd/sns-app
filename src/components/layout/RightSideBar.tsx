@@ -1,29 +1,43 @@
 'use client';
 import { Radar } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
+
+const PAGE_TYPE = ['timeline', 'question', 'assignment'];
 
 const RightSideBar = () => {
   const [searchInput, setSearchInput] = useState('');
+  const activePage = usePathname().split('/')[1];
+  const placeholderWord =
+    activePage === 'timeline' ? 'ポスト' : activePage === 'question' ? '質問' : '課題';
+
   const router = useRouter();
   const handleKeyInput = (event: React.KeyboardEvent) => {
     const key = event.key;
 
+    if (key === 'Enter' && !PAGE_TYPE.includes(activePage)) {
+      searchInput.trim() === ''
+        ? router.push('/timeline/all')
+        : router.push(`/timeline/search/${searchInput}`);
+      return;
+    }
+
     if (key === 'Enter' && searchInput.trim() !== '') {
-      router.push(`/timeline/search/${searchInput}`);
+      router.push(`/${activePage}/search/${searchInput}`);
     } else if (key === 'Enter' && searchInput.trim() === '') {
       // 空白の場合は/timeline/allに遷移
-      router.push(`/timeline/all`);
+      router.push(`/${activePage}/all`);
     }
     return;
   };
   const handleClick = () => {
     if (searchInput.trim() !== '') {
-      router.push(`/timeline/search/${searchInput}`);
+      router.push(`/${activePage}/search/${searchInput}`);
     } else if (searchInput.trim() === '') {
-      router.push(`/timeline/all`);
+      router.push(`/${activePage}/all`);
     }
   };
+
   return (
     <div className='z-10 ml-auto hidden w-80 border-l border-gray-200 bg-white p-4 font-bold xl:flex xl:justify-center'>
       <div className='flex h-8 w-11/12 items-center justify-center gap-4 rounded-2xl ring-1 ring-blue-500'>
@@ -33,7 +47,7 @@ const RightSideBar = () => {
         <input
           className='w-9/12 outline-none'
           type='text'
-          placeholder='検索'
+          placeholder={`${placeholderWord}を検索`}
           value={searchInput}
           onChange={(e) => setSearchInput(e.currentTarget.value)}
           onKeyDown={handleKeyInput}
