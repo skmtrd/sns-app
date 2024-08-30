@@ -2,7 +2,7 @@
 
 import { useRelativeTime } from '@/hooks/useRelativeTime';
 import { addQuestionLike, deleteQuestionLike } from '@/lib/likeRequests';
-import { Reply } from '@/lib/types';
+import { QuestionReply } from '@/lib/types';
 import { useAuth } from '@clerk/nextjs';
 import {
   ChevronDown,
@@ -17,13 +17,13 @@ import { useForm } from 'react-hook-form';
 import { mutate } from 'swr';
 import KebabMenu from '../element/KebabMenu';
 import TextContent from '../element/TextContent';
-import QuestionReply from './QuestionReply';
+import QuestionReplies from './QuestionReplies';
 
 type QuestionPostProps = {
   questionId: string;
   questionTitle: string;
   questionDescription: string;
-  replies: Reply[];
+  replies: QuestionReply[];
   questionAuthorName: string;
   questionAuthorId: string;
   questionAuthorClerkId: string;
@@ -144,7 +144,10 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
       <h4 className='mt-4 font-semibold'>回答({replies.length})</h4>
       {replies.length > 0 ? (
         <>
-          <QuestionReply reply={replies[0]} amountOfReply={replies.length} />
+          <QuestionReplies
+            replyAuthorName={replies[0].author.name}
+            textContent={replies[0].content}
+          />
           {replies.length > 1 && (
             <>
               <div
@@ -153,7 +156,11 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
                 style={{ height: isDrawerOpen ? `${contentHeight}px` : '0' }}
               >
                 {replies.slice(1).map((reply, index) => (
-                  <QuestionReply key={index} reply={reply} amountOfReply={replies.length} />
+                  <QuestionReplies
+                    key={reply.id}
+                    replyAuthorName={reply.author.name}
+                    textContent={reply.content}
+                  />
                 ))}
               </div>
               <div className='mt-6 flex w-full items-center justify-between'>

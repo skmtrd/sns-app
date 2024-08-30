@@ -29,3 +29,17 @@ export type Reply = {
   content: string;
   parentReplyId: string | null;
 };
+
+export type QuestionReply = {
+  id: string;
+  createdAt: string;
+  author: {
+    id: string;
+    clerkId: string;
+    name: string;
+    introduction?: string | undefined;
+    tags?: { id: string; name: string }[] | undefined;
+  };
+  content: string;
+  parentReplyId: string | null;
+};

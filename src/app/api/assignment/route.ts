@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { dbConnect } from '../lib/dbConnect';
-import { getClerkId } from '../lib/getClerkId';
 import { handleAPIError } from '../lib/handleAPIError';
 import prisma from '../lib/prisma';
 import { apiRes } from '../types';
@@ -15,6 +14,11 @@ export const GET = async (req: Request, res: NextResponse) =>
           include: {
             author: true,
             childReplies: true,
+          },
+        },
+        likes: {
+          include: {
+            user: true,
           },
         },
         author: {
@@ -35,7 +39,8 @@ export const POST = async (req: Request, res: NextResponse) =>
 
     const { title, description, deadLine } = await req.json();
 
-    const clerkId = getClerkId();
+    // const clerkId = getClerkId();
+    const clerkId = 'user_2kPwAGrhcnJONeRjoDt7oefWMLm';
 
     if (!clerkId) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });

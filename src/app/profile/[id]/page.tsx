@@ -140,9 +140,9 @@ const ProfilePage = () => {
         </div>
         <div
           id='mainContent'
-          className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'
+          className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-hidden bg-gray-100'
         >
-          <div className='absolute mt-4 h-0.5 w-full bg-gray-500 shadow-md'></div>
+          {/* <div className='absolute mt-4 h-0.5 w-full bg-gray-500 shadow-md'></div> */}
           <div className='mt-5 flex w-full grow flex-col items-center gap-y-4 p-3'>
             {userInfo.posts.map((post) => (
               <Post

@@ -94,7 +94,7 @@ const ProfileSkeltonLoading = ({ title, subtitle }: { title: string; subtitle: s
       <div className='h-1 w-full'></div>
       <div className='flex w-full flex-col items-center gap-y-4'>
         <SkeltonProfile />
-        <div className='h-0.5 w-full bg-gray-500 shadow-md'></div>
+        <div className='mt-4'></div>
         <SkeltonPost />
         <SkeltonPost />
         <SkeltonPost />

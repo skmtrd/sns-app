@@ -5,19 +5,21 @@ import React, { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useSWRConfig } from 'swr';
 
-type AddQuestionProps = {
+type AddAssignmentProps = {
   closeModal: () => void;
 };
 
 type FormInputs = {
   title: string;
   description: string;
+  deadlineDate: string;
+  deadlineTime: string;
 };
 
 const MAX_TITLE_LENGTH = 20;
 const MAX_DESCRIPTION_LENGTH = 500;
 
-export const AddQuestion: React.FC<AddQuestionProps> = ({ closeModal }) => {
+export const AddAssignment: React.FC<AddAssignmentProps> = ({ closeModal }) => {
   const { mutate } = useSWRConfig();
   const {
     register,
@@ -26,7 +28,12 @@ export const AddQuestion: React.FC<AddQuestionProps> = ({ closeModal }) => {
     formState: { errors, isSubmitting },
     setError,
     clearErrors,
-  } = useForm<FormInputs>();
+  } = useForm<FormInputs>({
+    defaultValues: {
+      deadlineDate: new Date().toISOString().split('T')[0],
+      deadlineTime: '23:59',
+    },
+  });
 
   const title = watch('title');
   const description = watch('description');
@@ -34,25 +41,32 @@ export const AddQuestion: React.FC<AddQuestionProps> = ({ closeModal }) => {
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     clearErrors();
 
-    const newQuestion = {
+    const deadlineDateTime = `${data.deadlineDate}/${data.deadlineTime}`;
+
+    console.log(deadlineDateTime);
+
+    const newAssignment = {
       title: data.title,
       description: data.description,
+      deadLine: deadlineDateTime,
     };
 
+    console.log(newAssignment);
+
     try {
-      const response = await fetch('/api/question', {
+      const response = await fetch('/api/assignment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(newQuestion),
+        body: JSON.stringify(newAssignment),
       });
 
       if (!response.ok) {
-        throw new Error('質問の投稿に失敗しました');
+        throw new Error('課題の投稿に失敗しました');
       }
 
-      mutate('/api/question');
+      mutate('/api/assignment');
       closeModal();
     } catch (err: any) {
       setError('root', {
@@ -88,7 +102,7 @@ export const AddQuestion: React.FC<AddQuestionProps> = ({ closeModal }) => {
       >
         <div className='flex items-center justify-between border-b p-4'>
           <h2 id='modal-title' className='text-lg font-semibold'>
-            質問する
+            課題を共有する
           </h2>
           <button
             onClick={closeModal}
@@ -112,7 +126,7 @@ export const AddQuestion: React.FC<AddQuestionProps> = ({ closeModal }) => {
                   },
                 })}
                 maxLength={MAX_TITLE_LENGTH}
-                placeholder='質問のタイトル'
+                placeholder='課題のタイトル'
                 className='w-full rounded-md border p-2 outline-none'
                 aria-invalid={errors.title ? 'true' : 'false'}
                 onKeyDown={handleKeyDown}
@@ -140,7 +154,7 @@ export const AddQuestion: React.FC<AddQuestionProps> = ({ closeModal }) => {
                     message: `${MAX_DESCRIPTION_LENGTH}文字以内で入力してください`,
                   },
                 })}
-                placeholder='質問の詳細'
+                placeholder='課題の詳細'
                 maxLength={MAX_DESCRIPTION_LENGTH}
                 rows={6}
                 className='w-full rounded-md border p-2 outline-none'
@@ -164,6 +178,37 @@ export const AddQuestion: React.FC<AddQuestionProps> = ({ closeModal }) => {
               )}
             </div>
 
+            <div className='flex gap-2'>
+              <div className='flex-1'>
+                <input
+                  id='deadlineDate'
+                  type='date'
+                  {...register('deadlineDate', {
+                    required: '締め切り日を入力してください',
+                  })}
+                  className='w-full rounded-md border p-2 outline-none'
+                  aria-invalid={errors.deadlineDate ? 'true' : 'false'}
+                />
+                {errors.deadlineDate && (
+                  <p className='mt-1 text-sm text-red-500'>{errors.deadlineDate.message}</p>
+                )}
+              </div>
+              <div className='flex-1'>
+                <input
+                  id='deadlineTime'
+                  type='time'
+                  {...register('deadlineTime', {
+                    required: '締め切り時刻を入力してください',
+                  })}
+                  className='w-full rounded-md border p-2 outline-none'
+                  aria-invalid={errors.deadlineTime ? 'true' : 'false'}
+                />
+                {errors.deadlineTime && (
+                  <p className='mt-1 text-sm text-red-500'>{errors.deadlineTime.message}</p>
+                )}
+              </div>
+            </div>
+
             <button
               type='submit'
               className={cn(
@@ -172,7 +217,7 @@ export const AddQuestion: React.FC<AddQuestionProps> = ({ closeModal }) => {
               )}
               disabled={isSubmitting || !title || !description}
             >
-              {isSubmitting ? '投稿中...' : '質問を投稿する'}
+              {isSubmitting ? '投稿中...' : '課題を共有する'}
             </button>
             {errors.root && <p className='text-red-500'>{errors.root.message}</p>}
           </form>

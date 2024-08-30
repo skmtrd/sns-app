@@ -111,7 +111,7 @@ model Assignment {
   id        String   @id @default(cuid())
   title     String 
   description String @db.Text
-  deadLine  DateTime 
+  deadLine  String 
   likes Like[] 
   replies   AssignmentReply[]
   author    User     @relation(fields: [authorId], references: [id]) 

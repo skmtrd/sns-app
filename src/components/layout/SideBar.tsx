@@ -1,9 +1,19 @@
 'use client';
 
-import { Antenna, BookOpen, Hand, HelpCircle, Home, LucideIcon, User } from 'lucide-react';
+import {
+  Antenna,
+  BookOpen,
+  ClipboardList,
+  Hand,
+  HelpCircle,
+  Home,
+  LucideIcon,
+  User,
+} from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import { AddAssignment } from '../assignmentshare/AddAssignmentModal';
 import { AddQuestion } from '../question/AddQuestionModal';
 import { AddPost } from '../timeline/AddPostModal';
 
@@ -20,8 +30,10 @@ type Props = {
 const SideBar: React.FC<Props> = ({ userId }) => {
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [isQuestionModalOpen, setIsQuestionModalOpen] = useState(false);
+  const [isAssignmentModalOpen, setIsAssignmentModalOpen] = useState(false);
   const handleTogglePostModal = () => setIsPostModalOpen(!isPostModalOpen);
   const handleToggleQuestionModal = () => setIsQuestionModalOpen(!isQuestionModalOpen);
+  const handleToggleAssignmentModal = () => setIsAssignmentModalOpen(!isAssignmentModalOpen);
   const pathname = usePathname();
 
   const navItems: NavItem[] = [
@@ -42,6 +54,7 @@ const SideBar: React.FC<Props> = ({ userId }) => {
     <div className='z-20 flex w-16 flex-col items-center border-r border-gray-200 bg-white p-4 transition-all duration-300 ease-in-out xl:w-80'>
       {isPostModalOpen && <AddPost closeModal={handleTogglePostModal} />}
       {isQuestionModalOpen && <AddQuestion closeModal={handleToggleQuestionModal} />}
+      {isAssignmentModalOpen && <AddAssignment closeModal={handleToggleAssignmentModal} />}
       <Link href={'/timeline/all'}>
         <h1 className='mb-4 hidden text-2xl font-bold text-blue-600 xl:block'>INIAD SNS</h1>
       </Link>
@@ -79,6 +92,17 @@ const SideBar: React.FC<Props> = ({ userId }) => {
             <Hand size={22} />
           </div>
           <span className='hidden xl:inline'>質問</span>
+        </div>
+      </div>
+      <div
+        className='mt-4 flex w-full items-center justify-center rounded bg-blue-600 px-6 py-3 font-bold text-white transition-colors duration-200 hover:bg-blue-800 xl:w-2/4'
+        onClick={handleToggleAssignmentModal}
+      >
+        <div className='flex w-full items-center justify-center'>
+          <div className='flex items-center xl:mr-2'>
+            <ClipboardList size={22} />
+          </div>
+          <span className='hidden xl:inline'>課題</span>
         </div>
       </div>
     </div>
