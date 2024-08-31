@@ -15,6 +15,7 @@ import { mutate } from 'swr';
 
 import ProfileSkeltonLoading from '@/components/loading/ProfileSkeltonLoading';
 import { profileSchema } from '@/lib/schemas';
+import { useAuth } from '@clerk/nextjs';
 
 const deletePost = async (postId: string) => {
   try {
@@ -32,6 +33,7 @@ const deletePost = async (postId: string) => {
 const ProfilePage = () => {
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const userId = usePathname().split('/profile/')[1];
+  const { userId: currentClrekId } = useAuth();
 
   const handleToggleIsImageModalOpen = () => {
     setIsImageModalOpen(!isImageModalOpen);
@@ -39,8 +41,8 @@ const ProfilePage = () => {
 
   const { userInfo, isLoading, isError } = useUserInfo(userId, profileSchema);
 
-  if (isLoading || !userInfo) {
-    return <ProfileSkeltonLoading title={'タイムライン'} subtitle={'すべて'} />;
+  if (isLoading || !userInfo || !currentClrekId) {
+    return <ProfileSkeltonLoading title={'プロフィール'} subtitle={''} />;
   }
 
   if (isError && isError.status === 429) {
@@ -132,7 +134,7 @@ const ProfilePage = () => {
               )}
             </div>
           </div>
-          {userId === userInfo.clerkId && (
+          {currentClrekId === userInfo.clerkId && (
             <div className='flex w-full justify-end'>
               <Button title={'編集'} href={`${userId}/edit`} />
             </div>
@@ -142,7 +144,6 @@ const ProfilePage = () => {
           id='mainContent'
           className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-hidden bg-gray-100'
         >
-          {/* <div className='absolute mt-4 h-0.5 w-full bg-gray-500 shadow-md'></div> */}
           <div className='mt-5 flex w-full grow flex-col items-center gap-y-4 p-3'>
             {userInfo.posts.map((post) => (
               <Post
@@ -159,6 +160,7 @@ const ProfilePage = () => {
                 postAuthorTags={userInfo.tags}
                 postAuthorAvatar={userInfo.avatar}
                 handleDeletePost={handleDeletePost}
+                currentClerkId={currentClrekId}
               />
             ))}
           </div>

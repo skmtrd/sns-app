@@ -2,7 +2,6 @@
 import { useRelativeTime } from '@/hooks/useRelativeTime';
 import { addPostLike, deletePostLike } from '@/lib/likeRequests';
 import { Tag } from '@/lib/types';
-import { useAuth } from '@clerk/nextjs';
 import { Heart, MessageCircleReply, MoreVertical } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -28,6 +27,7 @@ type PostProps = {
   postAuthorIntroduction?: string | undefined | null;
   likes: { user: { name: string; clerkId: string; id: string } }[];
   replyCount: number;
+  currentClerkId: string;
   handleDeletePost: (e: React.MouseEvent<HTMLButtonElement>, postId: string) => void;
 };
 
@@ -50,6 +50,7 @@ export const Post: React.FC<PostProps> = ({
   likes,
   replyCount,
   handleDeletePost,
+  currentClerkId,
 }) => {
   const router = useRouter();
   const { mutate } = useSWRConfig();
@@ -58,7 +59,6 @@ export const Post: React.FC<PostProps> = ({
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const profilePreviewRef = useRef<HTMLDivElement>(null);
-  const { userId: currentClerkId } = useAuth();
   const timeAgo = useRelativeTime(timestamp);
   const [likesCount, setLikesCount] = useState(likes.length);
   const [isLiked, setIsLiked] = useState(

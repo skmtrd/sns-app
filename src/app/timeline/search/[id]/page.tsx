@@ -8,6 +8,7 @@ import { containsAllWords } from '@/lib/containAllWords';
 import { deletePost } from '@/lib/deleteRequests';
 import { postSchema } from '@/lib/schemas';
 import { scrollToTop } from '@/lib/scrollToTop';
+import { useAuth } from '@clerk/nextjs';
 import { usePathname } from 'next/navigation';
 import { useSWRConfig } from 'swr';
 
@@ -15,6 +16,7 @@ const TimelineSearched = () => {
   const pathName = usePathname();
   const searchedWord = decodeURIComponent(pathName.split('/search/')[1]).trim();
   const searchWords = searchedWord.split(' ').filter((term) => term.trim() !== '');
+  const { userId: currentClerkId } = useAuth();
   const { mutate } = useSWRConfig();
   const { data: posts, error, isLoading } = useData('/api/post', postSchema);
 
@@ -26,7 +28,7 @@ const TimelineSearched = () => {
     return <div>Error</div>;
   }
 
-  if (isLoading || !posts) {
+  if (isLoading || !posts || !currentClerkId) {
     return <TimelineSkeltonLoading title={'検索'} subtitle={`検索-"${searchWords}"`} />;
   }
 
@@ -82,6 +84,7 @@ const TimelineSearched = () => {
               postAuthorTags={post.author.tags}
               postAuthorAvatar={post.avatar}
               handleDeletePost={handleDeletePost}
+              currentClerkId={currentClerkId}
             />
           ))
         )}

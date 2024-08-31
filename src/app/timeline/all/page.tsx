@@ -7,11 +7,13 @@ import useData from '@/hooks/useData';
 import { deletePost } from '@/lib/deleteRequests';
 import { postSchema } from '@/lib/schemas';
 import { scrollToTop } from '@/lib/scrollToTop';
+import { useAuth } from '@clerk/nextjs';
 import { useSWRConfig } from 'swr';
 
 const TimelineAll = () => {
   const { mutate } = useSWRConfig();
   const { data: posts, error, isLoading } = useData('/api/post', postSchema);
+  const { userId: currentClerkId } = useAuth();
 
   if (error && error.status === 429) {
     setTimeout(() => {
@@ -44,7 +46,7 @@ const TimelineAll = () => {
     }
   };
 
-  if (isLoading || !posts) {
+  if (isLoading || !posts || !currentClerkId) {
     return <TimelineSkeltonLoading title={'タイムライン'} subtitle={'すべて'} />;
   }
 
@@ -71,6 +73,7 @@ const TimelineAll = () => {
             postAuthorTags={post.author.tags}
             postAuthorAvatar={post.avatar}
             handleDeletePost={handleDeletePost}
+            currentClerkId={currentClerkId}
           />
         ))}
       </div>

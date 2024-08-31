@@ -1,7 +1,6 @@
 'use client';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
 import { Reply, Tag } from '@/lib/types';
-import { useAuth } from '@clerk/nextjs';
 import { MessageCircleReply, MoreVertical } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -26,6 +25,7 @@ type PostProps = {
   replyAuthorIntroduction?: string;
   replies: Reply[];
   toReplyPostAuthorId: string;
+  currentClerkId: string;
 };
 
 type ReplyFormData = {
@@ -47,6 +47,7 @@ export const PostReply: React.FC<PostProps> = ({
   replyAuthorIntroduction,
   replies,
   toReplyPostAuthorId,
+  currentClerkId,
 }) => {
   const { mutate } = useSWRConfig();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -54,7 +55,6 @@ export const PostReply: React.FC<PostProps> = ({
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const profilePreviewRef = useRef<HTMLDivElement>(null);
-  const { userId: currentClerkId } = useAuth();
   const timeAgo = useRelativeTime(timestamp);
 
   const {

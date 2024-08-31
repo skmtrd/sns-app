@@ -6,6 +6,7 @@ import PostReply from '@/components/timeline/PostReply';
 import useData from '@/hooks/useData';
 import { oneOfPostSchema } from '@/lib/schemas';
 import { Reply } from '@/lib/types';
+import { useAuth } from '@clerk/nextjs';
 import { LoaderCircle } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { mutate } from 'swr';
@@ -26,6 +27,7 @@ const deletePost = async (postId: string) => {
 const TimelineAll = () => {
   const router = useRouter();
   const postId = usePathname().split('/posts/')[1];
+  const { userId: currentClerkId } = useAuth();
   const { data: post, error, isLoading } = useData(`/api/post/${postId}`, oneOfPostSchema);
 
   if (error && error.status === 429) {
@@ -36,7 +38,7 @@ const TimelineAll = () => {
     return <div>Error</div>;
   }
 
-  if (isLoading || !post) {
+  if (isLoading || !post || !currentClerkId) {
     return (
       <div className='flex h-svh w-full flex-1 grow flex-col items-center justify-center gap-4 bg-gray-100'>
         <LoaderCircle size='64' className='animate-spin text-blue-600' />
@@ -87,6 +89,7 @@ const TimelineAll = () => {
           postAuthorTags={post.author.tags}
           postAuthorAvatar={post.avatar}
           handleDeletePost={handleDeletePost}
+          currentClerkId={currentClerkId}
         />
         <div className='h-0.5 w-full bg-gray-500 shadow-md'></div>
         {postData.replies
@@ -107,6 +110,7 @@ const TimelineAll = () => {
               replyAuthorAvatar={reply.avatar ?? ''}
               replyAuthorTags={reply.author.tags ?? []}
               replyAuthorIntroduction={reply.author.introduction}
+              currentClerkId={currentClerkId}
             />
           ))}
       </div>
