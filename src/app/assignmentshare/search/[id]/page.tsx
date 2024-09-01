@@ -4,24 +4,34 @@ import Header from '@/components/element/Header';
 import FixedHeader from '@/components/layout/FixedHeader';
 import QuestionSkeltonLoading from '@/components/loading/QuestionSkeltonLoading';
 import useData from '@/hooks/useData';
+import { containsAllWords } from '@/lib/containAllWords';
 import { deleteAssignment } from '@/lib/deleteRequests';
 import { assignmentshareSchema } from '@/lib/schemas';
 import { scrollToTop } from '@/lib/scrollToTop';
 import { useAuth } from '@clerk/nextjs';
+import { usePathname } from 'next/navigation';
 import { useSWRConfig } from 'swr';
 
-const AssignmentAll = () => {
-  const { mutate } = useSWRConfig();
+const AssignmentSearched = () => {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
   const { data: assignments, error, isLoading } = useData('/api/assignment', assignmentshareSchema);
   const { userId: currentClerkId } = useAuth();
+  const { mutate } = useSWRConfig();
+  const pathName = usePathname();
+  const searchedWord = decodeURIComponent(pathName.split('/search/')[1]).trim();
+  const searchWords = searchedWord.split(' ').filter((term) => term.trim() !== '');
 
   if (isLoading) {
-    return <QuestionSkeltonLoading title={'課題共有'} subtitle={'すべて'} />;
+    return <QuestionSkeltonLoading title={'課題共有'} subtitle={`検索-"${searchWords}"`} />;
   }
+
   if (error || !assignments || !currentClerkId) {
     return <div>Error</div>;
   }
+
+  const filteredAssignments = assignments.filter((assignment) =>
+    containsAllWords(assignment.description, searchWords),
+  );
 
   const handleDeleteAssignment = async (
     e: React.MouseEvent<HTMLButtonElement>,
@@ -54,7 +64,7 @@ const AssignmentAll = () => {
       id='mainContent'
       className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'
     >
-      <FixedHeader title={'課題共有'} target={'すべて'} scrollToTop={scrollToTop} />
+      <FixedHeader title={'課題共有'} target={`検索-"${searchWords}"`} scrollToTop={scrollToTop} />
       <Header title={''} />
       <div className='flex w-full grow flex-col items-center gap-y-1 p-3'>
         {assignments.map((assignment) => (
@@ -79,4 +89,4 @@ const AssignmentAll = () => {
   );
 };
 
-export default AssignmentAll;
+export default AssignmentSearched;

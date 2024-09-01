@@ -3,11 +3,10 @@
 import { useRelativeTime } from '@/hooks/useRelativeTime';
 import { addQuestionLike, deleteQuestionLike } from '@/lib/likeRequests';
 import { QuestionReply } from '@/lib/types';
-import { useAuth } from '@clerk/nextjs';
 import {
+  BookmarkPlus,
   ChevronDown,
   ChevronUp,
-  Heart,
   MessageCircleReply,
   MoreVertical,
   Send,
@@ -30,6 +29,7 @@ type QuestionPostProps = {
   timestamp: string;
   likes: { user: { name: string; clerkId: string; id: string } }[];
   handleDeletePost: (e: React.MouseEvent<HTMLButtonElement>, questionId: string) => void;
+  currentClerkId: string;
 };
 
 type ReplyFormData = {
@@ -47,6 +47,7 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
   timestamp,
   likes,
   handleDeletePost,
+  currentClerkId,
 }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isReplyDrawerOpen, setIsReplyDrawerOpen] = useState(false);
@@ -55,7 +56,6 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
   const [replyContentHeight, setReplyContentHeight] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
   const replyContentRef = useRef<HTMLDivElement>(null);
-  const { userId: currentClerkId } = useAuth();
   const timeAgo = useRelativeTime(timestamp);
   const [likesCount, setLikesCount] = useState(likes.length);
   const [isLiked, setIsLiked] = useState(
@@ -176,8 +176,13 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
                       e.stopPropagation();
                       handleLike();
                     }}
+                    className='text-blue-600'
                   >
-                    <Heart size={20} color={'#dc143c'} fill={isLiked ? '#dc143c' : 'white'} />
+                    {isLiked ? (
+                      <BookmarkPlus size={27} fill={'rgb(37 99 235)'} />
+                    ) : (
+                      <BookmarkPlus size={27} />
+                    )}
                   </button>
                   <span>{likesCount}</span>
                 </div>
@@ -225,8 +230,13 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
                 e.stopPropagation();
                 handleLike();
               }}
+              className='text-blue-600'
             >
-              <Heart size={20} color={'#dc143c'} fill={isLiked ? '#dc143c' : 'white'} />
+              {isLiked ? (
+                <BookmarkPlus size={27} fill={'rgb(37 99 235)'} />
+              ) : (
+                <BookmarkPlus size={27} />
+              )}
             </button>
             <span>{likesCount}</span>
           </div>

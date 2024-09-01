@@ -7,12 +7,14 @@ import useData from '@/hooks/useData';
 import { deletePost } from '@/lib/deleteRequests';
 import { postSchema } from '@/lib/schemas';
 import { scrollToTop } from '@/lib/scrollToTop';
+import { useAuth } from '@clerk/nextjs';
 import { usePathname } from 'next/navigation';
 import { useSWRConfig } from 'swr';
 
 const TagFilteredTimeline = () => {
   const { mutate } = useSWRConfig();
   const { data: posts, error, isLoading } = useData('/api/post', postSchema);
+  const { userId: currentClerkId } = useAuth();
   const tagId = usePathname().split('/timeline/')[1];
 
   if (error && error.status === 429) {
@@ -46,7 +48,7 @@ const TagFilteredTimeline = () => {
     }
   };
 
-  if (isLoading || !posts) {
+  if (isLoading || !posts || !currentClerkId) {
     return <TimelineSkeltonLoading title={'検索'} subtitle={'...'} />;
   }
 
@@ -73,6 +75,7 @@ const TagFilteredTimeline = () => {
             postAuthorTags={post.author.tags}
             postAuthorAvatar={post.avatar}
             handleDeletePost={handleDeletePost}
+            currentClerkId={currentClerkId}
           />
         ))}
       </div>

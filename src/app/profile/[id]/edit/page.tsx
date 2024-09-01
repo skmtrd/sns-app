@@ -6,7 +6,7 @@ import { TagPicker } from '@/components/element/TagPicker';
 import useUserInfo from '@/hooks/useUserInfo';
 import { profileSchema } from '@/lib/schemas';
 import { Tag } from '@/lib/types';
-import { useUser } from '@clerk/nextjs';
+import { useAuth, useUser } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { usePathname, useRouter } from 'next/navigation';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -45,8 +45,10 @@ const ProfileEditForm = ({
   tags: Tag[];
   clerkId: string;
 }) => {
+  const { userId: currentClerkId } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const pageclerkId = pathname.split('/profile/')[1].split('/')[0];
 
   const { user } = useUser();
 
@@ -134,6 +136,8 @@ const ProfileEditForm = ({
   const onFileChange = async (file: File) => {
     setValue('avatar', file);
   };
+
+  if (currentClerkId !== pageclerkId) return <div>アクセス権がありません。</div>;
 
   if (!user) return <div>ログインしてください。</div>;
 

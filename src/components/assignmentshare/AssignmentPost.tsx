@@ -1,9 +1,9 @@
 import { useDeadline } from '@/hooks/useDeadline';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
 import { addAssignmentLike, deleteAssignmentLike } from '@/lib/likeRequests';
-import { useAuth } from '@clerk/nextjs';
-import { BookmarkPlus } from 'lucide-react';
+import { BookmarkPlus, MoreVertical } from 'lucide-react';
 import { useState } from 'react';
+import KebabMenu from '../element/KebabMenu';
 import TextContent from '../element/TextContent';
 
 type AssignmentPostProps = {
@@ -17,6 +17,8 @@ type AssignmentPostProps = {
   assignmentAuthorName: string;
   assignmentAuthorClerkId: string;
   assignmentAuthorIntroduction: string;
+  handleDeleteAssignment: (e: React.MouseEvent<HTMLButtonElement>, assignmentId: string) => void;
+  currentClerkId: string;
 };
 
 const AssignmentPost = ({
@@ -30,10 +32,12 @@ const AssignmentPost = ({
   assignmentAuthorName,
   assignmentAuthorClerkId,
   assignmentAuthorIntroduction,
+  handleDeleteAssignment,
+  currentClerkId,
 }: AssignmentPostProps) => {
   const timeAgo = useRelativeTime(timestamp);
   const limited = useDeadline(deadline);
-  const { userId: currentClerkId } = useAuth();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLiked, setIsLiked] = useState(
     likes.some((like) => like.user.clerkId === currentClerkId),
   );
@@ -77,14 +81,31 @@ const AssignmentPost = ({
           )}
         </div>
       </div>
-      <div className='mt-3 flex justify-start text-blue-600'>
-        <div onClick={handleLike}>
+      <div className='relative mt-3 flex justify-between text-blue-600'>
+        <button onClick={handleLike}>
           {isLiked ? (
             <BookmarkPlus size={27} fill={'rgb(37 99 235)'} />
           ) : (
             <BookmarkPlus size={27} />
           )}
-        </div>
+        </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsDropdownOpen(!isDropdownOpen);
+          }}
+          className='text-gray-500 hover:text-gray-700'
+        >
+          <MoreVertical size={20} fill='red' />
+        </button>
+        {isDropdownOpen && (
+          <KebabMenu
+            currentClerkId={currentClerkId}
+            authorClerkId={assignmentAuthorClerkId}
+            contentId={assignmentId}
+            handleDelete={handleDeleteAssignment}
+          />
+        )}
       </div>
     </div>
   );

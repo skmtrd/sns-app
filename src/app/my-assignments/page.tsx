@@ -13,8 +13,12 @@ import { useSWRConfig } from 'swr';
 const AssignmentAll = () => {
   const { mutate } = useSWRConfig();
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
-  const { data: assignments, error, isLoading } = useData('/api/assignment', assignmentshareSchema);
   const { userId: currentClerkId } = useAuth();
+  const {
+    data: assignments,
+    error,
+    isLoading,
+  } = useData(`/api/like/assignment/${currentClerkId}`, assignmentshareSchema);
 
   if (isLoading) {
     return <QuestionSkeltonLoading title={'課題共有'} subtitle={'すべて'} />;
@@ -32,7 +36,7 @@ const AssignmentAll = () => {
     const optimisticData = assignments.filter((assignment) => assignment.id !== assignmentId);
     try {
       await mutate(
-        '/api/assignment',
+        `/api/like/assignment/${currentClerkId}`,
         async () => {
           await deleteAssignment(assignmentId);
           return optimisticData;
@@ -54,7 +58,7 @@ const AssignmentAll = () => {
       id='mainContent'
       className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'
     >
-      <FixedHeader title={'課題共有'} target={'すべて'} scrollToTop={scrollToTop} />
+      <FixedHeader title={'登録した課題'} target={null} scrollToTop={scrollToTop} />
       <Header title={''} />
       <div className='flex w-full grow flex-col items-center gap-y-1 p-3'>
         {assignments.map((assignment) => (

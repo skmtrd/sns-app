@@ -90,7 +90,7 @@ const ProfileSkeltonLoading = ({ title, subtitle }: { title: string; subtitle: s
   return (
     <div className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-auto bg-gray-100'>
       <FixedHeader title={title} target={subtitle} scrollToTop={duummy} />
-      <Header title={''} />
+      <Header title={'プロフィール'} />
       <div className='h-1 w-full'></div>
       <div className='flex w-full flex-col items-center gap-y-4'>
         <SkeltonProfile />

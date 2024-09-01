@@ -10,14 +10,14 @@ import { scrollToTop } from '@/lib/scrollToTop';
 import { useAuth } from '@clerk/nextjs';
 import { useSWRConfig } from 'swr';
 
-const TimelineAll = () => {
+const Likes = () => {
   const { mutate } = useSWRConfig();
-  const { data: posts, error, isLoading } = useData('/api/post', postSchema);
   const { userId: currentClerkId } = useAuth();
+  const { data: posts, error, isLoading } = useData(`/api/like/post/${currentClerkId}`, postSchema);
 
   if (error && error.status === 429) {
     setTimeout(() => {
-      mutate(`/api/post`);
+      mutate(`/api/like/post/${currentClerkId}`);
     }, 5000);
   } else if (error) {
     return <div>Error</div>;
@@ -29,7 +29,7 @@ const TimelineAll = () => {
     const optimisticData = posts.filter((post) => post.id !== postId);
     try {
       await mutate(
-        '/api/post',
+        `/api/like/post/${currentClerkId}`,
         async () => {
           await deletePost(postId);
           return optimisticData;
@@ -55,7 +55,7 @@ const TimelineAll = () => {
       id='mainContent'
       className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'
     >
-      <FixedHeader title={'タイムライン'} target={'すべて'} scrollToTop={scrollToTop} />
+      <FixedHeader title={'いいねしたポスト'} target={null} scrollToTop={scrollToTop} />
       <Header title={''} />
       <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>
         {posts.map((post) => (
@@ -81,4 +81,4 @@ const TimelineAll = () => {
   );
 };
 
-export default TimelineAll;
+export default Likes;

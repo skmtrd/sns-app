@@ -10,10 +10,14 @@ import { scrollToTop } from '@/lib/scrollToTop';
 import { useAuth } from '@clerk/nextjs';
 import { useSWRConfig } from 'swr';
 
-const QuestionAll = () => {
+const bookmarks = () => {
   const { mutate } = useSWRConfig();
   const { userId: currentClerkId } = useAuth();
-  const { data: questions, error, isLoading } = useData('/api/question', questionSchema);
+  const {
+    data: questions,
+    error,
+    isLoading,
+  } = useData(`/api/like/question/${currentClerkId}`, questionSchema);
 
   if (error) {
     return <div>Error</div>;
@@ -32,7 +36,7 @@ const QuestionAll = () => {
     const optimisticData = questions.filter((question) => question.id !== questionId);
     try {
       await mutate(
-        '/api/question',
+        `/api/like/question/${currentClerkId}`,
         async () => {
           await deleteQuestion(questionId);
           return optimisticData;
@@ -54,7 +58,7 @@ const QuestionAll = () => {
       id='mainContent'
       className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'
     >
-      <FixedHeader title={'質問'} target={'すべて'} scrollToTop={scrollToTop} />
+      <FixedHeader title={'ブックマークした質問'} target={null} scrollToTop={scrollToTop} />
       <Header title={''} />
       <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>
         {questions.map((question) => (
@@ -78,4 +82,4 @@ const QuestionAll = () => {
   );
 };
 
-export default QuestionAll;
+export default bookmarks;

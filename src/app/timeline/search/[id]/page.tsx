@@ -4,24 +4,19 @@ import FixedHeader from '@/components/layout/FixedHeader';
 import TimelineSkeltonLoading from '@/components/loading/TimelineSkeltonLoading';
 import { Post } from '@/components/timeline/Post';
 import useData from '@/hooks/useData';
+import { containsAllWords } from '@/lib/containAllWords';
 import { deletePost } from '@/lib/deleteRequests';
 import { postSchema } from '@/lib/schemas';
 import { scrollToTop } from '@/lib/scrollToTop';
+import { useAuth } from '@clerk/nextjs';
 import { usePathname } from 'next/navigation';
 import { useSWRConfig } from 'swr';
-import { toHiragana } from 'wanakana';
 
-const SearchedTimeline = () => {
+const TimelineSearched = () => {
   const pathName = usePathname();
   const searchedWord = decodeURIComponent(pathName.split('/search/')[1]).trim();
   const searchWords = searchedWord.split(' ').filter((term) => term.trim() !== '');
-  const containsAllWords = (content: string, searchTerms: string[]): boolean => {
-    const hiraganaContent = toHiragana(content);
-    return searchTerms.every(
-      (term) => hiraganaContent.includes(toHiragana(term)) || content.includes(term),
-    );
-  };
-  console.log(searchedWord);
+  const { userId: currentClerkId } = useAuth();
   const { mutate } = useSWRConfig();
   const { data: posts, error, isLoading } = useData('/api/post', postSchema);
 
@@ -33,8 +28,8 @@ const SearchedTimeline = () => {
     return <div>Error</div>;
   }
 
-  if (isLoading || !posts) {
-    return <TimelineSkeltonLoading title={'検索'} subtitle={'...'} />;
+  if (isLoading || !posts || !currentClerkId) {
+    return <TimelineSkeltonLoading title={'検索'} subtitle={`検索-"${searchWords}"`} />;
   }
 
   const handleDeletePost = async (e: React.MouseEvent<HTMLButtonElement>, postId: string) => {
@@ -64,7 +59,11 @@ const SearchedTimeline = () => {
 
   return (
     <div className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'>
-      <FixedHeader title={'検索'} target={searchedWord} scrollToTop={scrollToTop} />
+      <FixedHeader
+        title={'タイムライン'}
+        target={`検索-"${searchWords}"`}
+        scrollToTop={scrollToTop}
+      />
       <Header title={''} />
       <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>
         {filteredPosts.length === 0 ? (
@@ -85,6 +84,7 @@ const SearchedTimeline = () => {
               postAuthorTags={post.author.tags}
               postAuthorAvatar={post.avatar}
               handleDeletePost={handleDeletePost}
+              currentClerkId={currentClerkId}
             />
           ))
         )}
@@ -93,4 +93,4 @@ const SearchedTimeline = () => {
   );
 };
 
-export default SearchedTimeline;
+export default TimelineSearched;
