@@ -3,12 +3,11 @@ import { handleAPIError } from '@/app/api/lib/handleAPIError';
 import { apiRes } from '@/app/api/types';
 import { NextResponse } from 'next/server';
 import prisma from '../../../lib/prisma';
-
 export const GET = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
-    await dbConnect();
     const clerkId = req.url.split('/')[6];
-    const posts = await prisma.question.findMany({
+    await dbConnect();
+    const posts = await prisma.assignment.findMany({
       where: {
         likes: {
           some: {
@@ -25,14 +24,14 @@ export const GET = async (req: Request, res: NextResponse) =>
             childReplies: true,
           },
         },
-        author: {
-          include: {
-            tags: true,
-          },
-        },
         likes: {
           include: {
             user: true,
+          },
+        },
+        author: {
+          include: {
+            tags: true,
           },
         },
       },
