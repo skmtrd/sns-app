@@ -4,28 +4,27 @@ import FixedHeader from '@/components/layout/FixedHeader';
 import QuestionSkeltonLoading from '@/components/loading/QuestionSkeltonLoading';
 import QuestionPost from '@/components/question/QuestionPost';
 import useData from '@/hooks/useData';
-import { containsAllWords } from '@/lib/containAllWords';
 import { deleteQuestion } from '@/lib/deleteRequests';
 import { questionSchema } from '@/lib/schemas';
 import { scrollToTop } from '@/lib/scrollToTop';
 import { useAuth } from '@clerk/nextjs';
-import { usePathname } from 'next/navigation';
 import { useSWRConfig } from 'swr';
 
-const QuestionSearched = () => {
+const bookmarks = () => {
   const { mutate } = useSWRConfig();
   const { userId: currentClerkId } = useAuth();
-  const { data: questions, error, isLoading } = useData('/api/question', questionSchema);
-  const pathName = usePathname();
-  const searchedWord = decodeURIComponent(pathName.split('/search/')[1]).trim();
-  const searchWords = searchedWord.split(' ').filter((term) => term.trim() !== '');
+  const {
+    data: questions,
+    error,
+    isLoading,
+  } = useData(`/api/like/question/${currentClerkId}`, questionSchema);
 
   if (error) {
     return <div>Error</div>;
   }
 
   if (isLoading || !questions || !currentClerkId) {
-    return <QuestionSkeltonLoading title={'質問'} subtitle={`検索-"${searchWords}"`} />;
+    return <QuestionSkeltonLoading title={'質問'} subtitle={'すべて'} />;
   }
 
   const handleDeleteQuestion = async (
@@ -37,7 +36,7 @@ const QuestionSearched = () => {
     const optimisticData = questions.filter((question) => question.id !== questionId);
     try {
       await mutate(
-        '/api/question',
+        `/api/like/question/${currentClerkId}`,
         async () => {
           await deleteQuestion(questionId);
           return optimisticData;
@@ -54,19 +53,15 @@ const QuestionSearched = () => {
     }
   };
 
-  const filteredQuestions = questions.filter((question) =>
-    containsAllWords(question.description, searchWords),
-  );
-
   return (
     <div
       id='mainContent'
       className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'
     >
-      <FixedHeader title={'質問'} target={`検索-"${searchWords}"`} scrollToTop={scrollToTop} />
+      <FixedHeader title={'ブックマーク'} target={null} scrollToTop={scrollToTop} />
       <Header title={''} />
       <div className='flex w-full grow flex-col items-center gap-y-4 p-3'>
-        {filteredQuestions.map((question) => (
+        {questions.map((question) => (
           <QuestionPost
             key={question.id}
             questionId={question.id}
@@ -87,4 +82,4 @@ const QuestionSearched = () => {
   );
 };
 
-export default QuestionSearched;
+export default bookmarks;

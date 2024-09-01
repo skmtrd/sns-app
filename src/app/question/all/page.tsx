@@ -7,17 +7,19 @@ import useData from '@/hooks/useData';
 import { deleteQuestion } from '@/lib/deleteRequests';
 import { questionSchema } from '@/lib/schemas';
 import { scrollToTop } from '@/lib/scrollToTop';
+import { useAuth } from '@clerk/nextjs';
 import { useSWRConfig } from 'swr';
 
 const QuestionAll = () => {
   const { mutate } = useSWRConfig();
+  const { userId: currentClerkId } = useAuth();
   const { data: questions, error, isLoading } = useData('/api/question', questionSchema);
 
   if (error) {
     return <div>Error</div>;
   }
 
-  if (isLoading || !questions) {
+  if (isLoading || !questions || !currentClerkId) {
     return <QuestionSkeltonLoading title={'質問'} subtitle={'すべて'} />;
   }
 
@@ -68,6 +70,7 @@ const QuestionAll = () => {
             timestamp={question.createdAt}
             likes={question.likes}
             handleDeletePost={handleDeleteQuestion}
+            currentClerkId={currentClerkId}
           />
         ))}
       </div>
