@@ -1,7 +1,6 @@
 import { useDeadline } from '@/hooks/useDeadline';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
 import { addAssignmentLike, deleteAssignmentLike } from '@/lib/likeRequests';
-import { useAuth } from '@clerk/nextjs';
 import { BookmarkPlus, MoreVertical } from 'lucide-react';
 import { useState } from 'react';
 import KebabMenu from '../element/KebabMenu';
@@ -19,6 +18,7 @@ type AssignmentPostProps = {
   assignmentAuthorClerkId: string;
   assignmentAuthorIntroduction: string;
   handleDeleteAssignment: (e: React.MouseEvent<HTMLButtonElement>, assignmentId: string) => void;
+  currentClerkId: string;
 };
 
 const AssignmentPost = ({
@@ -33,10 +33,10 @@ const AssignmentPost = ({
   assignmentAuthorClerkId,
   assignmentAuthorIntroduction,
   handleDeleteAssignment,
+  currentClerkId,
 }: AssignmentPostProps) => {
   const timeAgo = useRelativeTime(timestamp);
   const limited = useDeadline(deadline);
-  const { userId: currentClerkId } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLiked, setIsLiked] = useState(
     likes.some((like) => like.user.clerkId === currentClerkId),

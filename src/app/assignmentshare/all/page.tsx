@@ -7,17 +7,19 @@ import useData from '@/hooks/useData';
 import { deleteAssignment } from '@/lib/deleteRequests';
 import { assignmentshareSchema } from '@/lib/schemas';
 import { scrollToTop } from '@/lib/scrollToTop';
+import { useAuth } from '@clerk/nextjs';
 import { useSWRConfig } from 'swr';
 
 const AssignmentAll = () => {
   const { mutate } = useSWRConfig();
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
   const { data: assignments, error, isLoading } = useData('/api/assignment', assignmentshareSchema);
+  const { userId: currentClerkId } = useAuth();
 
   if (isLoading) {
     return <QuestionSkeltonLoading title={'課題共有'} subtitle={'すべて'} />;
   }
-  if (error || !assignments) {
+  if (error || !assignments || !currentClerkId) {
     return <div>Error</div>;
   }
 
@@ -69,6 +71,7 @@ const AssignmentAll = () => {
             assignmentAuthorClerkId={assignment.author.clerkId}
             assignmentAuthorIntroduction={assignment.author.introduction}
             handleDeleteAssignment={handleDeleteAssignment}
+            currentClerkId={currentClerkId}
           />
         ))}
       </div>
