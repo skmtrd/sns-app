@@ -23,3 +23,16 @@ export const deleteQuestion = async (questionId: string) => {
     console.error(error);
   }
 };
+
+export const deleteAssignment = async (assignmentId: string) => {
+  try {
+    const res = await fetch(`/api/assignment/${assignmentId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};

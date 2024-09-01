@@ -4,10 +4,13 @@ import Header from '@/components/element/Header';
 import FixedHeader from '@/components/layout/FixedHeader';
 import QuestionSkeltonLoading from '@/components/loading/QuestionSkeltonLoading';
 import useData from '@/hooks/useData';
+import { deleteAssignment } from '@/lib/deleteRequests';
 import { assignmentshareSchema } from '@/lib/schemas';
 import { scrollToTop } from '@/lib/scrollToTop';
+import { useSWRConfig } from 'swr';
 
 const AssignmentAll = () => {
+  const { mutate } = useSWRConfig();
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
   const { data: assignments, error, isLoading } = useData('/api/assignment', assignmentshareSchema);
 
@@ -17,6 +20,32 @@ const AssignmentAll = () => {
   if (error || !assignments) {
     return <div>Error</div>;
   }
+
+  const handleDeleteAssignment = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    assignmentId: string,
+  ) => {
+    e.stopPropagation();
+    if (!assignments) return;
+    const optimisticData = assignments.filter((assignment) => assignment.id !== assignmentId);
+    try {
+      await mutate(
+        '/api/assignment',
+        async () => {
+          await deleteAssignment(assignmentId);
+          return optimisticData;
+        },
+        {
+          optimisticData,
+          revalidate: false,
+          populateCache: true,
+          rollbackOnError: true,
+        },
+      );
+    } catch (error) {
+      console.error('Failed to delete post:', error);
+    }
+  };
 
   return (
     <div
@@ -39,6 +68,7 @@ const AssignmentAll = () => {
             assignmentAuthorName={assignment.author.name}
             assignmentAuthorClerkId={assignment.author.clerkId}
             assignmentAuthorIntroduction={assignment.author.introduction}
+            handleDeleteAssignment={handleDeleteAssignment}
           />
         ))}
       </div>
