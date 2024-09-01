@@ -2,6 +2,8 @@
 
 import {
   Antenna,
+  BookHeart,
+  BookMarked,
   BookOpen,
   ClipboardList,
   Hand,
@@ -41,6 +43,8 @@ const SideBar: React.FC<Props> = ({ userId }) => {
     { page: '/assignmentshare/all', label: '課題共有', icon: BookOpen },
     { page: '/question/all', label: '質問スペース', icon: HelpCircle },
     { page: `/profile/${userId}`, label: 'プロフィール', icon: User },
+    { page: '/likes', label: 'いいねしたポスト', icon: BookHeart },
+    { page: '/bookmark', label: 'ブックマーク', icon: BookMarked },
   ];
 
   const isActive = (page: string) => {
@@ -85,17 +89,6 @@ const SideBar: React.FC<Props> = ({ userId }) => {
       </div>
       <div
         className='mt-4 flex w-full items-center justify-center rounded bg-blue-600 px-6 py-3 font-bold text-white transition-colors duration-200 hover:bg-blue-800 xl:w-2/4'
-        onClick={handleToggleQuestionModal}
-      >
-        <div className='flex w-full items-center justify-center'>
-          <div className='flex items-center xl:mr-2'>
-            <Hand size={22} />
-          </div>
-          <span className='hidden xl:inline'>質問</span>
-        </div>
-      </div>
-      <div
-        className='mt-4 flex w-full items-center justify-center rounded bg-blue-600 px-6 py-3 font-bold text-white transition-colors duration-200 hover:bg-blue-800 xl:w-2/4'
         onClick={handleToggleAssignmentModal}
       >
         <div className='flex w-full items-center justify-center'>
@@ -103,6 +96,17 @@ const SideBar: React.FC<Props> = ({ userId }) => {
             <ClipboardList size={22} />
           </div>
           <span className='hidden xl:inline'>課題</span>
+        </div>
+      </div>
+      <div
+        className='mt-4 flex w-full items-center justify-center rounded bg-blue-600 px-6 py-3 font-bold text-white transition-colors duration-200 hover:bg-blue-800 xl:w-2/4'
+        onClick={handleToggleQuestionModal}
+      >
+        <div className='flex w-full items-center justify-center'>
+          <div className='flex items-center xl:mr-2'>
+            <Hand size={22} />
+          </div>
+          <span className='hidden xl:inline'>質問</span>
         </div>
       </div>
     </div>

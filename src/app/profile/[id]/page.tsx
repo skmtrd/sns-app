@@ -48,7 +48,7 @@ const ProfilePage = () => {
   if (isError && isError.status === 429) {
     setTimeout(() => {
       mutate(`/api/post`);
-    }, 2000);
+    }, 5000);
   } else if (isError) {
     return <div>Error</div>;
   }
@@ -57,7 +57,7 @@ const ProfilePage = () => {
     console.log('error:', isError);
     setTimeout(() => {
       mutate(`/api/profile/${userId}`);
-    }, 2000);
+    }, 5000);
   } else if (isError) {
     return <div>Error</div>;
   }

@@ -3,7 +3,7 @@ import { Radar } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-const PAGE_TYPE = ['timeline', 'question', 'assignment'];
+const PAGE_TYPE = ['timeline', 'question', 'assignmentshare'];
 
 const RightSideBar = () => {
   const [searchInput, setSearchInput] = useState('');
@@ -47,7 +47,7 @@ const RightSideBar = () => {
         <input
           className='w-9/12 outline-none'
           type='text'
-          placeholder={`${placeholderWord}を検索`}
+          placeholder={`${PAGE_TYPE.includes(activePage) ? placeholderWord : 'ポスト'}を検索`}
           value={searchInput}
           onChange={(e) => setSearchInput(e.currentTarget.value)}
           onKeyDown={handleKeyInput}

@@ -18,7 +18,7 @@ const TimelineAll = () => {
   if (error && error.status === 429) {
     setTimeout(() => {
       mutate(`/api/post`);
-    }, 2000);
+    }, 5000);
   } else if (error) {
     return <div>Error</div>;
   }
