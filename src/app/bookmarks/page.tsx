@@ -10,7 +10,7 @@ import { scrollToTop } from '@/lib/scrollToTop';
 import { useAuth } from '@clerk/nextjs';
 import { useSWRConfig } from 'swr';
 
-const bookmarks = () => {
+const Bookmarks = () => {
   const { mutate } = useSWRConfig();
   const { userId: currentClerkId } = useAuth();
   const {
@@ -82,4 +82,4 @@ const bookmarks = () => {
   );
 };
 
-export default bookmarks;
+export default Bookmarks;
