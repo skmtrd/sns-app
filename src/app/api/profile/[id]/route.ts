@@ -42,9 +42,16 @@ export const GET = async (req: Request, res: NextResponse) =>
 
     if (!user) return NextResponse.json<apiRes>({ message: 'User not found' }, { status: 404 });
 
-    user.avatar = imageUrl;
-
-    return NextResponse.json<apiRes>({ message: 'Success', data: user }, { status: 200 });
+    return NextResponse.json<apiRes>(
+      {
+        message: 'Success',
+        data: {
+          ...user,
+          avatar: imageUrl,
+        },
+      },
+      { status: 200 },
+    );
   });
 
 export const PUT = async (req: Request, res: NextResponse) =>

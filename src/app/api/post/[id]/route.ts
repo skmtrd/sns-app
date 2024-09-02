@@ -1,8 +1,8 @@
-import { clerkClient } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { dbConnect } from '../../lib/dbConnect';
 import { handleAPIError } from '../../lib/handleAPIError';
 import prisma from '../../lib/prisma';
+import { getUserAvatar } from '../../lib/user/getUserAvatar';
 import { apiRes } from '../../types';
 
 export const DELETE = async (req: Request, res: NextResponse) =>
@@ -46,15 +46,15 @@ export const GET = async (req: Request, res: NextResponse) =>
       },
     });
 
-    const postAvatar = await (await clerkClient().users.getUser(post.author.clerkId)).imageUrl;
+    if (!post) return NextResponse.json<apiRes>({ message: 'Post not found' }, { status: 404 });
 
     const postWithAvatar = {
       ...post,
-      avatar: postAvatar,
+      avatar: getUserAvatar(post.author.clerkId),
       replies: await Promise.all(
         post.replies.map(async (reply) => ({
           ...reply,
-          avatar: (await clerkClient().users.getUser(reply.author.clerkId)).imageUrl,
+          avatar: getUserAvatar(reply.author.clerkId),
         })),
       ),
     };
