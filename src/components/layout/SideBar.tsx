@@ -4,7 +4,7 @@ import {
   Antenna,
   BookHeart,
   BookMarked,
-  BookOpen,
+  ClipboardList,
   FilePenLine,
   FolderClock,
   Hand,
@@ -41,7 +41,7 @@ const SideBar: React.FC<Props> = ({ userId }) => {
 
   const navItems1: NavItem[] = [
     { page: '/timeline/all', label: 'タイムライン', icon: Home },
-    { page: '/assignmentshare/all', label: '課題共有', icon: BookOpen },
+    { page: '/assignmentshare/all', label: '課題共有', icon: ClipboardList },
     { page: '/question/all', label: '質問スペース', icon: HelpCircle },
     { page: `/profile/${userId}`, label: 'プロフィール', icon: User },
   ];
@@ -60,7 +60,7 @@ const SideBar: React.FC<Props> = ({ userId }) => {
   };
 
   return (
-    <div className='z-20 flex w-16 flex-col items-center border-r border-gray-200 bg-white p-4 transition-all duration-300 ease-in-out xl:w-80'>
+    <div className='z-20 flex w-16 flex-col items-center overflow-y-auto overflow-x-hidden border-r border-gray-200 bg-white p-4 transition-all duration-300 ease-in-out xl:w-80'>
       {isPostModalOpen && <AddPost closeModal={handleTogglePostModal} />}
       {isQuestionModalOpen && <AddQuestion closeModal={handleToggleQuestionModal} />}
       {isAssignmentModalOpen && <AddAssignment closeModal={handleToggleAssignmentModal} />}

@@ -1,10 +1,9 @@
 import { Heart, MessageCircleReply, MoreVertical } from 'lucide-react';
-import Header from '../element/Header';
 import FixedHeader from '../layout/FixedHeader';
 
 const SkeltonProfile = () => {
   return (
-    <div className='w-11/12 rounded-lg bg-white p-4 shadow'>
+    <div className='mt-10 w-full rounded-lg bg-white p-4 shadow'>
       <div className='mb-2 flex items-center justify-start'>
         <div className='relative'>
           <div className='size-10 animate-pulse rounded-full bg-gray-200'></div>
@@ -90,11 +89,9 @@ const ProfileSkeltonLoading = ({ title, subtitle }: { title: string; subtitle: s
   return (
     <div className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-auto bg-gray-100'>
       <FixedHeader title={title} target={subtitle} scrollToTop={duummy} />
-      <Header title={'プロフィール'} />
-      <div className='h-1 w-full'></div>
       <div className='flex w-full flex-col items-center gap-y-4'>
         <SkeltonProfile />
-        <div className='mt-4'></div>
+        <div className='mt-2'></div>
         <SkeltonPost />
         <SkeltonPost />
         <SkeltonPost />
