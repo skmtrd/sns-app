@@ -122,7 +122,7 @@ export const Post: React.FC<PostProps> = ({
   return (
     <div
       onClick={() => router.push(`/posts/${postId}`)}
-      className='w-11/12 rounded-lg bg-white p-4 shadow hover:bg-blue-50'
+      className='w-11/12 rounded-lg bg-white p-4 shadow hover:bg-blue-200'
     >
       {isReplyModalOpen && <AddReplyModal closeModal={handleReplyModalToggle} postId={postId} />}
       <div className='mb-2 flex items-center justify-start'>

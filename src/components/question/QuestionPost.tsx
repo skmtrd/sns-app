@@ -184,7 +184,6 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
                       <BookmarkPlus size={27} />
                     )}
                   </button>
-                  <span>{likesCount}</span>
                 </div>
                 <div className='relative flex gap-2'>
                   <button
@@ -238,7 +237,6 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
                 <BookmarkPlus size={27} />
               )}
             </button>
-            <span>{likesCount}</span>
           </div>
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}

@@ -88,7 +88,7 @@ const ProfilePage = () => {
   return (
     <div className='flex flex-1 flex-col overflow-hidden'>
       <Header title={'プロフィール'} />
-      <main className='flex-1 overflow-y-auto bg-gray-100 p-6'>
+      <main className='flex-1 overflow-y-auto bg-gray-100'>
         {isImageModalOpen && (
           <ImageDisplayModal closeModal={handleToggleIsImageModalOpen} src={userInfo.avatar} />
         )}
@@ -144,7 +144,7 @@ const ProfilePage = () => {
           id='mainContent'
           className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-hidden bg-gray-100'
         >
-          <div className='mt-5 flex w-full grow flex-col items-center gap-y-4 p-3'>
+          <div className='mt-5 flex w-full grow flex-col items-center gap-y-4'>
             {userInfo.posts.map((post) => (
               <Post
                 key={post.id}
