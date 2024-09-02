@@ -1,3 +1,8 @@
+import { z } from 'zod';
+import { postSchema } from '../schemas';
+
+export type Posts = z.infer<typeof postSchema>;
+
 export type UserInfo = {
   id: string;
   clerkId: string;

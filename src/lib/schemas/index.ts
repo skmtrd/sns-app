@@ -1,40 +1,140 @@
 import { z } from 'zod';
 
-export const postSchema = z
-  .object({
-    id: z.string(),
-    content: z.string(),
-    avatar: z.string(),
-    authorId: z.string(),
-    createdAt: z.string(),
-    author: z.object({
-      id: z.string(),
-      name: z.string(),
-      clerkId: z.string(),
-      introduction: z.string(),
-      tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(),
-    }),
-    likes: z.array(
-      z.object({
-        user: z.object({ id: z.string(), name: z.string(), clerkId: z.string() }),
-      }),
-    ),
-    replies: z.array(
-      z.object({
-        id: z.string(),
-        content: z.string(),
-        createdAt: z.string(),
-        parentReplyId: z.string().nullable(),
-        author: z.object({
-          id: z.string(),
-          name: z.string(),
-          clerkId: z.string(),
-          tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(),
-        }),
-      }),
-    ),
+// export const postSchema = z
+//   .object({
+//     id: z.string(),
+//     content: z.string(),
+//     avatar: z.string(),
+//     authorId: z.string(),
+//     createdAt: z.string(),
+//     author: z.object({
+//       id: z.string(),
+//       name: z.string(),
+//       clerkId: z.string(),
+//       introduction: z.string(),
+//       tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(),
+//     }),
+//     likes: z.array(
+//       z.object({
+//         user: z.object({ id: z.string(), name: z.string(), clerkId: z.string() }),
+//       }),
+//     ),
+//     replies: z.array(
+//       z.object({
+//         id: z.string(),
+//         content: z.string(),
+//         createdAt: z.string(),
+//         parentReplyId: z.string().nullable(),
+//         author: z.object({
+//           id: z.string(),
+//           name: z.string(),
+//           clerkId: z.string(),
+//           tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(),
+//         }),
+//       }),
+//     ),
+//   })
+//   .array();
+
+// export const oneOfPostSchema = z.object({
+//   id: z.string(),
+//   content: z.string(),
+//   avatar: z.string(),
+//   authorId: z.string(),
+//   createdAt: z.string(),
+//   author: z.object({
+//     id: z.string(),
+//     name: z.string(),
+//     clerkId: z.string(),
+//     introduction: z.string().optional(),
+//     tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(), // tagsをオプションにする
+//   }),
+//   likes: z.array(
+//     z.object({
+//       user: z.object({ id: z.string(), name: z.string(), clerkId: z.string() }),
+//     }),
+//   ),
+//   replies: z.array(
+//     z.object({
+//       id: z.string(),
+//       content: z.string(),
+//       createdAt: z.string(),
+//       avatar: z.string().nullable(),
+//       // likes: z
+//       //   .array(
+//       //     z.object({
+//       //       author: z.object({ id: z.string(), name: z.string(), clerkId: z.string() }),
+//       //     }),
+//       //   )
+//       //   .optional(),
+//       parentReplyId: z.string().nullable(),
+//       author: z.object({
+//         id: z.string(),
+//         name: z.string(),
+//         introduction: z.string().optional(),
+//         clerkId: z.string(),
+//         tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(), // tagsをオプションにする
+//       }),
+//     }),
+//   ),
+// });
+
+// 共通のタグスキーマ
+const tagSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+});
+
+// 共通のユーザースキーマ
+const userSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  clerkId: z.string(),
+});
+
+// 拡張ユーザースキーマ（著者用）
+const authorSchema = userSchema.extend({
+  introduction: z.string().optional(),
+  tags: z.array(tagSchema).optional(),
+});
+
+// 共通の返信スキーマ
+const replySchema = z.object({
+  id: z.string(),
+  content: z.string(),
+  createdAt: z.string(),
+  parentReplyId: z.string().nullable(),
+  author: authorSchema,
+});
+
+// 共通の投稿スキーマ
+const basePostSchema = z.object({
+  id: z.string(),
+  content: z.string(),
+  avatar: z.string(),
+  authorId: z.string(),
+  createdAt: z.string(),
+  author: authorSchema,
+  likes: z.array(z.object({ user: userSchema })),
+});
+
+// postSchema（配列版）
+export const postSchema = basePostSchema
+  .extend({
+    replies: z.array(replySchema),
   })
   .array();
+
+// oneOfPostSchema（単一オブジェクト版）
+export const oneOfPostSchema = basePostSchema.extend({
+  replies: z.array(
+    replySchema.extend({
+      avatar: z.string().nullable(),
+      // ここに likes を追加する場合は以下のようになります
+      // likes: z.array(z.object({ author: userSchema })).optional(),
+    }),
+  ),
+});
 
 export const questionSchema = z
   .object({
@@ -102,49 +202,6 @@ export const profileSchema = z.object({
           }),
         }),
       ),
-    }),
-  ),
-});
-
-export const oneOfPostSchema = z.object({
-  id: z.string(),
-  content: z.string(),
-  avatar: z.string(),
-  authorId: z.string(),
-  createdAt: z.string(),
-  author: z.object({
-    id: z.string(),
-    name: z.string(),
-    clerkId: z.string(),
-    introduction: z.string().optional(),
-    tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(), // tagsをオプションにする
-  }),
-  likes: z.array(
-    z.object({
-      user: z.object({ id: z.string(), name: z.string(), clerkId: z.string() }),
-    }),
-  ),
-  replies: z.array(
-    z.object({
-      id: z.string(),
-      content: z.string(),
-      createdAt: z.string(),
-      avatar: z.string().nullable(),
-      // likes: z
-      //   .array(
-      //     z.object({
-      //       author: z.object({ id: z.string(), name: z.string(), clerkId: z.string() }),
-      //     }),
-      //   )
-      //   .optional(),
-      parentReplyId: z.string().nullable(),
-      author: z.object({
-        id: z.string(),
-        name: z.string(),
-        introduction: z.string().optional(),
-        clerkId: z.string(),
-        tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(), // tagsをオプションにする
-      }),
     }),
   ),
 });
