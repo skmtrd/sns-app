@@ -5,6 +5,7 @@ import { getClerkId } from '../lib/getClerkId';
 import { handleAPIError } from '../lib/handleAPIError';
 import prisma from '../lib/prisma';
 import { findSpecificUser } from '../lib/user/findSpecificUser';
+import { getUserAvatar } from '../lib/user/getUserAvatar';
 import { apiRes } from '../types';
 
 export const GET = async (req: Request, res: NextResponse) =>
@@ -36,7 +37,7 @@ export const GET = async (req: Request, res: NextResponse) =>
       posts.map(async (post) => {
         return {
           ...post,
-          avatar: (await clerkClient().users.getUser(post.author.clerkId)).imageUrl,
+          avatar: await getUserAvatar(post.author.clerkId),
         };
       }),
     );

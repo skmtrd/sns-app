@@ -15,7 +15,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <SignInButton></SignInButton>
           </SignedOut>
           <SignedIn>
-            <SideBar userId={userId}></SideBar>
+            {/* ここはログインしている時のみ表示されるので、userIdはnullにならない */}
+            <SideBar userId={userId!}></SideBar>
             {children}
             <RightSideBar></RightSideBar>
           </SignedIn>
