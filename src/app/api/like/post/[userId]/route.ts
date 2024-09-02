@@ -1,7 +1,7 @@
 import { dbConnect } from '@/app/api/lib/dbConnect';
 import { handleAPIError } from '@/app/api/lib/handleAPIError';
+import { getUserAvatar } from '@/app/api/lib/user/getUserAvatar';
 import { apiRes } from '@/app/api/types';
-import { clerkClient } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import prisma from '../../../lib/prisma';
 
@@ -44,7 +44,7 @@ export const GET = async (req: Request, res: NextResponse) =>
       posts.map(async (post) => {
         return {
           ...post,
-          avatar: (await clerkClient().users.getUser(post.author.clerkId)).imageUrl,
+          avatar: await getUserAvatar(post.author.clerkId),
         };
       }),
     );

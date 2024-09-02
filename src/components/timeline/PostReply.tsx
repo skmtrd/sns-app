@@ -232,6 +232,7 @@ export const PostReply: React.FC<PostProps> = ({
               replyContent={reply.content}
               timestamp={reply.createdAt}
               // likes={reply.likes}
+              currentClerkId={currentClerkId}
               replies={replies}
               parentPostId={parentPostId}
               toReplyPostAuthorId={reply.author.id}
