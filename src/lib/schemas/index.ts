@@ -105,6 +105,7 @@ const replySchema = z.object({
   createdAt: z.string(),
   parentReplyId: z.string().nullable(),
   author: authorSchema,
+  avatar: z.string().nullable(),
 });
 
 // 共通の投稿スキーマ
@@ -127,13 +128,7 @@ export const postSchema = basePostSchema
 
 // oneOfPostSchema（単一オブジェクト版）
 export const oneOfPostSchema = basePostSchema.extend({
-  replies: z.array(
-    replySchema.extend({
-      avatar: z.string().nullable(),
-      // ここに likes を追加する場合は以下のようになります
-      // likes: z.array(z.object({ author: userSchema })).optional(),
-    }),
-  ),
+  replies: z.array(replySchema),
 });
 
 export const questionSchema = z
