@@ -8,7 +8,7 @@ type TimeLinePageProps = {
   posts: PostType[];
   currentClerkId: string;
   title: string;
-  target: string;
+  target: string | null;
 };
 
 const TimeLinePage: React.FC<TimeLinePageProps> = ({ posts, currentClerkId, title, target }) => {
