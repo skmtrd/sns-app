@@ -20,7 +20,7 @@ const QuestionSearched = () => {
   }
 
   if (isLoading || !questions || !currentClerkId) {
-    return <QuestionSkeltonLoading title={'質問'} subtitle={`検索-"${searchWords}"`} />;
+    return <QuestionSkeltonLoading title={'質問'} subtitle={`ワード検索-"${searchWords}"`} />;
   }
 
   const filteredQuestions = questions.filter((question) =>

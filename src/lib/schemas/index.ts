@@ -79,7 +79,6 @@ import { z } from 'zod';
 //   ),
 // });
 
-// 共通のタグスキーマ
 const tagSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -116,55 +115,24 @@ export const PostSchema = z.object({
   replies: z.array(replySchema),
 });
 
-// export const postSchema = basePostSchema
-//   .extend({
-//     replies: z.array(replySchema),
-//   })
-//   .array();
-
-// export const oneOfPostSchema = basePostSchema.extend({
-//   replies: z.array(replySchema),
-// });
-
-// export const questionSchema = z
-//   .object({
-//     author: z.object({
-//       name: z.string(),
-//       id: z.string(),
-//       clerkId: z.string(),
-//       tags: z.array(z.object({ name: z.string(), id: z.string() })),
-//     }),
-//     createdAt: z.string(),
-//     id: z.string(),
-//     title: z.string(),
-//     description: z.string(),
-//     replies: z.array(
-//       z.object({
-//         id: z.string(),
-//         content: z.string(),
-//         parentReplyId: z.string().nullable(),
-//         createdAt: z.string(),
-//         author: z.object({
-//           id: z.string(),
-//           name: z.string(),
-//           clerkId: z.string(),
-//         }),
-//       }),
-//     ),
-//     likes: z.array(
-//       z.object({
-//         user: z.object({ id: z.string(), name: z.string(), clerkId: z.string() }),
-//       }),
-//     ),
-//   })
-//   .array();
-
 export const QuestionSchema = z.object({
   id: z.string(),
   title: z.string(),
   description: z.string(),
   authorId: z.string(),
   author: authorSchema,
+  createdAt: z.string(),
+  avatar: z.string().nullable(),
+  likes: z.array(z.object({ user: userSchema })),
+  replies: z.array(replySchema),
+});
+
+export const AssignmentSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
+  deadLine: z.string(),
+  authorId: z.string(),
   createdAt: z.string(),
   avatar: z.string().nullable(),
   likes: z.array(z.object({ user: userSchema })),
@@ -208,44 +176,44 @@ export const profileSchema = z.object({
   ),
 });
 
-export const assignmentshareSchema = z
-  .object({
-    id: z.string(),
-    title: z.string(),
-    description: z.string(),
-    deadLine: z.string(),
-    authorId: z.string(),
-    createdAt: z.string(),
-    likes: z.array(
-      z.object({
-        user: z.object({ id: z.string(), name: z.string(), clerkId: z.string() }),
-      }),
-    ),
-    author: z.object({
-      id: z.string(),
-      name: z.string(),
-      clerkId: z.string(),
-      introduction: z.string(),
-      tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(),
-    }),
-    // likes: z.array(
-    //   z.object({
-    //     author: z.object({ id: z.string(), name: z.string(), clerkId: z.string() }),
-    //   }),
-    // ),
-    // replies: z.array(
-    //   z.object({
-    //     id: z.string(),
-    //     content: z.string(),
-    //     createdAt: z.string(),
-    //     parentReplyId: z.string().nullable(),
-    //     author: z.object({
-    //       id: z.string(),
-    //       name: z.string(),
-    //       clerkId: z.string(),
-    //       tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(),
-    //     }),
-    //   }),
-    // ),
-  })
-  .array();
+// export const assignmentshareSchema = z
+//   .object({
+//     id: z.string(),
+//     title: z.string(),
+//     description: z.string(),
+//     deadLine: z.string(),
+//     authorId: z.string(),
+//     createdAt: z.string(),
+//     likes: z.array(
+//       z.object({
+//         user: z.object({ id: z.string(), name: z.string(), clerkId: z.string() }),
+//       }),
+//     ),
+//     author: z.object({
+//       id: z.string(),
+//       name: z.string(),
+//       clerkId: z.string(),
+//       introduction: z.string(),
+//       tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(),
+//     }),
+//     // likes: z.array(
+//     //   z.object({
+//     //     author: z.object({ id: z.string(), name: z.string(), clerkId: z.string() }),
+//     //   }),
+//     // ),
+//     // replies: z.array(
+//     //   z.object({
+//     //     id: z.string(),
+//     //     content: z.string(),
+//     //     createdAt: z.string(),
+//     //     parentReplyId: z.string().nullable(),
+//     //     author: z.object({
+//     //       id: z.string(),
+//     //       name: z.string(),
+//     //       clerkId: z.string(),
+//     //       tags: z.array(z.object({ id: z.string(), name: z.string() })).optional(),
+//     //     }),
+//     //   }),
+//     // ),
+//   })
+//   .array();
