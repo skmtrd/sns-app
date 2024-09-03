@@ -85,20 +85,17 @@ const tagSchema = z.object({
   name: z.string(),
 });
 
-// 共通のユーザースキーマ
 const userSchema = z.object({
   id: z.string(),
   name: z.string(),
   clerkId: z.string(),
 });
 
-// 拡張ユーザースキーマ（著者用）
 const authorSchema = userSchema.extend({
   introduction: z.string().optional(),
   tags: z.array(tagSchema).optional(),
 });
 
-// 共通の返信スキーマ
 const replySchema = z.object({
   id: z.string(),
   content: z.string(),
@@ -108,8 +105,7 @@ const replySchema = z.object({
   avatar: z.string().nullable(),
 });
 
-// 共通の投稿スキーマ
-const basePostSchema = z.object({
+export const PostSchema = z.object({
   id: z.string(),
   content: z.string(),
   avatar: z.string(),
@@ -117,52 +113,63 @@ const basePostSchema = z.object({
   createdAt: z.string(),
   author: authorSchema,
   likes: z.array(z.object({ user: userSchema })),
-});
-
-// postSchema（配列版）
-export const postSchema = basePostSchema
-  .extend({
-    replies: z.array(replySchema),
-  })
-  .array();
-
-// oneOfPostSchema（単一オブジェクト版）
-export const oneOfPostSchema = basePostSchema.extend({
   replies: z.array(replySchema),
 });
 
-export const questionSchema = z
-  .object({
-    author: z.object({
-      name: z.string(),
-      id: z.string(),
-      clerkId: z.string(),
-      tags: z.array(z.object({ name: z.string(), id: z.string() })),
-    }),
-    createdAt: z.string(),
-    id: z.string(),
-    title: z.string(),
-    description: z.string(),
-    replies: z.array(
-      z.object({
-        id: z.string(),
-        content: z.string(),
-        parentReplyId: z.string().nullable(),
-        createdAt: z.string(),
-        author: z.object({
-          id: z.string(),
-          name: z.string(),
-          clerkId: z.string(),
-        }),
-      }),
-    ),
-    likes: z.array(
-      z.object({
-        user: z.object({ id: z.string(), name: z.string(), clerkId: z.string() }),
-      }),
-    ),
-  })
-  .array();
+// export const postSchema = basePostSchema
+//   .extend({
+//     replies: z.array(replySchema),
+//   })
+//   .array();
+
+// export const oneOfPostSchema = basePostSchema.extend({
+//   replies: z.array(replySchema),
+// });
+
+// export const questionSchema = z
+//   .object({
+//     author: z.object({
+//       name: z.string(),
+//       id: z.string(),
+//       clerkId: z.string(),
+//       tags: z.array(z.object({ name: z.string(), id: z.string() })),
+//     }),
+//     createdAt: z.string(),
+//     id: z.string(),
+//     title: z.string(),
+//     description: z.string(),
+//     replies: z.array(
+//       z.object({
+//         id: z.string(),
+//         content: z.string(),
+//         parentReplyId: z.string().nullable(),
+//         createdAt: z.string(),
+//         author: z.object({
+//           id: z.string(),
+//           name: z.string(),
+//           clerkId: z.string(),
+//         }),
+//       }),
+//     ),
+//     likes: z.array(
+//       z.object({
+//         user: z.object({ id: z.string(), name: z.string(), clerkId: z.string() }),
+//       }),
+//     ),
+//   })
+//   .array();
+
+export const QuestionSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
+  authorId: z.string(),
+  author: authorSchema,
+  createdAt: z.string(),
+  avatar: z.string().nullable(),
+  likes: z.array(z.object({ user: userSchema })),
+  replies: z.array(replySchema),
+});
 
 export const profileSchema = z.object({
   name: z.string(),

@@ -1,7 +1,8 @@
 import { z } from 'zod';
-import { oneOfPostSchema } from '../schemas';
+import { PostSchema, QuestionSchema } from '../schemas';
 
-export type Post = z.infer<typeof oneOfPostSchema>;
+export type Post = z.infer<typeof PostSchema>;
+export type Question = z.infer<typeof QuestionSchema>;
 
 export type UserInfo = {
   id: string;

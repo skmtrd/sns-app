@@ -1,4 +1,4 @@
-import { useDeletePost } from '@/hooks/useDeletePost';
+import { useDeletePost } from '@/hooks/DeleteContent/useDeletePost';
 import { scrollToTop } from '@/lib/scrollToTop';
 import { Post as PostType } from '@/lib/types';
 import FixedHeader from '../layout/FixedHeader';
@@ -23,17 +23,6 @@ const TimeLinePage: React.FC<TimeLinePageProps> = ({ posts, currentClerkId, titl
         {posts.map((post) => (
           <Post
             key={post.id}
-            // postId={post.id}
-            // postContent={post.content}
-            // timestamp={post.createdAt}
-            // likes={post.likes}
-            // replyCount={post.replies.filter((reply) => reply.parentReplyId === null).length}
-            // postAuthorName={post.author.name}
-            // postAuthorId={post.author.id}
-            // postAuthorClerkId={post.author.clerkId}
-            // postAuthorIntroduction={post.author.introduction}
-            // postAuthorTags={post.author.tags}
-            // postAuthorAvatar={post.avatar}
             handleDeletePost={handleDeletePost}
             currentClerkId={currentClerkId}
             post={post}

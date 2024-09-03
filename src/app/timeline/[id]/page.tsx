@@ -2,12 +2,13 @@
 import TimelineSkeltonLoading from '@/components/loading/TimelineSkeltonLoading';
 import TimeLinePage from '@/components/timeline/TimeLinePage';
 import useData from '@/hooks/useData';
-import { postSchema } from '@/lib/schemas';
+import { PostSchema } from '@/lib/schemas';
 import { useAuth } from '@clerk/nextjs';
 import { usePathname } from 'next/navigation';
+import { z } from 'zod';
 
 const TagFilteredTimeline = () => {
-  const { data: posts, error, isLoading } = useData('/api/post', postSchema);
+  const { data: posts, error, isLoading } = useData('/api/post', z.array(PostSchema));
   const { userId: currentClerkId } = useAuth();
   const tagId = usePathname().split('/timeline/')[1];
 

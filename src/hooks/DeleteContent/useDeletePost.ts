@@ -1,6 +1,6 @@
 import { useSWRConfig } from 'swr';
-import { deletePost } from '../lib/deleteRequests';
-import { Post } from '../lib/types';
+import { deletePost } from '../../lib/deleteRequests';
+import { Post } from '../../lib/types';
 
 export const useDeletePost = async (posts: Post[]) => {
   const { mutate } = useSWRConfig();

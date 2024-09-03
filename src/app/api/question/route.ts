@@ -9,7 +9,7 @@ import { apiRes } from '../types';
 export const GET = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
     await dbConnect();
-    const posts = await prisma.question.findMany({
+    const questions = await prisma.question.findMany({
       include: {
         replies: {
           include: {
@@ -31,7 +31,29 @@ export const GET = async (req: Request, res: NextResponse) =>
       orderBy: { createdAt: 'desc' },
     });
 
-    return NextResponse.json<apiRes>({ message: 'success', data: posts }, { status: 200 });
+    const questionsWithAvatar = await Promise.all(
+      questions.map(async (question) => {
+        return {
+          ...question,
+          //もしavatarがあれば取得する
+          // avatar: await getUserAvatar(question.author.clerkId),
+          avatar: null,
+          replies: await Promise.all(
+            question.replies.map(async (reply) => {
+              return {
+                ...reply,
+                avatar: null,
+              };
+            }),
+          ),
+        };
+      }),
+    );
+
+    return NextResponse.json<apiRes>(
+      { message: 'success', data: questionsWithAvatar },
+      { status: 200 },
+    );
   });
 
 export const POST = async (req: Request, res: NextResponse) =>
