@@ -4,7 +4,6 @@ import Button from '@/components/element/Button';
 import Header from '@/components/element/Header';
 import { ImageDisplayModal } from '@/components/element/ImageDisplayModal';
 import UserTag from '@/components/element/UserTag';
-import { Post } from '@/components/timeline/Post';
 import useUserInfo from '@/hooks/useUserInfo';
 import { Tag } from '@/lib/types';
 import Image from 'next/image';
@@ -14,21 +13,9 @@ import { Toaster } from 'react-hot-toast';
 import { mutate } from 'swr';
 
 import ProfileSkeltonLoading from '@/components/loading/ProfileSkeltonLoading';
-import { profileSchema } from '@/lib/schemas';
+import TimeLinePage from '@/components/timeline/TimeLinePage';
+import { ProfileSchema } from '@/lib/schemas';
 import { useAuth } from '@clerk/nextjs';
-
-const deletePost = async (postId: string) => {
-  try {
-    const res = await fetch(`/api/post/${postId}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-  } catch (error) {
-    console.error(error);
-  }
-};
 
 const ProfilePage = () => {
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
@@ -39,18 +26,10 @@ const ProfilePage = () => {
     setIsImageModalOpen(!isImageModalOpen);
   };
 
-  const { userInfo, isLoading, isError } = useUserInfo(userId, profileSchema);
+  const { userInfo, isLoading, isError } = useUserInfo(userId, ProfileSchema);
 
   if (isLoading || !userInfo || !currentClrekId) {
     return <ProfileSkeltonLoading title={'プロフィール'} subtitle={''} />;
-  }
-
-  if (isError && isError.status === 429) {
-    setTimeout(() => {
-      mutate(`/api/post`);
-    }, 5000);
-  } else if (isError) {
-    return <div>Error</div>;
   }
 
   if (isError) {
@@ -62,33 +41,10 @@ const ProfilePage = () => {
     return <div>Error</div>;
   }
 
-  const handleDeletePost = async (e: React.MouseEvent<HTMLButtonElement>, postId: string) => {
-    e.stopPropagation();
-    const optimisticPostData = userInfo.posts.filter((post) => post.id !== postId);
-    const optimisticData = { ...userInfo, posts: optimisticPostData };
-    try {
-      await mutate(
-        `/api/profile/${userId}`,
-        async () => {
-          await deletePost(postId);
-          return optimisticData;
-        },
-        {
-          optimisticData,
-          revalidate: false,
-          populateCache: true,
-          rollbackOnError: true,
-        },
-      );
-    } catch (error) {
-      console.error('Failed to delete post:', error);
-    }
-  };
-
   return (
     <div className='flex flex-1 flex-col overflow-hidden'>
       <Header title={'プロフィール'} />
-      <main className='flex-1 overflow-y-auto bg-gray-100'>
+      <main className='overflow-y-auto bg-gray-100'>
         {isImageModalOpen && (
           <ImageDisplayModal closeModal={handleToggleIsImageModalOpen} src={userInfo.avatar} />
         )}
@@ -140,32 +96,13 @@ const ProfilePage = () => {
             </div>
           )}
         </div>
-        <div
-          id='mainContent'
-          className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-hidden bg-gray-100'
-        >
-          <div className='mt-5 flex w-full grow flex-col items-center gap-y-4'>
-            {userInfo.posts.map((post) => (
-              <Post
-                key={post.id}
-                postId={post.id}
-                postContent={post.content}
-                timestamp={post.createdAt}
-                likes={post.likes}
-                replyCount={post.replies.filter((reply) => reply.parentReplyId === null).length}
-                postAuthorName={userInfo.name}
-                postAuthorId={userInfo.id}
-                postAuthorClerkId={userInfo.clerkId}
-                postAuthorIntroduction={userInfo.introduction}
-                postAuthorTags={userInfo.tags}
-                postAuthorAvatar={userInfo.avatar}
-                handleDeletePost={handleDeletePost}
-                currentClerkId={currentClrekId}
-              />
-            ))}
-          </div>
-        </div>
       </main>
+      <TimeLinePage
+        posts={userInfo.posts}
+        currentClerkId={currentClrekId}
+        title={'ポスト一覧'}
+        target={null}
+      />
     </div>
   );
 };
