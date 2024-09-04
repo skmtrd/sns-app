@@ -25,6 +25,11 @@ export const GET = async (req: Request, res: NextResponse) =>
         posts: {
           orderBy: { createdAt: 'desc' },
           include: {
+            author: {
+              include: {
+                tags: true,
+              },
+            },
             likes: {
               include: {
                 user: true,
@@ -42,12 +47,30 @@ export const GET = async (req: Request, res: NextResponse) =>
 
     if (!user) return NextResponse.json<apiRes>({ message: 'User not found' }, { status: 404 });
 
+    const postsWithAvatar = await Promise.all(
+      user.posts.map(async (post) => {
+        return {
+          ...post,
+          avatar: imageUrl,
+          replies: await Promise.all(
+            post.replies.map(async (reply) => {
+              return {
+                ...reply,
+                avatar: null,
+              };
+            }),
+          ),
+        };
+      }),
+    );
+
     return NextResponse.json<apiRes>(
       {
         message: 'Success',
         data: {
           ...user,
           avatar: imageUrl,
+          posts: postsWithAvatar,
         },
       },
       { status: 200 },

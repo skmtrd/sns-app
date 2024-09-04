@@ -48,16 +48,21 @@ export const GET = async (req: Request, res: NextResponse) =>
 
     if (!post) return NextResponse.json<apiRes>({ message: 'Post not found' }, { status: 404 });
 
-    const postWithAvatar = {
+    const postsWithAvatar = {
       ...post,
-      avatar: getUserAvatar(post.author.clerkId),
+      avatar: await getUserAvatar(post.author.clerkId),
       replies: await Promise.all(
-        post.replies.map(async (reply) => ({
-          ...reply,
-          avatar: getUserAvatar(reply.author.clerkId),
-        })),
+        post.replies.map(async (reply) => {
+          return {
+            ...reply,
+            avatar: await getUserAvatar(reply.author.clerkId),
+          };
+        }),
       ),
     };
 
-    return NextResponse.json<apiRes>({ message: 'success', data: postWithAvatar }, { status: 200 });
+    return NextResponse.json<apiRes>(
+      { message: 'success', data: postsWithAvatar },
+      { status: 200 },
+    );
   });

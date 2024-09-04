@@ -9,7 +9,7 @@ export const GET = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
     // const { getUser } = clerkClient().users;
     await dbConnect();
-    const posts = await prisma.assignment.findMany({
+    const assignments = await prisma.assignment.findMany({
       include: {
         replies: {
           include: {
@@ -31,7 +31,29 @@ export const GET = async (req: Request, res: NextResponse) =>
       orderBy: { createdAt: 'desc' },
     });
 
-    return NextResponse.json<apiRes>({ message: 'success', data: posts }, { status: 200 });
+    const assignmentsWithAvatar = await Promise.all(
+      assignments.map(async (assignment) => {
+        return {
+          ...assignment,
+          //もしavatarが必要であれば取得する
+          // avatar: await getUserAvatar(question.author.clerkId),
+          avatar: null,
+          replies: await Promise.all(
+            assignment.replies.map(async (reply) => {
+              return {
+                ...reply,
+                avatar: null,
+              };
+            }),
+          ),
+        };
+      }),
+    );
+
+    return NextResponse.json<apiRes>(
+      { message: 'success', data: assignmentsWithAvatar },
+      { status: 200 },
+    );
   });
 
 export const POST = async (req: Request, res: NextResponse) =>

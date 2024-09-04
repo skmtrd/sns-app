@@ -38,6 +38,14 @@ export const GET = async (req: Request, res: NextResponse) =>
         return {
           ...post,
           avatar: await getUserAvatar(post.author.clerkId),
+          replies: await Promise.all(
+            post.replies.map(async (reply) => {
+              return {
+                ...reply,
+                avatar: null,
+              };
+            }),
+          ),
         };
       }),
     );
@@ -53,7 +61,7 @@ export const POST = async (req: Request, res: NextResponse) =>
     dbConnect();
 
     const { content } = await req.json();
-    //clerkのuserIdからUserテーブルのuserIdを取得
+
     const clerkId = getClerkId();
 
     if (!clerkId) {

@@ -2,7 +2,7 @@
 
 import { useRelativeTime } from '@/hooks/useRelativeTime';
 import { addQuestionLike, deleteQuestionLike } from '@/lib/likeRequests';
-import { QuestionReply } from '@/lib/types';
+import { Question } from '@/lib/types';
 import {
   BookmarkPlus,
   ChevronDown,
@@ -19,16 +19,17 @@ import TextContent from '../element/TextContent';
 import QuestionReplies from './QuestionReplies';
 
 type QuestionPostProps = {
-  questionId: string;
-  questionTitle: string;
-  questionDescription: string;
-  replies: QuestionReply[];
-  questionAuthorName: string;
-  questionAuthorId: string;
-  questionAuthorClerkId: string;
-  timestamp: string;
-  likes: { user: { name: string; clerkId: string; id: string } }[];
-  handleDeletePost: (e: React.MouseEvent<HTMLButtonElement>, questionId: string) => void;
+  // questionId: string;
+  // questionTitle: string;
+  // questionDescription: string;
+  // replies: QuestionReply[];
+  // questionAuthorName: string;
+  // questionAuthorId: string;
+  // questionAuthorClerkId: string;
+  // timestamp: string;
+  // likes: { user: { name: string; clerkId: string; id: string } }[];
+  question: Question;
+  handleDeletePost: Promise<(questionId: string) => Promise<void>>;
   currentClerkId: string;
 };
 
@@ -37,15 +38,16 @@ type ReplyFormData = {
 };
 
 const QuestionPost: React.FC<QuestionPostProps> = ({
-  questionId,
-  questionTitle,
-  questionDescription,
-  replies,
-  questionAuthorName,
-  questionAuthorId,
-  questionAuthorClerkId,
-  timestamp,
-  likes,
+  // questionId,
+  // questionTitle,
+  // questionDescription,
+  // replies,
+  // questionAuthorName,
+  // questionAuthorId,
+  // questionAuthorClerkId,
+  // timestamp,
+  // likes,
+  question,
   handleDeletePost,
   currentClerkId,
 }) => {
@@ -56,10 +58,10 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
   const [replyContentHeight, setReplyContentHeight] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
   const replyContentRef = useRef<HTMLDivElement>(null);
-  const timeAgo = useRelativeTime(timestamp);
-  const [likesCount, setLikesCount] = useState(likes.length);
+  const timeAgo = useRelativeTime(question.createdAt);
+  const [likesCount, setLikesCount] = useState(question.likes.length);
   const [isLiked, setIsLiked] = useState(
-    likes.some((like) => like.user.clerkId === currentClerkId),
+    question.likes.some((like) => like.user.clerkId === currentClerkId),
   );
   const [isLiking, setIsLiking] = useState(false);
 
@@ -81,10 +83,10 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
   const onSubmit = async (data: ReplyFormData) => {
     const newReply = {
       content: data.content,
-      questionId: questionId,
+      questionId: question.id,
     };
     try {
-      const response = await fetch(`/api/question/${questionId}/reply`, {
+      const response = await fetch(`/api/question/${question.id}/reply`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -106,7 +108,7 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
     if (replyContentRef.current) {
       setReplyContentHeight(replyContentRef.current.scrollHeight);
     }
-  }, [replies, isReplyDrawerOpen]);
+  }, [isDrawerOpen, isReplyDrawerOpen]);
 
   const handleLike = async () => {
     if (isLiking) return;
@@ -117,9 +119,9 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
 
     try {
       if (isLiked) {
-        await deleteQuestionLike(questionId);
+        await deleteQuestionLike(question.id);
       } else {
-        await addQuestionLike(questionId);
+        await addQuestionLike(question.id);
       }
     } catch (error) {
       setIsLiked(isLiked);
@@ -133,29 +135,29 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
     <div className='relative w-11/12 rounded-lg bg-white p-6 shadow'>
       <div className='flex items-start justify-between'>
         <div>
-          <h3 className='break-words text-xl font-bold'>{questionTitle}</h3>
-          <p className='break-words text-sm text-gray-600'>{questionAuthorName}さん</p>
+          <h3 className='break-words text-xl font-bold'>{question.title}</h3>
+          <p className='break-words text-sm text-gray-600'>{question.author.name}さん</p>
           <div className='mt-2'>
-            <TextContent textContent={questionDescription} />
+            <TextContent textContent={question.description} />
           </div>
         </div>
         <p className='mr-1 whitespace-nowrap text-sm text-gray-500'>{timeAgo}</p>
       </div>
-      <h4 className='mt-4 font-semibold'>回答({replies.length})</h4>
-      {replies.length > 0 ? (
+      <h4 className='mt-4 font-semibold'>回答({question.replies.length})</h4>
+      {question.replies.length > 0 ? (
         <>
           <QuestionReplies
-            replyAuthorName={replies[0].author.name}
-            textContent={replies[0].content}
+            replyAuthorName={question.replies[0].author.name}
+            textContent={question.replies[0].content}
           />
-          {replies.length > 1 && (
+          {question.replies.length > 1 && (
             <>
               <div
                 ref={contentRef}
                 className='overflow-hidden transition-all duration-500 ease-in-out'
                 style={{ height: isDrawerOpen ? `${contentHeight}px` : '0' }}
               >
-                {replies.slice(1).map((reply, index) => (
+                {question.replies.slice(1).map((reply) => (
                   <QuestionReplies
                     key={reply.id}
                     replyAuthorName={reply.author.name}
@@ -197,15 +199,15 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
                     className='text-gray-500 hover:text-gray-700'
                   >
                     <MoreVertical size={20} />
-                    {isDropdownOpen && (
-                      <KebabMenu
-                        currentClerkId={currentClerkId}
-                        authorClerkId={questionAuthorClerkId}
-                        contentId={questionId}
-                        handleDelete={handleDeletePost}
-                      />
-                    )}
                   </button>
+                  {isDropdownOpen && (
+                    <KebabMenu
+                      currentClerkId={currentClerkId}
+                      authorClerkId={question.author.clerkId}
+                      contentId={question.id}
+                      handleDelete={handleDeletePost}
+                    />
+                  )}
                 </div>
               </div>
             </>
@@ -215,7 +217,7 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
         <p className='mt-4 font-semibold text-red-500'>まだ回答がありません</p>
       )}
 
-      {replies.length <= 1 && (
+      {question.replies.length <= 1 && (
         <div className='relative mt-6 flex w-full justify-between'>
           <div className='flex items-center justify-center gap-2'>
             <button
@@ -243,15 +245,15 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
             className='text-gray-500 hover:text-gray-700'
           >
             <MoreVertical size={20} />
-            {isDropdownOpen && (
-              <KebabMenu
-                contentId={questionId}
-                currentClerkId={currentClerkId}
-                authorClerkId={questionAuthorClerkId}
-                handleDelete={handleDeletePost}
-              />
-            )}
           </button>
+          {isDropdownOpen && (
+            <KebabMenu
+              contentId={question.id}
+              currentClerkId={currentClerkId}
+              authorClerkId={question.author.clerkId}
+              handleDelete={handleDeletePost}
+            />
+          )}
         </div>
       )}
 

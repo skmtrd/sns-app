@@ -1,3 +1,10 @@
+import { z } from 'zod';
+import { AssignmentSchema, PostSchema, QuestionSchema } from '../schemas';
+
+export type Post = z.infer<typeof PostSchema>;
+export type Question = z.infer<typeof QuestionSchema>;
+export type Assignment = z.infer<typeof AssignmentSchema>;
+
 export type UserInfo = {
   id: string;
   clerkId: string;

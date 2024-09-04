@@ -1,50 +1,33 @@
 import { useDeadline } from '@/hooks/useDeadline';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
 import { addAssignmentLike, deleteAssignmentLike } from '@/lib/likeRequests';
+import { Assignment } from '@/lib/types';
 import { BookmarkPlus, MoreVertical } from 'lucide-react';
 import { useState } from 'react';
 import KebabMenu from '../element/KebabMenu';
 import TextContent from '../element/TextContent';
 
 type AssignmentPostProps = {
-  assignmentId: string;
-  title: string;
-  description: string;
-  deadline: string;
-  timestamp: string;
-  likes: { user: { name: string; clerkId: string; id: string } }[];
-  assignmentAuthorId: string;
-  assignmentAuthorName: string;
-  assignmentAuthorClerkId: string;
-  assignmentAuthorIntroduction: string;
-  handleDeleteAssignment: (e: React.MouseEvent<HTMLButtonElement>, assignmentId: string) => void;
+  assignment: Assignment;
+  handleDeleteAssignment: Promise<(assignmentId: string) => Promise<void>>;
   currentClerkId: string;
 };
 
 const AssignmentPost = ({
-  assignmentId,
-  title,
-  description,
-  deadline,
-  timestamp,
-  likes,
-  assignmentAuthorId,
-  assignmentAuthorName,
-  assignmentAuthorClerkId,
-  assignmentAuthorIntroduction,
+  assignment,
   handleDeleteAssignment,
   currentClerkId,
 }: AssignmentPostProps) => {
-  const timeAgo = useRelativeTime(timestamp);
-  const limited = useDeadline(deadline);
+  const timeAgo = useRelativeTime(assignment.createdAt);
+  const limited = useDeadline(assignment.deadLine);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLiked, setIsLiked] = useState(
-    likes.some((like) => like.user.clerkId === currentClerkId),
+    assignment.likes.some((like) => like.user.clerkId === currentClerkId),
   );
   const [isLiking, setIsLiking] = useState(false);
 
-  const [year, month, day] = deadline.split('/')[0].split('-');
-  const [hour, minute] = deadline.split('/')[1].split(':');
+  const [year, month, day] = assignment.deadLine.split('/')[0].split('-');
+  const [hour, minute] = assignment.deadLine.split('/')[1].split(':');
   const deadlineContent = `${year}年${month}月${day}日 ${hour}時${minute}分`;
 
   const handleLike = async () => {
@@ -53,7 +36,7 @@ const AssignmentPost = ({
     setIsLiked(!isLiked);
 
     try {
-      isLiked ? await deleteAssignmentLike(assignmentId) : await addAssignmentLike(assignmentId);
+      isLiked ? await deleteAssignmentLike(assignment.id) : await addAssignmentLike(assignment.id);
     } catch (error) {
       setIsLiked(isLiked);
     } finally {
@@ -65,12 +48,12 @@ const AssignmentPost = ({
     <div className='relative mb-4 w-11/12 rounded-lg bg-white p-6 shadow'>
       <div className='flex justify-between'>
         <div>
-          <h2 className='mb-1 pr-20 text-xl font-bold text-gray-800'>{title}</h2>
-          <p className='mb-3 text-sm text-gray-500'>{assignmentAuthorName}さん</p>
+          <h2 className='mb-1 pr-20 text-xl font-bold text-gray-800'>{assignment.title}</h2>
+          <p className='mb-3 text-sm text-gray-500'>{assignment.author.name}さん</p>
         </div>
         <p className='mr-1 whitespace-nowrap text-sm text-gray-500'>{timeAgo}</p>
       </div>
-      <TextContent textContent={description} />
+      <TextContent textContent={assignment.description} />
       <div className='mt-4 items-center text-sm'>
         <p className='text-base text-red-500'>{deadlineContent}まで</p>
         <div className='flex items-center'>
@@ -101,8 +84,8 @@ const AssignmentPost = ({
         {isDropdownOpen && (
           <KebabMenu
             currentClerkId={currentClerkId}
-            authorClerkId={assignmentAuthorClerkId}
-            contentId={assignmentId}
+            authorClerkId={assignment.author.clerkId}
+            contentId={assignment.id}
             handleDelete={handleDeleteAssignment}
           />
         )}
