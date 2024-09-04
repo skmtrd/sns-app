@@ -132,6 +132,7 @@ export const AssignmentSchema = z.object({
   title: z.string(),
   description: z.string(),
   deadLine: z.string(),
+  author: authorSchema,
   authorId: z.string(),
   createdAt: z.string(),
   avatar: z.string().nullable(),

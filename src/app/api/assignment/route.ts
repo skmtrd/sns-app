@@ -35,7 +35,7 @@ export const GET = async (req: Request, res: NextResponse) =>
       assignments.map(async (assignment) => {
         return {
           ...assignment,
-          //もしavatarがあれば取得する
+          //もしavatarが必要であれば取得する
           // avatar: await getUserAvatar(question.author.clerkId),
           avatar: null,
           replies: await Promise.all(

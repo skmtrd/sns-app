@@ -2,7 +2,7 @@ import { useSWRConfig } from 'swr';
 import { deleteAssignment } from '../../lib/deleteRequests';
 import { Assignment } from '../../lib/types';
 
-export const useDeleteAssignmnet = async (assignments: Assignment[]) => {
+export const useDeleteAssignment = async (assignments: Assignment[]) => {
   const { mutate } = useSWRConfig();
   const handleDeleteAssignment = async (assignmentId: string) => {
     const optimisticData = assignments.filter((assignment) => assignment.id !== assignmentId);
