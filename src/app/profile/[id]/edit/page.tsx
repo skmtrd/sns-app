@@ -4,7 +4,7 @@ import { ChangeAvatar } from '@/components/element/ChangeAvatar';
 import Header from '@/components/element/Header';
 import { TagPicker } from '@/components/element/TagPicker';
 import useUserInfo from '@/hooks/useUserInfo';
-import { profileSchema } from '@/lib/schemas';
+import { ProfileSchema } from '@/lib/schemas';
 import { Tag } from '@/lib/types';
 import { useAuth, useUser } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -15,12 +15,12 @@ import useSWR from 'swr';
 import { z } from 'zod';
 
 const formSchema = z.object({
-  name: z.string().min(1, '名前は必須です').max(20, '名前は15文字以内で入力してください'),
+  name: z.string().min(1, '名前は必須です').max(20, '名前は20文字以内で入力してください'),
   userId: z
     .string()
     .regex(/^[a-zA-Z0-9_]+$/, 'ユーザーIDは半角英数字とアンダースコアのみ使用できます')
     .min(1, 'ユーザーIDは必須です')
-    .max(20, 'ユーザーIDは15文字以内で入力してください'),
+    .max(20, 'ユーザーIDは20文字以内で入力してください'),
   introduction: z
     .string()
     .min(1, '自己紹介は必須です')
@@ -219,7 +219,7 @@ const ProfileEditForm = ({
 const ProfileEditPage = () => {
   const clerkId = usePathname().split('/profile/')[1].split('/')[0];
 
-  const { userInfo, isLoading, isError } = useUserInfo(clerkId, profileSchema);
+  const { userInfo, isLoading, isError } = useUserInfo(clerkId, ProfileSchema);
 
   const {
     data: tags,
@@ -228,11 +228,19 @@ const ProfileEditPage = () => {
     mutate: mutateTags,
   } = useSWR('/api/tag', tagFetcher);
 
+  if (isLoading || isTagLoading) {
+    return <div>ロード中...</div>;
+  }
+
+  if (isError || tagError) {
+    return <div>エラーが発生しました。</div>;
+  }
+
   if (userInfo && tags && clerkId) {
     return <ProfileEditForm userInfo={userInfo} tags={tags} clerkId={clerkId} />;
   }
 
-  return <div>ロード中...</div>;
+  return null;
 };
 
 export default ProfileEditPage;
