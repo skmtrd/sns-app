@@ -16,18 +16,20 @@ const TimeLinePage: React.FC<TimeLinePageProps> = ({ posts, currentClerkId, titl
   return (
     <div
       id='mainContent'
-      className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-scroll bg-gray-100'
+      className='flex w-full flex-1 grow flex-col items-center overflow-y-scroll bg-gray-100'
     >
       <FixedHeader title={title} target={target} scrollToTop={scrollToTop} />
-      <div className='mt-10 flex w-full grow flex-col items-center gap-y-4 p-3'>
-        {posts.map((post) => (
-          <Post
-            key={post.id}
-            handleDeletePost={handleDeletePost}
-            currentClerkId={currentClerkId}
-            post={post}
-          />
-        ))}
+      <div className='mx-auto mt-10 w-full max-w-5xl px-4 py-8 sm:px-6 lg:px-8'>
+        <div className='flex flex-col items-center space-y-6'>
+          {posts.map((post) => (
+            <Post
+              key={post.id}
+              handleDeletePost={handleDeletePost}
+              currentClerkId={currentClerkId}
+              post={post}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

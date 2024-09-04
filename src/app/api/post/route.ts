@@ -61,7 +61,7 @@ export const POST = async (req: Request, res: NextResponse) =>
     dbConnect();
 
     const { content } = await req.json();
-    //clerkのuserIdからUserテーブルのuserIdを取得
+
     const clerkId = getClerkId();
 
     if (!clerkId) {
