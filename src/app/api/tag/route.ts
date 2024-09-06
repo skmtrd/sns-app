@@ -1,6 +1,7 @@
 //このファイルはTagのCRU操作をしている。
 
 import { NextResponse } from 'next/server';
+import { auth } from '../../../../auth';
 import { dbConnect } from '../lib/dbConnect';
 import { handleAPIError } from '../lib/handleAPIError';
 import prisma from '../lib/prisma';
@@ -27,10 +28,12 @@ export const POST = async (req: Request, res: NextResponse) =>
 
 export const PUT = async (req: Request) =>
   handleAPIError(async () => {
-    const { id, tagNames } = await req.json();
+    const { tagNames } = await req.json();
+    const session = await auth();
+    const userId = session?.user?.id;
     dbConnect();
 
-    if (!id || !Array.isArray(tagNames)) {
+    if (!userId || !Array.isArray(tagNames)) {
       return NextResponse.json(
         { message: 'Invalid input. ClerkId and tagNames array are required.' },
         { status: 400 },
@@ -40,7 +43,7 @@ export const PUT = async (req: Request) =>
     const result = await prisma.$transaction(async (tx) => {
       // ユーザーとその現在のタグを取得
       const user = await tx.user.findUnique({
-        where: { id },
+        where: { id: userId },
         include: { tags: true },
       });
 
@@ -68,7 +71,7 @@ export const PUT = async (req: Request) =>
 
       // ユーザーのタグを更新
       const updatedUser = await tx.user.update({
-        where: { id },
+        where: { id: userId },
         data: {
           tags: {
             connect: tagsToConnect.map((tag) => ({ id: tag.id })),

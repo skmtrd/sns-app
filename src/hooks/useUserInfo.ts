@@ -9,8 +9,6 @@ const useUserInfo = <T>(clerkId: any, schema: ZodType<T>) => {
   let parsedData: T | undefined;
   let parseError: Error | undefined;
 
-  console.log('data:', data);
-
   if (data) {
     try {
       const dataToValidate = data.data !== undefined ? data.data : data;

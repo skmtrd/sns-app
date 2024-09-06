@@ -6,7 +6,7 @@ import UserTag from '@/components/element/UserTag';
 import useUserInfo from '@/hooks/useUserInfo';
 import { Tag } from '@/lib/types';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { mutate } from 'swr';
 
@@ -18,13 +18,17 @@ import { useSession } from 'next-auth/react';
 const ProfilePage = () => {
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const userId = usePathname().split('/profile/')[1];
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
 
   const handleToggleIsImageModalOpen = () => {
     setIsImageModalOpen(!isImageModalOpen);
   };
 
   const { userInfo, isLoading, isError } = useUserInfo(userId, ProfileSchema);
+  useEffect(() => {
+    update();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (isLoading || !userInfo || !session?.user?.id) {
     return <ProfileSkeltonLoading title={'プロフィール'} subtitle={''} />;
