@@ -2,22 +2,22 @@ import { Trash } from 'lucide-react';
 import { SharePost } from '../timeline/SharePost';
 
 type KebabMenuProps = {
-  currentClerkId: string | null | undefined;
-  authorClerkId: string;
+  currentUserId: string;
+  authorUserId: string;
   contentId: string;
   handleDelete: Promise<(postId: string) => Promise<void>>;
 };
 
 const KebabMenu: React.FC<KebabMenuProps> = ({
-  currentClerkId,
-  authorClerkId,
+  currentUserId,
+  authorUserId,
   handleDelete,
   contentId,
 }) => {
   return (
     <div className='absolute bottom-full right-0 mb-2 w-32 rounded-md bg-white shadow-lg ring-1 ring-black/20'>
       <div className='py-1'>
-        {currentClerkId === authorClerkId && (
+        {currentUserId === authorUserId && (
           <button
             onClick={async (e: React.MouseEvent<HTMLButtonElement>) => {
               e.stopPropagation();

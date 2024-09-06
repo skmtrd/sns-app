@@ -6,12 +6,12 @@ import { Post } from './Post';
 
 type TimeLinePageProps = {
   posts: PostType[];
-  currentClerkId: string;
+  currentUserId: string;
   title: string;
   target: string | null;
 };
 
-const TimeLinePage: React.FC<TimeLinePageProps> = ({ posts, currentClerkId, title, target }) => {
+const TimeLinePage: React.FC<TimeLinePageProps> = ({ posts, currentUserId, title, target }) => {
   const handleDeletePost = useDeletePost(posts);
   return (
     <div
@@ -25,7 +25,7 @@ const TimeLinePage: React.FC<TimeLinePageProps> = ({ posts, currentClerkId, titl
             <Post
               key={post.id}
               handleDeletePost={handleDeletePost}
-              currentClerkId={currentClerkId}
+              currentUserId={currentUserId}
               post={post}
             />
           ))}
