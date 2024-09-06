@@ -1,6 +1,6 @@
 'use client';
+import { usePostLike } from '@/hooks/Like/usePostLike';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
-import { addPostLike, deletePostLike } from '@/lib/likeRequests';
 import { Post as PostType } from '@/lib/types';
 import { Heart, MessageCircleReply, MoreVertical } from 'lucide-react';
 import Link from 'next/link';
@@ -12,7 +12,6 @@ import ProfilePreview from '../element/ProfilePreview';
 import TextContent from '../element/TextContent';
 import UserTag from '../element/UserTag';
 import { AddReplyModal } from './AddReplyModal';
-
 type PostProps = {
   post: PostType;
   currentUserId: string;
@@ -33,9 +32,13 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
   const dropdownRef = useRef<HTMLDivElement>(null);
   const profilePreviewRef = useRef<HTMLDivElement>(null);
   const timeAgo = useRelativeTime(post.createdAt);
-  const [likesCount, setLikesCount] = useState(post.likes.length);
-  const [isLiked, setIsLiked] = useState(post.likes.some((like) => like.user.id === currentUserId));
-  const [isLiking, setIsLiking] = useState(false);
+  // const [likesCount, setLikesCount] = useState(post.likes.length);
+  // const [isLiked, setIsLiked] = useState(post.likes.some((like) => like.user.id === currentUserId));
+  // const [isLiking, setIsLiking] = useState(false);
+  const { likesCount, isLiked, isLiking, handleToggleLike } = usePostLike(
+    post.likes,
+    currentUserId,
+  );
 
   const {
     register,
@@ -61,26 +64,26 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
     };
   }, []);
 
-  const handleLike = async () => {
-    if (isLiking) return;
+  // const handleLike = async () => {
+  //   if (isLiking) return;
 
-    setIsLiking(true);
-    setIsLiked(!isLiked);
-    setLikesCount(isLiked ? likesCount - 1 : likesCount + 1);
+  //   setIsLiking(true);
+  //   setIsLiked(!isLiked);
+  //   setLikesCount(isLiked ? likesCount - 1 : likesCount + 1);
 
-    try {
-      if (isLiked) {
-        await deletePostLike(post.id);
-      } else {
-        await addPostLike(post.id);
-      }
-    } catch (error) {
-      setIsLiked(isLiked);
-      setLikesCount(likesCount);
-    } finally {
-      setIsLiking(false);
-    }
-  };
+  //   try {
+  //     if (isLiked) {
+  //       await deletePostLike(post.id);
+  //     } else {
+  //       await addPostLike(post.id);
+  //     }
+  //   } catch (error) {
+  //     setIsLiked(isLiked);
+  //     setLikesCount(likesCount);
+  //   } finally {
+  //     setIsLiking(false);
+  //   }
+  // };
 
   const handleReplyModalToggle = () => {
     setIsReplyModalOpen(!isReplyModalOpen);
@@ -162,7 +165,7 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
           <button
             onClick={(e) => {
               e.stopPropagation();
-              handleLike();
+              handleToggleLike(post.id);
             }}
           >
             <Heart size={20} color={'#dc143c'} fill={isLiked ? '#dc143c' : 'white'} />
