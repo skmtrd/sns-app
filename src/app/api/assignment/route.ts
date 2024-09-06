@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { dbConnect } from '../lib/dbConnect';
-import { getClerkId } from '../lib/getClerkId';
+import { getClerkId } from '../lib/getUserId';
 import { handleAPIError } from '../lib/handleAPIError';
 import prisma from '../lib/prisma';
 import { apiRes } from '../types';

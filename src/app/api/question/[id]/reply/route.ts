@@ -1,5 +1,5 @@
 import { dbConnect } from '@/app/api/lib/dbConnect';
-import { getClerkId } from '@/app/api/lib/getClerkId';
+import { getClerkId } from '@/app/api/lib/getUserId';
 import { handleAPIError } from '@/app/api/lib/handleAPIError';
 import prisma from '@/app/api/lib/prisma';
 import { findSpecificUser } from '@/app/api/lib/user/findSpecificUser';
