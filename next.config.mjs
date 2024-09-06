@@ -1,25 +1,14 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+const config = {
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '*.r2.cloudflarestorage.com',
+        hostname: 'lh3.googleusercontent.com',
         port: '',
-        pathname: '**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'img.clerk.com',
-        port: '',
-        pathname: '**',
+        pathname: '/a/**',
       },
     ],
   },
-  //このプロジェクトをビルドしている時の型エラーを無視する
-  typescript: {
-    ignoreBuildErrors: true,
-  },
 };
 
-export default nextConfig;
+export default config;
