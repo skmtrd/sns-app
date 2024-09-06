@@ -27,10 +27,10 @@ export const POST = async (req: Request, res: NextResponse) =>
 
 export const PUT = async (req: Request) =>
   handleAPIError(async () => {
-    const { clerkId, tagNames } = await req.json();
+    const { id, tagNames } = await req.json();
     dbConnect();
 
-    if (!clerkId || !Array.isArray(tagNames)) {
+    if (!id || !Array.isArray(tagNames)) {
       return NextResponse.json(
         { message: 'Invalid input. ClerkId and tagNames array are required.' },
         { status: 400 },
@@ -40,7 +40,7 @@ export const PUT = async (req: Request) =>
     const result = await prisma.$transaction(async (tx) => {
       // ユーザーとその現在のタグを取得
       const user = await tx.user.findUnique({
-        where: { clerkId },
+        where: { id },
         include: { tags: true },
       });
 
@@ -68,7 +68,7 @@ export const PUT = async (req: Request) =>
 
       // ユーザーのタグを更新
       const updatedUser = await tx.user.update({
-        where: { clerkId },
+        where: { id },
         data: {
           tags: {
             connect: tagsToConnect.map((tag) => ({ id: tag.id })),
