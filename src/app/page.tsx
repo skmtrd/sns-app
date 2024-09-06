@@ -1,31 +1,35 @@
-import { SignInButton, SignOutButton, UserButton } from '@clerk/nextjs';
-import { auth } from '@clerk/nextjs/server';
-import Link from 'next/link';
+import Image from 'next/image';
+import { auth } from './../../auth';
 
-export default async function Home() {
-  const { userId } = auth();
+import SignInButton from '@/components/element/SignInButton';
+import SignOutButton from '@/components/element/SignOutButton';
+
+const Home = async () => {
+  const session = await auth();
 
   return (
-    <div className='flex min-h-screen flex-col items-center justify-center py-2'>
-      <h1 className='mb-4 text-4xl font-bold'>Welcome to MySNS</h1>
-      {userId ? (
-        <>
-          <p className='mb-4'>You are signssssssssed in!</p>
-          <Link
-            href={`/profile/${userId}`}
-            className='mb-4 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700'
-          >
-            View Profile
-            <UserButton></UserButton>
-          </Link>
-          <SignOutButton />
-        </>
-      ) : (
-        <>
-          <p className='mb-4'>Please sisssssssgn in to continue</p>
+    <div className='flex w-full flex-1 grow flex-col items-center justify-center overflow-y-scroll bg-gray-100'>
+      <div className='flex'>
+        {!session?.user?.image ? (
           <SignInButton />
-        </>
-      )}
+        ) : (
+          <div className='flex gap-4'>
+            <SignOutButton />
+            <Image
+              src={session.user.image}
+              style={{ borderRadius: '50%', objectFit: 'cover' }}
+              alt='image of user'
+              width={60}
+              height={20}
+            ></Image>
+          </div>
+        )}
+      </div>
+      <div className='w-10/12 rounded-xl bg-slate-200'>
+        <div className='rounded-t-xl bg-slate-400 p-3'>current session</div>
+        <pre className='break-words p-3'>{JSON.stringify(session, null, 2)}</pre>
+      </div>
     </div>
   );
-}
+};
+export default Home;
