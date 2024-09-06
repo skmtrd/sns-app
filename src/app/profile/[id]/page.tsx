@@ -40,9 +40,9 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className='flex flex-1 flex-col overflow-hidden'>
+    <div className='flex h-screen flex-1 flex-col overflow-hidden'>
       <Header title={'プロフィール'} />
-      <main className='overflow-y-auto bg-gray-100'>
+      <main className='h-screen overflow-y-auto bg-gray-100'>
         {/* {isImageModalOpen && (
           <ImageDisplayModal closeModal={handleToggleIsImageModalOpen} src={userInfo.avatar} />
         )} */}
@@ -75,11 +75,11 @@ const ProfilePage = () => {
                   {userInfo?.name}
                 </h1>
                 <p className='mb-2 text-base text-gray-500 sm:text-lg'>@{userInfo?.id}</p>
-                {userInfo?.introduction && (
+                {/* {userInfo?.introduction && (
                   <p className='mb-4 break-words text-base text-gray-700 sm:text-lg'>
                     {userInfo?.introduction}
                   </p>
-                )}
+                )} */}
                 <div className='mb-4'>
                   <div className='flex flex-wrap gap-2'>
                     {userInfo?.tags && userInfo?.tags.length > 0 ? (
