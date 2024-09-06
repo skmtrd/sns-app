@@ -9,10 +9,10 @@ import { apiRes } from '../../types';
 export const PUT = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
     dbConnect();
-    const { clerkId, tagName } = await req.json();
+    const { id, tagName } = await req.json();
 
     const newUserTag = await prisma.user.update({
-      where: { clerkId: clerkId },
+      where: { id: id },
       data: {
         tags: { connect: { name: tagName } },
       },
