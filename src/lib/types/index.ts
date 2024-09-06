@@ -8,11 +8,10 @@ export type Like = z.infer<typeof LikeSchema>;
 
 export type UserInfo = {
   id: string;
-  clerkId: string;
   name: string;
   email: string;
   introduction: string;
-  avatar?: string;
+  // avatar?: string;
   createdAt: string;
   updatedAt: string;
   tags: Tag[];

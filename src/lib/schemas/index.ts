@@ -67,7 +67,6 @@ export const AssignmentSchema = z.object({
 export const ProfileSchema = z.object({
   name: z.string(),
   id: z.string(),
-  // clerkId: z.string(),
   email: z.string(),
   introduction: z.string().nullable(),
   // avatar: z.string().nullable(),

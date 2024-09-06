@@ -103,7 +103,7 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
         >
           {/* <Link href={`/profile/${post.author.id}`} onClick={(e) => e.stopPropagation()}>
             <Image
-              src='../../app/favicon.ico'
+              src='../../lib/images/IMG_0614.jpg'
               alt={post.author.name}
               width={40}
               height={40}
