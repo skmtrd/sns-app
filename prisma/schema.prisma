@@ -16,23 +16,102 @@ datasource db {
 
 
 model User {
-  id        String   @id @default(cuid())
-  clerkId   String   @unique
-  name      String
-  email     String   @unique
-  introduction String @db.Text
-  posts     Post[]
+  id            String          @id @default(cuid())
+  name          String?
+  email         String          @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  introduction  String?
+  posts         Post[]
   postReplies PostReply[]
   tags      Tag[]
   likes     Like[]
   likeReplys     LikeReply[]
-  assignment Assignment[]
-  assignmentReply AssignmentReply[]
-  question  Question[]
-  questionReply  QuestionReply[]
+  questions     Question[]
+  questionReplies     QuestionReply[]
+  assignments     Assignment[]
+  assignmentReplies     AssignmentReply[]
+  // Optional for WebAuthn support
+  Authenticator Authenticator[]
+ 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+ 
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@id([provider, providerAccountId])
+}
+ 
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+ 
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+ 
+  @@id([identifier, token])
+}
+ 
+// Optional for WebAuthn support
+model Authenticator {
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@id([userId, credentialID])
+}
+// model User {
+//   id        String   @id @default(cuid())
+//   clerkId   String   @unique
+//   name      String
+//   email     String   @unique
+//   introduction String @db.Text
+//   posts     Post[] 
+//   postReplies PostReply[]
+//   tags      Tag[]
+//   likes     Like[]
+//   likeReplys     LikeReply[]
+//   assignment Assignment[]
+//   assignmentReply AssignmentReply[]
+//   question  Question[]
+//   questionReply  QuestionReply[]
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
 
 model Post {
   id        String   @id @default(cuid())
@@ -85,15 +164,15 @@ model LikeReply {
   userId String 
   postReply PostReply? @relation(fields: [postReplyId] , references: [id])
   postReplyId String?
-  assignmentReply AssignmentReply? @relation(fields: [assignmentReplyId] , references: [id])
-  assignmentReplyId String?
   questionReply QuestionReply? @relation(fields: [questionReplyId] , references: [id])
   questionReplyId String?
+  assignmentReply AssignmentReply? @relation(fields: [assignmentReplyId] , references: [id])
+  assignmentReplyId String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@unique([userId , postReplyId])
-  @@unique([userId , assignmentReplyId])
+  // @@unique([userId , assignmentReplyId])
   @@unique([userId , questionReplyId])
 }
 
@@ -148,7 +227,6 @@ model Question {
   replies     QuestionReply[]
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
-
 }
 
 model QuestionReply {

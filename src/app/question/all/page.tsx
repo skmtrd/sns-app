@@ -3,27 +3,25 @@ import QuestionSkeltonLoading from '@/components/loading/QuestionSkeltonLoading'
 import QuestionPage from '@/components/question/QuestionPage';
 import useData from '@/hooks/useData';
 import { QuestionSchema } from '@/lib/schemas';
-import { useAuth } from '@clerk/nextjs';
-import { useSWRConfig } from 'swr';
+import { useSession } from 'next-auth/react';
 import { z } from 'zod';
 
 const QuestionAll = () => {
-  const { mutate } = useSWRConfig();
-  const { userId: currentClerkId } = useAuth();
+  const { data: session, status } = useSession();
   const { data: questions, error, isLoading } = useData('/api/question', z.array(QuestionSchema));
 
   if (error) {
     return <div>Error</div>;
   }
 
-  if (isLoading || !questions || !currentClerkId) {
+  if (isLoading || !questions || !session?.user?.id) {
     return <QuestionSkeltonLoading title={'質問'} subtitle={'すべて'} />;
   }
 
   return (
     <QuestionPage
       questions={questions}
-      currentClerkId={currentClerkId}
+      currentUserId={session.user.id}
       title={'質問'}
       target={'すべて'}
     />

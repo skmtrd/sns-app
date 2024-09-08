@@ -1,26 +1,23 @@
 import RightSideBar from '@/components/layout/RightSideBar';
 import SideBar from '@/components/layout/SideBar';
-import { ClerkProvider, SignInButton, SignedIn, SignedOut } from '@clerk/nextjs';
-import { auth } from '@clerk/nextjs/server';
+import { SessionProvider } from 'next-auth/react';
+import { auth } from '../../auth';
 import './globals.css';
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const { userId } = auth();
-
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return <div>Loading...</div>;
+  }
   return (
-    <ClerkProvider>
-      <html lang='ja'>
-        <body>
-          <SignedOut>
-            <SignInButton></SignInButton>
-          </SignedOut>
-          <SignedIn>
-            <SideBar userId={userId!}></SideBar>
-            {children}
-            <RightSideBar></RightSideBar>
-          </SignedIn>
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang='ja'>
+      <body>
+        <SessionProvider>
+          <SideBar></SideBar>
+          {children}
+          <RightSideBar></RightSideBar>
+        </SessionProvider>
+      </body>
+    </html>
   );
 }

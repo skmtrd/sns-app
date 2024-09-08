@@ -3,25 +3,25 @@ import TimelineSkeltonLoading from '@/components/loading/TimelineSkeltonLoading'
 import TimeLinePage from '@/components/timeline/TimeLinePage';
 import useData from '@/hooks/useData';
 import { PostSchema } from '@/lib/schemas';
-import { useAuth } from '@clerk/nextjs';
+import { useSession } from 'next-auth/react';
 import { z } from 'zod';
 
 const Likes = () => {
-  const { userId: currentClerkId } = useAuth();
+  const { data: session, status } = useSession();
   const { data: posts, error, isLoading } = useData('/api/post', z.array(PostSchema));
 
-  if (isLoading || !posts || !currentClerkId) {
+  if (isLoading || !posts || !session?.user?.id) {
     return <TimelineSkeltonLoading title={'いいねしたポスト一覧'} subtitle={'すべて'} />;
   }
 
   const likedPosts = posts.filter((post) =>
-    post.likes.some((like) => like.user.clerkId === currentClerkId),
+    post.likes.some((like) => like.user.id === session?.user?.id),
   );
 
   return (
     <TimeLinePage
       posts={likedPosts}
-      currentClerkId={currentClerkId}
+      currentUserId={session.user.id}
       title={'いいねしたポスト一覧'}
       target={null}
     />

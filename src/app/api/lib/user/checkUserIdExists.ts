@@ -2,7 +2,10 @@
 
 import prisma from '../prisma';
 
-export const checkUserIdExists = async (newUserId: string, clerkId: string): Promise<boolean> => {
+export const checkUserIdExists = async (
+  newUserId: string,
+  currentUserId: string,
+): Promise<boolean> => {
   try {
     //prismaでdbを操作しているのに
     //データベース接続していないのは、この関数の呼び出し元で接続しているから
@@ -10,7 +13,9 @@ export const checkUserIdExists = async (newUserId: string, clerkId: string): Pro
       where: { id: newUserId },
     });
 
-    if (isUserIdExists?.clerkId === clerkId) return false;
+    //userIdの変更が無いときの処理
+    if (isUserIdExists?.id === currentUserId) return false;
+
     return isUserIdExists ? true : false;
   } catch (error) {
     throw error;

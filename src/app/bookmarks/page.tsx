@@ -3,31 +3,31 @@ import QuestionSkeltonLoading from '@/components/loading/QuestionSkeltonLoading'
 import QuestionPage from '@/components/question/QuestionPage';
 import useData from '@/hooks/useData';
 import { QuestionSchema } from '@/lib/schemas';
-import { useAuth } from '@clerk/nextjs';
+import { useSession } from 'next-auth/react';
 import { useSWRConfig } from 'swr';
 import { z } from 'zod';
 
 const Bookmarks = () => {
   const { mutate } = useSWRConfig();
-  const { userId: currentClerkId } = useAuth();
+  const { data: session, status } = useSession();
   const { data: questions, error, isLoading } = useData(`/api/question`, z.array(QuestionSchema));
 
   if (error) {
     return <div>Error</div>;
   }
 
-  if (isLoading || !questions || !currentClerkId) {
+  if (isLoading || !questions || !session?.user?.id) {
     return <QuestionSkeltonLoading title={'質問'} subtitle={'すべて'} />;
   }
 
   const filteredQuestions = questions.filter((question) =>
-    question.likes.some((like) => like.user.clerkId === currentClerkId),
+    question.likes.some((like) => like.user.id === session?.user?.id),
   );
 
   return (
     <QuestionPage
       questions={filteredQuestions}
-      currentClerkId={currentClerkId}
+      currentUserId={session?.user?.id}
       title={'ブックマークした質問'}
       target={null}
     />

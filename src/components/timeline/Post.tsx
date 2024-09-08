@@ -1,9 +1,8 @@
 'use client';
+import { usePostLike } from '@/hooks/Like/usePostLike';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
-import { addPostLike, deletePostLike } from '@/lib/likeRequests';
 import { Post as PostType } from '@/lib/types';
 import { Heart, MessageCircleReply, MoreVertical } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -13,10 +12,9 @@ import ProfilePreview from '../element/ProfilePreview';
 import TextContent from '../element/TextContent';
 import UserTag from '../element/UserTag';
 import { AddReplyModal } from './AddReplyModal';
-
 type PostProps = {
   post: PostType;
-  currentClerkId: string;
+  currentUserId: string;
   handleDeletePost: Promise<(postId: string) => Promise<void>>;
 };
 
@@ -26,7 +24,7 @@ type ReplyFormData = {
 
 const REPLY_MAX_LENGTH = 500;
 
-export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentClerkId }) => {
+export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserId }) => {
   const router = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showProfilePreview, setShowProfilePreview] = useState(false);
@@ -34,11 +32,13 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentClerk
   const dropdownRef = useRef<HTMLDivElement>(null);
   const profilePreviewRef = useRef<HTMLDivElement>(null);
   const timeAgo = useRelativeTime(post.createdAt);
-  const [likesCount, setLikesCount] = useState(post.likes.length);
-  const [isLiked, setIsLiked] = useState(
-    post.likes.some((like) => like.user.clerkId === currentClerkId),
+  // const [likesCount, setLikesCount] = useState(post.likes.length);
+  // const [isLiked, setIsLiked] = useState(post.likes.some((like) => like.user.id === currentUserId));
+  // const [isLiking, setIsLiking] = useState(false);
+  const { likesCount, isLiked, isLiking, handleToggleLike } = usePostLike(
+    post.likes,
+    currentUserId,
   );
-  const [isLiking, setIsLiking] = useState(false);
 
   const {
     register,
@@ -64,26 +64,26 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentClerk
     };
   }, []);
 
-  const handleLike = async () => {
-    if (isLiking) return;
+  // const handleLike = async () => {
+  //   if (isLiking) return;
 
-    setIsLiking(true);
-    setIsLiked(!isLiked);
-    setLikesCount(isLiked ? likesCount - 1 : likesCount + 1);
+  //   setIsLiking(true);
+  //   setIsLiked(!isLiked);
+  //   setLikesCount(isLiked ? likesCount - 1 : likesCount + 1);
 
-    try {
-      if (isLiked) {
-        await deletePostLike(post.id);
-      } else {
-        await addPostLike(post.id);
-      }
-    } catch (error) {
-      setIsLiked(isLiked);
-      setLikesCount(likesCount);
-    } finally {
-      setIsLiking(false);
-    }
-  };
+  //   try {
+  //     if (isLiked) {
+  //       await deletePostLike(post.id);
+  //     } else {
+  //       await addPostLike(post.id);
+  //     }
+  //   } catch (error) {
+  //     setIsLiked(isLiked);
+  //     setLikesCount(likesCount);
+  //   } finally {
+  //     setIsLiking(false);
+  //   }
+  // };
 
   const handleReplyModalToggle = () => {
     setIsReplyModalOpen(!isReplyModalOpen);
@@ -101,20 +101,20 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentClerk
           onMouseEnter={() => setShowProfilePreview(true)}
           onMouseLeave={() => setShowProfilePreview(false)}
         >
-          <Link href={`/profile/${post.author.clerkId}`} onClick={(e) => e.stopPropagation()}>
+          {/* <Link href={`/profile/${post.author.id}`} onClick={(e) => e.stopPropagation()}>
             <Image
-              src={post.avatar}
+              src='../../lib/images/IMG_0614.jpg'
               alt={post.author.name}
               width={40}
               height={40}
               className='min-h-10 min-w-10 rounded-full hover:opacity-80'
             />
-          </Link>
+          </Link> */}
         </div>
         <div className='ml-2 w-full'>
           <div className='flex w-full items-center justify-between'>
             <div className='relative'>
-              <Link href={`/profile/${post.author.clerkId}`} onClick={(e) => e.stopPropagation()}>
+              <Link href={`/profile/${post.author.id}`} onClick={(e) => e.stopPropagation()}>
                 <div className='inline-block rounded-md hover:bg-gray-100'>
                   <h3 className='break-words px-1 py-0.5 font-bold transition-colors duration-100 hover:text-blue-600'>
                     {post.author.name}
@@ -125,7 +125,7 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentClerk
                 <div ref={profilePreviewRef} className='absolute left-0 top-full mt-1'>
                   <ProfilePreview
                     authorName={post.author.name}
-                    authorAvatar={post.avatar}
+                    authorAvatar={'../../app/favicon.ico'}
                     authorId={post.author.id}
                     authorIntroduction={post.author.introduction}
                   />
@@ -165,7 +165,7 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentClerk
           <button
             onClick={(e) => {
               e.stopPropagation();
-              handleLike();
+              handleToggleLike(post.id);
             }}
           >
             <Heart size={20} color={'#dc143c'} fill={isLiked ? '#dc143c' : 'white'} />
@@ -183,8 +183,8 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentClerk
         </button>
         {isDropdownOpen && (
           <KebabMenu
-            currentClerkId={currentClerkId}
-            authorClerkId={post.author.clerkId}
+            currentUserId={currentUserId}
+            authorUserId={post.author.id}
             contentId={post.id}
             handleDelete={handleDeletePost}
           />

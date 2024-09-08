@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { dbConnect } from '../lib/dbConnect';
-import { getClerkId } from '../lib/getClerkId';
+import { getUserId } from '../lib/getUserId';
 import { handleAPIError } from '../lib/handleAPIError';
 import prisma from '../lib/prisma';
 import { findSpecificUser } from '../lib/user/findSpecificUser';
@@ -31,29 +31,7 @@ export const GET = async (req: Request, res: NextResponse) =>
       orderBy: { createdAt: 'desc' },
     });
 
-    const questionsWithAvatar = await Promise.all(
-      questions.map(async (question) => {
-        return {
-          ...question,
-          //もしavatarがあれば取得する
-          // avatar: await getUserAvatar(question.author.clerkId),
-          avatar: null,
-          replies: await Promise.all(
-            question.replies.map(async (reply) => {
-              return {
-                ...reply,
-                avatar: null,
-              };
-            }),
-          ),
-        };
-      }),
-    );
-
-    return NextResponse.json<apiRes>(
-      { message: 'success', data: questionsWithAvatar },
-      { status: 200 },
-    );
+    return NextResponse.json<apiRes>({ message: 'success', data: questions }, { status: 200 });
   });
 
 export const POST = async (req: Request, res: NextResponse) =>
@@ -62,13 +40,13 @@ export const POST = async (req: Request, res: NextResponse) =>
 
     const { title, description } = await req.json();
 
-    const clerkId = getClerkId();
+    const userId = await getUserId();
 
-    if (!clerkId) {
+    if (!userId) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
-    const user = await findSpecificUser(clerkId);
+    const user = await findSpecificUser(userId);
 
     const newPost = await prisma.question.create({
       data: {

@@ -1,6 +1,6 @@
-import { auth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { dbConnect } from '../../lib/dbConnect';
+import { getUserId } from '../../lib/getUserId';
 import { handleAPIError } from '../../lib/handleAPIError';
 import prisma from '../../lib/prisma';
 import { findSpecificUser } from '../../lib/user/findSpecificUser';
@@ -10,7 +10,7 @@ export const POST = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
     dbConnect();
 
-    const { userId } = auth();
+    const userId = await getUserId();
 
     const { questionId } = await req.json();
 
@@ -42,8 +42,7 @@ export const DELETE = async (req: Request, res: NextResponse) =>
     const { questionId } = await req.json();
     dbConnect();
 
-    //clerkId
-    const { userId } = auth();
+    const userId = await getUserId();
 
     if (!userId) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });

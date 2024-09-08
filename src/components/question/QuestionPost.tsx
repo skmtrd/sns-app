@@ -1,7 +1,7 @@
 'use client';
 
+import { useQuestionLike } from '@/hooks/Like/useQuestionLike';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
-import { addQuestionLike, deleteQuestionLike } from '@/lib/likeRequests';
 import { Question } from '@/lib/types';
 import {
   BookmarkPlus,
@@ -19,18 +19,9 @@ import TextContent from '../element/TextContent';
 import QuestionReplies from './QuestionReplies';
 
 type QuestionPostProps = {
-  // questionId: string;
-  // questionTitle: string;
-  // questionDescription: string;
-  // replies: QuestionReply[];
-  // questionAuthorName: string;
-  // questionAuthorId: string;
-  // questionAuthorClerkId: string;
-  // timestamp: string;
-  // likes: { user: { name: string; clerkId: string; id: string } }[];
   question: Question;
   handleDeletePost: Promise<(questionId: string) => Promise<void>>;
-  currentClerkId: string;
+  currentUserId: string;
 };
 
 type ReplyFormData = {
@@ -38,18 +29,9 @@ type ReplyFormData = {
 };
 
 const QuestionPost: React.FC<QuestionPostProps> = ({
-  // questionId,
-  // questionTitle,
-  // questionDescription,
-  // replies,
-  // questionAuthorName,
-  // questionAuthorId,
-  // questionAuthorClerkId,
-  // timestamp,
-  // likes,
   question,
   handleDeletePost,
-  currentClerkId,
+  currentUserId,
 }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isReplyDrawerOpen, setIsReplyDrawerOpen] = useState(false);
@@ -59,11 +41,10 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
   const contentRef = useRef<HTMLDivElement>(null);
   const replyContentRef = useRef<HTMLDivElement>(null);
   const timeAgo = useRelativeTime(question.createdAt);
-  const [likesCount, setLikesCount] = useState(question.likes.length);
-  const [isLiked, setIsLiked] = useState(
-    question.likes.some((like) => like.user.clerkId === currentClerkId),
+  const { likesCount, isLiked, isLiking, handleToggleLike } = useQuestionLike(
+    question.likes,
+    currentUserId,
   );
-  const [isLiking, setIsLiking] = useState(false);
 
   const {
     register,
@@ -110,27 +91,6 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
     }
   }, [isDrawerOpen, isReplyDrawerOpen]);
 
-  const handleLike = async () => {
-    if (isLiking) return;
-
-    setIsLiking(true);
-    setIsLiked(!isLiked);
-    setLikesCount(isLiked ? likesCount - 1 : likesCount + 1);
-
-    try {
-      if (isLiked) {
-        await deleteQuestionLike(question.id);
-      } else {
-        await addQuestionLike(question.id);
-      }
-    } catch (error) {
-      setIsLiked(isLiked);
-      setLikesCount(likesCount);
-    } finally {
-      setIsLiking(false);
-    }
-  };
-
   return (
     <div className='relative w-11/12 rounded-lg bg-white p-6 shadow'>
       <div className='flex items-start justify-between'>
@@ -176,7 +136,7 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleLike();
+                      handleToggleLike(question.id);
                     }}
                     className='text-blue-600'
                   >
@@ -202,8 +162,8 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
                   </button>
                   {isDropdownOpen && (
                     <KebabMenu
-                      currentClerkId={currentClerkId}
-                      authorClerkId={question.author.clerkId}
+                      currentUserId={currentUserId}
+                      authorUserId={question.author.id}
                       contentId={question.id}
                       handleDelete={handleDeletePost}
                     />
@@ -229,7 +189,7 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                handleLike();
+                handleToggleLike(question.id);
               }}
               className='text-blue-600'
             >
@@ -249,8 +209,8 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
           {isDropdownOpen && (
             <KebabMenu
               contentId={question.id}
-              currentClerkId={currentClerkId}
-              authorClerkId={question.author.clerkId}
+              currentUserId={currentUserId}
+              authorUserId={question.author.id}
               handleDelete={handleDeletePost}
             />
           )}

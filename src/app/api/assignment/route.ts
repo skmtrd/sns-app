@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server';
 import { dbConnect } from '../lib/dbConnect';
-import { getClerkId } from '../lib/getClerkId';
+import { getUserId } from '../lib/getUserId';
 import { handleAPIError } from '../lib/handleAPIError';
 import prisma from '../lib/prisma';
+import { findSpecificUser } from '../lib/user/findSpecificUser';
 import { apiRes } from '../types';
 
 export const GET = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
-    // const { getUser } = clerkClient().users;
     await dbConnect();
     const assignments = await prisma.assignment.findMany({
       include: {
@@ -31,29 +31,7 @@ export const GET = async (req: Request, res: NextResponse) =>
       orderBy: { createdAt: 'desc' },
     });
 
-    const assignmentsWithAvatar = await Promise.all(
-      assignments.map(async (assignment) => {
-        return {
-          ...assignment,
-          //もしavatarが必要であれば取得する
-          // avatar: await getUserAvatar(question.author.clerkId),
-          avatar: null,
-          replies: await Promise.all(
-            assignment.replies.map(async (reply) => {
-              return {
-                ...reply,
-                avatar: null,
-              };
-            }),
-          ),
-        };
-      }),
-    );
-
-    return NextResponse.json<apiRes>(
-      { message: 'success', data: assignmentsWithAvatar },
-      { status: 200 },
-    );
+    return NextResponse.json<apiRes>({ message: 'success', data: assignments }, { status: 200 });
   });
 
 export const POST = async (req: Request, res: NextResponse) =>
@@ -62,15 +40,12 @@ export const POST = async (req: Request, res: NextResponse) =>
 
     const { title, description, deadLine } = await req.json();
 
-    const clerkId = getClerkId();
-
-    if (!clerkId) {
+    const userId = await getUserId();
+    if (!userId) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
-    const user = await prisma.user.findUniqueOrThrow({
-      where: { clerkId: clerkId },
-    });
+    const user = await findSpecificUser(userId);
 
     const newPost = await prisma.assignment.create({
       data: {

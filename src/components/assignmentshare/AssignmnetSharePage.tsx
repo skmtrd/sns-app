@@ -6,14 +6,14 @@ import AssignmentPost from './AssignmentPost';
 
 type AssignmnetSharePageProps = {
   assignments: Assignment[];
-  currentClerkId: string;
+  currentUserId: string;
   title: string;
   target: string | null;
 };
 
 const AssignmnetSharePage: React.FC<AssignmnetSharePageProps> = ({
   assignments,
-  currentClerkId,
+  currentUserId,
   title,
   target,
 }) => {
@@ -30,7 +30,7 @@ const AssignmnetSharePage: React.FC<AssignmnetSharePageProps> = ({
             <AssignmentPost
               key={assignment.id}
               assignment={assignment}
-              currentClerkId={currentClerkId}
+              currentUserId={currentUserId}
               handleDeleteAssignment={handleDeleteAssignment}
             />
           ))}

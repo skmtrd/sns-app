@@ -3,21 +3,21 @@ import TimelineSkeltonLoading from '@/components/loading/TimelineSkeltonLoading'
 import TimeLinePage from '@/components/timeline/TimeLinePage';
 import useData from '@/hooks/useData';
 import { PostSchema } from '@/lib/schemas';
-import { useAuth } from '@clerk/nextjs';
+import { useSession } from 'next-auth/react';
 import { z } from 'zod';
 
 const TimelineAll = () => {
   const { data: posts, error, isLoading } = useData('/api/post', z.array(PostSchema));
-  const { userId: currentClerkId } = useAuth();
+  const { data: session, status } = useSession();
 
-  if (isLoading || !posts || !currentClerkId) {
+  if (isLoading || !posts || !session?.user?.id) {
     return <TimelineSkeltonLoading title={'タイムライン'} subtitle={'すべて'} />;
   }
 
   return (
     <TimeLinePage
       posts={posts}
-      currentClerkId={currentClerkId}
+      currentUserId={session.user.id}
       title={'タイムライン'}
       target={'すべて'}
     />

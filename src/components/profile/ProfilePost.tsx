@@ -4,10 +4,10 @@ import { Post } from '../timeline/Post';
 
 type ProfilePostProps = {
   posts: PostType[];
-  currentClerkId: string;
+  currentUserId: string;
 };
 
-const ProfilePost: React.FC<ProfilePostProps> = ({ posts, currentClerkId }) => {
+const ProfilePost: React.FC<ProfilePostProps> = ({ posts, currentUserId }) => {
   const handleDeletePost = useDeletePost(posts);
 
   return (
@@ -19,7 +19,7 @@ const ProfilePost: React.FC<ProfilePostProps> = ({ posts, currentClerkId }) => {
             <Post
               key={post.id}
               handleDeletePost={handleDeletePost}
-              currentClerkId={currentClerkId}
+              currentUserId={currentUserId}
               post={post}
             />
           ))

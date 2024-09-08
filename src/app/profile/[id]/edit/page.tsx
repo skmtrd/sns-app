@@ -1,13 +1,12 @@
 'use client';
 
-import { ChangeAvatar } from '@/components/element/ChangeAvatar';
 import Header from '@/components/element/Header';
 import { TagPicker } from '@/components/element/TagPicker';
 import useUserInfo from '@/hooks/useUserInfo';
 import { ProfileSchema } from '@/lib/schemas';
 import { Tag } from '@/lib/types';
-import { useAuth, useUser } from '@clerk/nextjs';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useSession } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast, { Toaster } from 'react-hot-toast';
@@ -25,7 +24,7 @@ const formSchema = z.object({
     .string()
     .min(1, '自己紹介は必須です')
     .max(100, '自己紹介は100文字以内で入力してください'),
-  avatar: z.custom<File>((value) => value instanceof File).optional(),
+  // avatar: z.custom<File>((value) => value instanceof File).optional(),
 });
 
 const tagFetcher = (url: string) =>
@@ -45,12 +44,10 @@ const ProfileEditForm = ({
   tags: Tag[];
   clerkId: string;
 }) => {
-  const { userId: currentClerkId } = useAuth();
+  const { data: session } = useSession();
   const router = useRouter();
   const pathname = usePathname();
   const pageclerkId = pathname.split('/profile/')[1].split('/')[0];
-
-  const { user } = useUser();
 
   const {
     register,
@@ -70,11 +67,6 @@ const ProfileEditForm = ({
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (data) => {
     const pathUserId = pathname.split('/profile/')[1].split('/')[0];
-
-    if (data.avatar) {
-      user?.setProfileImage({ file: data.avatar });
-    }
-    delete data.avatar;
 
     const updatePromise = toast.promise(
       (async () => {
@@ -97,7 +89,7 @@ const ProfileEditForm = ({
           },
           body: JSON.stringify({
             tagNames: userInfo?.tags.map((tag: Tag) => tag.name),
-            clerkId: pathUserId,
+            userId: pathUserId,
           }),
         });
 
@@ -126,20 +118,18 @@ const ProfileEditForm = ({
 
     try {
       await updatePromise;
-      router.push(`/profile/${pathUserId}`);
+      router.push(`/profile/${data.userId}`);
     } catch (error) {
       console.error('Failed to update user info:', error);
       setError('root.error', { message: 'ユーザー情報の更新に失敗しました。' });
     }
   };
 
-  const onFileChange = async (file: File) => {
-    setValue('avatar', file);
-  };
+  // const onFileChange = async (file: File) => {
+  //   setValue('avatar', file);
+  // };
 
-  if (currentClerkId !== pageclerkId) return <div>アクセス権がありません。</div>;
-
-  if (!user) return <div>ログインしてください。</div>;
+  if (session?.user?.id !== pageclerkId) return <div>アクセス権がありません。</div>;
 
   return (
     <div className='flex flex-1 flex-col overflow-hidden'>
@@ -151,7 +141,7 @@ const ProfileEditForm = ({
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className='flex'>
-            <ChangeAvatar onFileChange={onFileChange} value={user?.imageUrl} className='mr-6' />
+            {/* <ChangeAvatar onFileChange={onFileChange} value={user?.imageUrl} className='mr-6' /> */}
             <div className='w-full space-y-4'>
               <div>
                 <label htmlFor='name' className='block text-sm font-medium text-gray-700'>

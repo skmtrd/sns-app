@@ -13,6 +13,7 @@ import {
   LucideIcon,
   User,
 } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
@@ -26,11 +27,7 @@ type NavItem = {
   icon: LucideIcon;
 };
 
-type Props = {
-  userId: string;
-};
-
-const SideBar: React.FC<Props> = ({ userId }) => {
+const SideBar = () => {
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [isQuestionModalOpen, setIsQuestionModalOpen] = useState(false);
   const [isAssignmentModalOpen, setIsAssignmentModalOpen] = useState(false);
@@ -38,6 +35,8 @@ const SideBar: React.FC<Props> = ({ userId }) => {
   const handleToggleQuestionModal = () => setIsQuestionModalOpen(!isQuestionModalOpen);
   const handleToggleAssignmentModal = () => setIsAssignmentModalOpen(!isAssignmentModalOpen);
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const userId = session?.user?.id;
 
   const navItems1: NavItem[] = [
     { page: '/timeline/all', label: 'タイムライン', icon: Home },

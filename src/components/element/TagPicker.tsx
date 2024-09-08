@@ -17,8 +17,6 @@ export const TagPicker: React.FC<TagPickerProps> = ({ tags, clerkId, userInfo })
   const { mutate } = useSWRConfig();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  console.log('userInfo', userInfo);
-
   const handleAddTag = useCallback(
     (tag: Tag) => {
       const newSelectedTags = [...userInfo.tags, tag];
