@@ -1,6 +1,6 @@
+import { useAssignmentLike } from '@/hooks/Like/useAssignmentLike';
 import { useDeadline } from '@/hooks/useDeadline';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
-import { addAssignmentLike, deleteAssignmentLike } from '@/lib/likeRequests';
 import { Assignment } from '@/lib/types';
 import { BookmarkPlus, MoreVertical } from 'lucide-react';
 import { useState } from 'react';
@@ -10,40 +10,24 @@ import TextContent from '../element/TextContent';
 type AssignmentPostProps = {
   assignment: Assignment;
   handleDeleteAssignment: Promise<(assignmentId: string) => Promise<void>>;
-  currentClerkId: string;
+  currentUserId: string;
 };
 
 const AssignmentPost = ({
   assignment,
   handleDeleteAssignment,
-  currentClerkId,
+  currentUserId,
 }: AssignmentPostProps) => {
   const timeAgo = useRelativeTime(assignment.createdAt);
   const limited = useDeadline(assignment.deadLine);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isLiked, setIsLiked] = useState(
-    assignment.likes.some((like) => like.user.clerkId === currentClerkId),
-  );
-  const [isLiking, setIsLiking] = useState(false);
-
   const [year, month, day] = assignment.deadLine.split('/')[0].split('-');
   const [hour, minute] = assignment.deadLine.split('/')[1].split(':');
   const deadlineContent = `${year}年${month}月${day}日 ${hour}時${minute}分`;
-
-  const handleLike = async () => {
-    if (isLiking) return;
-    setIsLiking(true);
-    setIsLiked(!isLiked);
-
-    try {
-      isLiked ? await deleteAssignmentLike(assignment.id) : await addAssignmentLike(assignment.id);
-    } catch (error) {
-      setIsLiked(isLiked);
-    } finally {
-      setIsLiking(false);
-    }
-  };
-
+  const { likesCount, isLiked, isLiking, handleToggleLike } = useAssignmentLike(
+    assignment.likes,
+    currentUserId,
+  );
   return (
     <div className='relative mb-4 w-11/12 rounded-lg bg-white p-6 shadow'>
       <div className='flex justify-between'>
@@ -65,7 +49,7 @@ const AssignmentPost = ({
         </div>
       </div>
       <div className='relative mt-3 flex justify-between text-blue-600'>
-        <button onClick={handleLike}>
+        <button onClick={() => handleToggleLike(assignment.id)}>
           {isLiked ? (
             <BookmarkPlus size={27} fill={'rgb(37 99 235)'} />
           ) : (
@@ -83,8 +67,8 @@ const AssignmentPost = ({
         </button>
         {isDropdownOpen && (
           <KebabMenu
-            currentClerkId={currentClerkId}
-            authorClerkId={assignment.author.clerkId}
+            currentUserId={currentUserId}
+            authorUserId={assignment.author.id}
             contentId={assignment.id}
             handleDelete={handleDeleteAssignment}
           />

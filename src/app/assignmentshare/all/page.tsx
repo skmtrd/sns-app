@@ -3,28 +3,28 @@ import AssignmnetSharePage from '@/components/assignmentshare/AssignmnetSharePag
 import QuestionSkeltonLoading from '@/components/loading/QuestionSkeltonLoading';
 import useData from '@/hooks/useData';
 import { AssignmentSchema } from '@/lib/schemas';
-import { useAuth } from '@clerk/nextjs';
+import { useSession } from 'next-auth/react';
 import { z } from 'zod';
 
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const AssignmentAll = () => {
-  const fetcher = (url: string) => fetch(url).then((res) => res.json());
   const {
     data: assignments,
     error,
     isLoading,
   } = useData('/api/assignment', z.array(AssignmentSchema));
-  const { userId: currentClerkId } = useAuth();
+  const { data: session, status } = useSession();
 
-  if (isLoading) {
+  if (isLoading || !assignments || !session?.user?.id) {
     return <QuestionSkeltonLoading title={'課題共有'} subtitle={'すべて'} />;
   }
-  if (error || !assignments || !currentClerkId) {
+  if (error) {
     return <div>Error</div>;
   }
 
   return (
     <AssignmnetSharePage
-      currentClerkId={currentClerkId}
+      currentUserId={session.user.id}
       assignments={assignments}
       title={'課題共有'}
       target={'すべて'}
