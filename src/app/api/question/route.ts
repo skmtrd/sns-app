@@ -31,29 +31,7 @@ export const GET = async (req: Request, res: NextResponse) =>
       orderBy: { createdAt: 'desc' },
     });
 
-    const questionsWithAvatar = await Promise.all(
-      questions.map(async (question) => {
-        return {
-          ...question,
-          //もしavatarがあれば取得する
-          // avatar: await getUserAvatar(question.author.clerkId),
-          avatar: null,
-          replies: await Promise.all(
-            question.replies.map(async (reply) => {
-              return {
-                ...reply,
-                avatar: null,
-              };
-            }),
-          ),
-        };
-      }),
-    );
-
-    return NextResponse.json<apiRes>(
-      { message: 'success', data: questionsWithAvatar },
-      { status: 200 },
-    );
+    return NextResponse.json<apiRes>({ message: 'success', data: questions }, { status: 200 });
   });
 
 export const POST = async (req: Request, res: NextResponse) =>
