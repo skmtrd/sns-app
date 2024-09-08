@@ -6,17 +6,12 @@ import QuestionPost from './QuestionPost';
 
 type QuestionPageProps = {
   questions: Question[];
-  currentClerkId: string;
+  currentUserId: string;
   title: string;
   target: string | null;
 };
 
-const QuestionPage: React.FC<QuestionPageProps> = ({
-  questions,
-  currentClerkId,
-  title,
-  target,
-}) => {
+const QuestionPage: React.FC<QuestionPageProps> = ({ questions, currentUserId, title, target }) => {
   const handleDeleteQuestion = useDeleteQuestion(questions);
   return (
     <div
@@ -31,7 +26,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({
               key={question.id}
               question={question}
               handleDeletePost={handleDeleteQuestion}
-              currentClerkId={currentClerkId}
+              currentUserId={currentUserId}
             />
           ))}
         </div>

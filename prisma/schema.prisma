@@ -29,6 +29,8 @@ model User {
   tags      Tag[]
   likes     Like[]
   likeReplys     LikeReply[]
+  questions     Question[]
+  questionReplies     QuestionReply[]
   // Optional for WebAuthn support
   Authenticator Authenticator[]
  
@@ -144,7 +146,7 @@ model Like {
   postId String?
   // assignment  Assignment? @relation(fields: [assignmentId] , references: [id])
   assignmentId String?
-  // question  Question? @relation(fields: [questionId] , references: [id])
+  question  Question? @relation(fields: [questionId] , references: [id])
   questionId String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -160,15 +162,16 @@ model LikeReply {
   userId String 
   postReply PostReply? @relation(fields: [postReplyId] , references: [id])
   postReplyId String?
-  // assignmentReply AssignmentReply? @relation(fields: [assignmentReplyId] , references: [id])
-  assignmentReplyId String?
-  // questionReply QuestionReply? @relation(fields: [questionReplyId] , references: [id])
+  questionReply QuestionReply? @relation(fields: [questionReplyId] , references: [id])
   questionReplyId String?
+  // assignmentReply AssignmentReply? @relation(fields: [assignmentReplyId] , references: [id])
+  // assignmentReplyId String?
+  // questionReply QuestionReply? @relation(fields: [questionReplyId] , references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@unique([userId , postReplyId])
-  @@unique([userId , assignmentReplyId])
+  // @@unique([userId , assignmentReplyId])
   @@unique([userId , questionReplyId])
 }
 
@@ -213,30 +216,29 @@ model Tag {
 // }
 
 
-// model Question {
-//   id          String         @id @default(cuid())
-//   title       String 
-//   description String         @db.Text 
-//   author      User           @relation(fields: [authorId], references: [id])
-//   authorId    String
-//   likes Like[] 
-//   replies     QuestionReply[]
-//   createdAt   DateTime       @default(now())
-//   updatedAt   DateTime       @updatedAt
+model Question {
+  id          String         @id @default(cuid())
+  title       String 
+  description String         @db.Text 
+  author      User           @relation(fields: [authorId], references: [id])
+  authorId    String
+  likes Like[] 
+  replies     QuestionReply[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
 
-// }
-
-// model QuestionReply {
-//   id             String         @id @default(cuid())
-//   content        String         @db.Text 
-//   likeReplys     LikeReply[]
-//   question       Question       @relation(fields: [questionId], references: [id])
-//   questionId     String
-//   author         User           @relation(fields: [authorId], references: [id])
-//   authorId       String
-//   parentReply    QuestionReply? @relation("ParentChildReply", fields: [parentReplyId], references: [id])
-//   parentReplyId  String?
-//   childReplies   QuestionReply[] @relation("ParentChildReply")
-//   createdAt      DateTime       @default(now())
-//   updatedAt      DateTime       @updatedAt
-// }
+model QuestionReply {
+  id             String         @id @default(cuid())
+  content        String         @db.Text 
+  likeReplys     LikeReply[]
+  question       Question       @relation(fields: [questionId], references: [id])
+  questionId     String
+  author         User           @relation(fields: [authorId], references: [id])
+  authorId       String
+  parentReply    QuestionReply? @relation("ParentChildReply", fields: [parentReplyId], references: [id])
+  parentReplyId  String?
+  childReplies   QuestionReply[] @relation("ParentChildReply")
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
