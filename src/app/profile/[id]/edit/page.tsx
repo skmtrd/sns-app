@@ -20,10 +20,10 @@ const formSchema = z.object({
     .regex(/^[a-zA-Z0-9_]+$/, 'ユーザーIDは半角英数字とアンダースコアのみ使用できます')
     .min(1, 'ユーザーIDは必須です')
     .max(20, 'ユーザーIDは20文字以内で入力してください'),
-  // introduction: z
-  //   .string()
-  //   .min(1, '自己紹介は必須です')
-  //   .max(100, '自己紹介は100文字以内で入力してください'),
+  introduction: z
+    .string()
+    .min(1, '自己紹介は必須です')
+    .max(100, '自己紹介は100文字以内で入力してください'),
   // avatar: z.custom<File>((value) => value instanceof File).optional(),
 });
 
@@ -61,7 +61,7 @@ const ProfileEditForm = ({
     values: {
       name: userInfo.name,
       userId: userInfo.id,
-      // introduction: userInfo.introduction,
+      introduction: userInfo.introduction,
     },
   });
 
@@ -178,10 +178,10 @@ const ProfileEditForm = ({
             </div>
           </div>
           <div>
-            {/* <label htmlFor='bio' className='block text-sm font-medium text-gray-700'>
+            <label htmlFor='bio' className='block text-sm font-medium text-gray-700'>
               自己紹介
-            </label> */}
-            {/* <textarea
+            </label>
+            <textarea
               {...register('introduction')}
               id='bio'
               rows={3}
@@ -189,7 +189,7 @@ const ProfileEditForm = ({
             ></textarea>
             {errors.introduction && (
               <p className='mt-2 text-sm text-red-500'>{errors.introduction.message}</p>
-            )} */}
+            )}
           </div>
           <div>
             <TagPicker tags={tags} clerkId={clerkId} userInfo={userInfo} />

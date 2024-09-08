@@ -11,7 +11,7 @@ export const userSchema = z.object({
 });
 
 const authorSchema = userSchema.extend({
-  introduction: z.string().optional(),
+  introduction: z.string().nullable(),
   tags: z.array(tagSchema).optional(),
 });
 
@@ -68,7 +68,7 @@ export const ProfileSchema = z.object({
   name: z.string(),
   id: z.string(),
   email: z.string(),
-  // introduction: z.string().nullable(),
+  introduction: z.string().nullable(),
   // avatar: z.string().nullable(),
   tags: z.array(z.object({ name: z.string(), id: z.string() })),
   posts: z.array(PostSchema),

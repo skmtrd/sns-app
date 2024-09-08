@@ -57,14 +57,14 @@ export const PUT = async (req: Request, res: NextResponse) =>
     await dbConnect();
     const currentUserId = req.url.split('/profile/')[1];
 
-    const { name, userId } = await req.json();
+    const { name, userId, introduction } = await req.json();
 
     const isUserIdExists = await checkUserIdExists(userId, currentUserId);
     if (isUserIdExists) {
       return NextResponse.json<apiRes>({ message: 'userId already exits' }, { status: 404 });
     } else {
       const newProfile = await prisma.user.update({
-        data: { name, id: userId },
+        data: { name, id: userId, introduction },
         where: { id: currentUserId },
       });
 

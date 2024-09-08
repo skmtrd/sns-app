@@ -79,11 +79,9 @@ const ProfilePage = () => {
                   {userInfo?.name}
                 </h1>
                 <p className='mb-2 text-base text-gray-500 sm:text-lg'>@{userInfo?.id}</p>
-                {/* {userInfo?.introduction && (
-                  <p className='mb-4 break-words text-base text-gray-700 sm:text-lg'>
-                    {userInfo?.introduction}
-                  </p>
-                )} */}
+                <p className='mb-4 break-words text-base text-gray-700 sm:text-lg'>
+                  {userInfo?.introduction}
+                </p>
                 <div className='mb-4'>
                   <div className='flex flex-wrap gap-2'>
                     {userInfo?.tags && userInfo?.tags.length > 0 ? (

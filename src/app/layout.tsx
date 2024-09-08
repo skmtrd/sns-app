@@ -13,7 +13,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang='ja'>
       <body>
         <SessionProvider>
-          <SideBar userId={session?.user.id}></SideBar>
+          <SideBar></SideBar>
           {children}
           <RightSideBar></RightSideBar>
         </SessionProvider>
