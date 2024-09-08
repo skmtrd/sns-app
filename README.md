@@ -6,6 +6,6 @@ INIAD生専用SNS
 ・フロントエンド　Next.js React.js 
 ・バックエンド　Next.js supabase
 ・データベース ORM PostgreSQL Prisma
-・認証　Clerk
+・認証　NextAuth v5
 
 
