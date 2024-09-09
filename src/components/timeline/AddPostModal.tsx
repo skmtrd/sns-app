@@ -1,7 +1,8 @@
 'use client';
 import { cn } from '@/lib/utils';
-import { X } from 'lucide-react';
-import React, { useEffect } from 'react';
+import { Image as ImageIcon, X } from 'lucide-react';
+import Image from 'next/image';
+import React, { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useSWRConfig } from 'swr';
 
@@ -11,17 +12,15 @@ type AddPostProps = {
 
 type FormInputs = {
   content: string;
+  image?: FileList;
 };
 
 const MAX_CONTENT_LENGTH = 500;
 
-const addPost = async (newPost: { createdAt: string; content: string }) => {
+const addPost = async (newPost: FormData) => {
   const response = await fetch('/api/post', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(newPost),
+    body: newPost,
   });
 
   if (!response.ok) {
@@ -31,6 +30,7 @@ const addPost = async (newPost: { createdAt: string; content: string }) => {
 
 export const AddPost: React.FC<AddPostProps> = ({ closeModal }) => {
   const { mutate } = useSWRConfig();
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
@@ -41,17 +41,31 @@ export const AddPost: React.FC<AddPostProps> = ({ closeModal }) => {
   } = useForm<FormInputs>();
 
   const content = watch('content');
+  const image = watch('image');
+
+  useEffect(() => {
+    if (image && image.length > 0) {
+      const file = image[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setPreviewImage(null);
+    }
+  }, [image]);
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     clearErrors();
-    console.log(data);
-    const newPost = {
-      createdAt: new Date().toISOString(),
-      content: data.content,
-    };
+    const formData = new FormData();
+    formData.append('content', data.content);
+    if (data.image && data.image.length > 0) {
+      formData.append('image', data.image[0]);
+    }
 
     try {
-      await addPost(newPost);
+      await addPost(formData);
       mutate('/api/post');
       closeModal();
     } catch (error) {
@@ -127,6 +141,21 @@ export const AddPost: React.FC<AddPostProps> = ({ closeModal }) => {
               </p>
             </div>
             {errors.content && <p className='text-red-500'>{errors.content.message}</p>}
+            <div className='flex items-center gap-2'>
+              <label htmlFor='image' className='cursor-pointer'>
+                <ImageIcon size={24} className='text-gray-500' />
+              </label>
+              <input
+                type='file'
+                id='image'
+                accept='image/*'
+                {...register('image')}
+                className='hidden'
+              />
+              {previewImage && (
+                <Image src={previewImage} alt='image preview' height={100} width={100} />
+              )}
+            </div>
             <button
               type='submit'
               className={cn(

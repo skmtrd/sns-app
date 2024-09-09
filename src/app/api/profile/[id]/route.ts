@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { dbConnect } from '../../lib/dbConnect';
 import { handleAPIError } from '../../lib/handleAPIError';
 import prisma from '../../lib/prisma';
+import { supabase } from '../../lib/supabase/supabase';
 import { checkUserIdExists } from '../../lib/user/checkUserIdExists';
 import { apiRes } from '../../types';
 
@@ -38,8 +39,20 @@ export const GET = async (req: Request, res: NextResponse) =>
         },
       },
     });
-
     if (!user) return NextResponse.json<apiRes>({ message: 'User not found' }, { status: 404 });
+
+    const postsWithImages = user.posts.map((post) => {
+      if (post.imageUrl) {
+        post.imageUrl = supabase.storage
+          .from('post-images')
+          .getPublicUrl(post.imageUrl).data.publicUrl;
+      } else {
+        post.imageUrl = null;
+      }
+      return post;
+    });
+
+    user.posts = postsWithImages;
 
     return NextResponse.json<apiRes>(
       {

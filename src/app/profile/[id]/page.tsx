@@ -51,8 +51,8 @@ const ProfilePage = () => {
           <ImageDisplayModal closeModal={handleToggleIsImageModalOpen} src={userInfo.avatar} />
         )} */}
         <Toaster />
-        <div className='mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8'>
-          <div className='mb-8 rounded-lg bg-white p-6 shadow sm:p-8'>
+        <div className='mx-auto max-w-5xl py-8 sm:px-6 lg:px-8'>
+          <div className='mx-2 mb-8 rounded-lg bg-white p-6 shadow sm:p-8'>
             <div className='mb-6 flex flex-col items-center sm:flex-row sm:items-start'>
               <div className='mb-4 sm:mb-0 sm:mr-6'>
                 {/* {userInfo?.avatar ? (

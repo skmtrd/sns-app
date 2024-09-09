@@ -2,7 +2,7 @@ import { useAssignmentLike } from '@/hooks/Like/useAssignmentLike';
 import { useDeadline } from '@/hooks/useDeadline';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
 import { Assignment } from '@/lib/types';
-import { BookmarkPlus, MoreVertical } from 'lucide-react';
+import { Folder, FolderOpen, MoreVertical } from 'lucide-react';
 import { useState } from 'react';
 import KebabMenu from '../element/KebabMenu';
 import TextContent from '../element/TextContent';
@@ -50,11 +50,7 @@ const AssignmentPost = ({
       </div>
       <div className='relative mt-3 flex justify-between text-blue-600'>
         <button onClick={() => handleToggleLike(assignment.id)}>
-          {isLiked ? (
-            <BookmarkPlus size={27} fill={'rgb(37 99 235)'} />
-          ) : (
-            <BookmarkPlus size={27} />
-          )}
+          {isLiked ? <Folder size={27} fill={'rgb(37 99 235)'} /> : <FolderOpen size={27} />}
         </button>
         <button
           onClick={(e) => {

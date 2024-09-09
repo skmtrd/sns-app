@@ -3,6 +3,7 @@ import { usePostLike } from '@/hooks/Like/usePostLike';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
 import { Post as PostType } from '@/lib/types';
 import { Heart, MessageCircleReply, MoreVertical } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -148,6 +149,17 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
             </Link>
           ))}
       </div>
+      {post.imageUrl && (
+        <div className='flex w-full items-center justify-center object-contain'>
+          <Image
+            style={{ width: 400, borderRadius: 10 }}
+            src={post.imageUrl}
+            alt='ポストの画像'
+            width={100}
+            height={100}
+          />
+        </div>
+      )}
       <div className='relative mt-6 flex w-full items-center justify-between'>
         <div className='flex items-center justify-center gap-2'>
           <button
