@@ -4,11 +4,11 @@ import useData from '@/hooks/useData';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useSWRConfig } from 'swr';
-import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
 import { supabase } from '../api/lib/supabase/supabase';
 
 const ImageItem = ({ imageUrl }: { imageUrl: string }) => {
+  console.log(imageUrl);
   const [imageURL, setImageURL] = useState<string | null>(null);
   useEffect(() => {
     if (imageUrl) {
@@ -19,6 +19,7 @@ const ImageItem = ({ imageUrl }: { imageUrl: string }) => {
 
   async function getImageUrl() {
     const { data } = supabase.storage.from('post-images').getPublicUrl(imageUrl);
+    console.log(data);
     setImageURL(data.publicUrl);
   }
 
@@ -30,6 +31,7 @@ const ImageItem = ({ imageUrl }: { imageUrl: string }) => {
       alt='image'
       width={180}
       height={180}
+      unoptimized={imageUrl.endsWith('.gif')}
     />
   );
 };
@@ -50,30 +52,23 @@ const Page = () => {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     console.log('送信');
     e.preventDefault();
+
     if (!image) {
       alert('画像を選択してください');
       return;
     }
-    const file = image;
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${uuidv4()}.${fileExt}`;
-    const { data: fileData, error: fileError } = await supabase.storage
-      .from('post-images')
-      .upload(fileName, file);
+    const formData = new FormData();
+    formData.append('image', image);
 
-    if (fileError) {
-      alert('画像のアップロードに失敗しました');
-      return;
-    }
-
-    //dbに保存
     const response = await fetch('/api/image', {
       method: 'POST',
-      body: JSON.stringify({ imageUrl: fileName }),
+      body: formData,
     });
-    const data = await response.json();
+
     mutate('/api/image');
   };
+
+  console.log(images);
   return (
     <div className='flex flex-1 flex-col items-center justify-center gap-4 overflow-y-auto'>
       <form onSubmit={onSubmit}>
