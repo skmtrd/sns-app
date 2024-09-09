@@ -8,6 +8,7 @@ const config = {
         pathname: '/a/**',
       },
     ],
+    domains: ['kaoygtesdxkfdiyctlnk.supabase.co'],
   },
 };
 
