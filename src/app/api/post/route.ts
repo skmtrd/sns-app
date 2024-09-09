@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import { dbConnect } from '../lib/dbConnect';
 
-import { convertToWebp } from '../lib/convertToWebp';
 import { getUserId } from '../lib/getUserId';
 import { handleAPIError } from '../lib/handleAPIError';
 import prisma from '../lib/prisma';
 import { supabase } from '../lib/supabase/supabase';
+import { uploadPostImage } from '../lib/uploadPostImage';
 import { findSpecificUser } from '../lib/user/findSpecificUser';
 import { apiRes } from '../types';
 
@@ -59,18 +59,7 @@ export const POST = async (req: Request, res: NextResponse) =>
     const content = formData.get('content') as string;
     const image = formData.get('image') as File | null;
 
-    let imageUrl: string | null = null;
-
-    if (image) {
-      const { webpBuffer, fileName } = await convertToWebp(image);
-      imageUrl = fileName;
-
-      const { data, error: uploadError } = await supabase.storage
-        .from('post-images')
-        .upload(fileName, webpBuffer, {
-          contentType: 'image/webp',
-        });
-    }
+    const { fileName: imageUrl } = await uploadPostImage(image);
 
     const userId = await getUserId();
 

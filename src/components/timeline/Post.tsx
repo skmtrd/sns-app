@@ -155,8 +155,9 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
             style={{ width: 400, borderRadius: 10 }}
             src={post.imageUrl}
             alt='ポストの画像'
-            width={100}
-            height={100}
+            width={1000}
+            height={1000}
+            quality={100}
           />
         </div>
       )}
