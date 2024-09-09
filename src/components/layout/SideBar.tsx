@@ -47,8 +47,8 @@ const SideBar = () => {
 
   const navItems2: NavItem[] = [
     { page: '/likes', label: 'いいねしたポスト', icon: BookHeart },
-    { page: '/bookmarks', label: 'ブックマークした質問', icon: BookMarked },
     { page: '/my-assignments', label: '登録した課題', icon: FolderClock },
+    { page: '/bookmarks', label: 'ブックマークした質問', icon: BookMarked },
   ];
 
   const isActive = (page: string) => {
