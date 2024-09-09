@@ -33,9 +33,6 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
   const dropdownRef = useRef<HTMLDivElement>(null);
   const profilePreviewRef = useRef<HTMLDivElement>(null);
   const timeAgo = useRelativeTime(post.createdAt);
-  // const [likesCount, setLikesCount] = useState(post.likes.length);
-  // const [isLiked, setIsLiked] = useState(post.likes.some((like) => like.user.id === currentUserId));
-  // const [isLiking, setIsLiking] = useState(false);
   const { likesCount, isLiked, isLiking, handleToggleLike } = usePostLike(
     post.likes,
     currentUserId,
@@ -64,27 +61,6 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
-  // const handleLike = async () => {
-  //   if (isLiking) return;
-
-  //   setIsLiking(true);
-  //   setIsLiked(!isLiked);
-  //   setLikesCount(isLiked ? likesCount - 1 : likesCount + 1);
-
-  //   try {
-  //     if (isLiked) {
-  //       await deletePostLike(post.id);
-  //     } else {
-  //       await addPostLike(post.id);
-  //     }
-  //   } catch (error) {
-  //     setIsLiked(isLiked);
-  //     setLikesCount(likesCount);
-  //   } finally {
-  //     setIsLiking(false);
-  //   }
-  // };
 
   const handleReplyModalToggle = () => {
     setIsReplyModalOpen(!isReplyModalOpen);
