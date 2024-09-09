@@ -118,7 +118,8 @@ model Post {
   content   String
   author    User     @relation(fields: [authorId], references: [id])
   authorId  String
-  likes Like[] 
+  imageUrl  String?
+  likes     Like[] 
   replies   PostReply[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

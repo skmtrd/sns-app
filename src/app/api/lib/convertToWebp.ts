@@ -10,7 +10,7 @@ export const convertToWebp = async (image: File) => {
     webpBuffer = await sharp(buffer, { animated: true }).webp().toBuffer();
     fileName = `${uuidv4()}.webp`;
   } else {
-    webpBuffer = await sharp(buffer).webp({ quality: 80 }).toBuffer();
+    webpBuffer = await sharp(buffer).webp({ quality: 100, lossless: true }).toBuffer();
     fileName = `${uuidv4()}.webp`;
   }
 

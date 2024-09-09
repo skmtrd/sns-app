@@ -31,7 +31,7 @@ export const LikeSchema = z.object({
 export const PostSchema = z.object({
   id: z.string(),
   content: z.string(),
-  // avatar: z.string(),
+  imageUrl: z.string().nullable(),
   authorId: z.string(),
   createdAt: z.string(),
   author: authorSchema,

@@ -1,10 +1,11 @@
-// import { clerkClient } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { dbConnect } from '../lib/dbConnect';
 
+import { convertToWebp } from '../lib/convertToWebp';
 import { getUserId } from '../lib/getUserId';
 import { handleAPIError } from '../lib/handleAPIError';
 import prisma from '../lib/prisma';
+import { supabase } from '../lib/supabase/supabase';
 import { findSpecificUser } from '../lib/user/findSpecificUser';
 import { apiRes } from '../types';
 
@@ -32,14 +33,44 @@ export const GET = async (req: Request, res: NextResponse) =>
       orderBy: { createdAt: 'desc' },
     });
 
-    return NextResponse.json<apiRes>({ message: 'success', data: posts }, { status: 200 });
+    const postsWithImages = posts.map((post) => {
+      if (post.imageUrl) {
+        post.imageUrl = supabase.storage
+          .from('post-images')
+          .getPublicUrl(post.imageUrl).data.publicUrl;
+      } else {
+        post.imageUrl = null;
+      }
+      return post;
+    });
+
+    return NextResponse.json<apiRes>(
+      { message: 'success', data: postsWithImages },
+      { status: 200 },
+    );
   });
 
 export const POST = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
     dbConnect();
 
-    const { content } = await req.json();
+    const formData = await req.formData();
+
+    const content = formData.get('content') as string;
+    const image = formData.get('image') as File | null;
+
+    let imageUrl: string | null = null;
+
+    if (image) {
+      const { webpBuffer, fileName } = await convertToWebp(image);
+      imageUrl = fileName;
+
+      const { data, error: uploadError } = await supabase.storage
+        .from('post-images')
+        .upload(fileName, webpBuffer, {
+          contentType: 'image/webp',
+        });
+    }
 
     const userId = await getUserId();
 
@@ -49,10 +80,10 @@ export const POST = async (req: Request, res: NextResponse) =>
 
     const user = await findSpecificUser(userId);
 
-    //postgresqlに投稿
     const newPost = await prisma.post.create({
       data: {
         content,
+        imageUrl,
         author: {
           connect: { id: user.id },
         },
