@@ -1,6 +1,7 @@
 'use client';
 import { usePostLike } from '@/hooks/Like/usePostLike';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
+import { ICON_IMAGE_BASE_URL, POST_IMAGE_BASE_URL } from '@/lib/constants';
 import { Post as PostType } from '@/lib/types';
 import { Heart, MessageCircleReply, MoreVertical } from 'lucide-react';
 import Image from 'next/image';
@@ -9,7 +10,6 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import KebabMenu from '../element/KebabMenu';
-import ProfilePreview from '../element/ProfilePreview';
 import TextContent from '../element/TextContent';
 import UserTag from '../element/UserTag';
 import { AddReplyModal } from './AddReplyModal';
@@ -78,15 +78,15 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
           onMouseEnter={() => setShowProfilePreview(true)}
           onMouseLeave={() => setShowProfilePreview(false)}
         >
-          {/* <Link href={`/profile/${post.author.id}`} onClick={(e) => e.stopPropagation()}>
+          <Link href={`/profile/${post.author.id}`} onClick={(e) => e.stopPropagation()}>
             <Image
-              src='../../lib/images/IMG_0614.jpg'
+              src={`${ICON_IMAGE_BASE_URL}${post.author.iconUrl}`}
               alt={post.author.name}
               width={40}
               height={40}
               className='min-h-10 min-w-10 rounded-full hover:opacity-80'
             />
-          </Link> */}
+          </Link>
         </div>
         <div className='ml-2 w-full'>
           <div className='flex w-full items-center justify-between'>
@@ -98,7 +98,7 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
                   </h3>
                 </div>
               </Link>
-              {showProfilePreview && (
+              {/* {showProfilePreview && (
                 <div ref={profilePreviewRef} className='absolute left-0 top-full mt-1'>
                   <ProfilePreview
                     authorName={post.author.name}
@@ -107,7 +107,7 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
                     authorIntroduction={post.author.introduction}
                   />
                 </div>
-              )}
+              )} */}
             </div>
             <p className='mr-1 whitespace-nowrap text-sm text-gray-500'>{timeAgo}</p>
           </div>
@@ -129,7 +129,7 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
         <div className='flex w-full items-center justify-center object-contain'>
           <Image
             style={{ width: 400, borderRadius: 10 }}
-            src={post.imageUrl}
+            src={`${POST_IMAGE_BASE_URL}${post.imageUrl}`}
             alt='ポストの画像'
             width={1000}
             height={1000}

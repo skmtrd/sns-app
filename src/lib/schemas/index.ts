@@ -13,6 +13,7 @@ export const userSchema = z.object({
 const authorSchema = userSchema.extend({
   introduction: z.string().nullable(),
   tags: z.array(tagSchema).optional(),
+  iconUrl: z.string().nullable(),
 });
 
 const replySchema = z.object({

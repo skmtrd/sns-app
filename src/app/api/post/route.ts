@@ -4,7 +4,6 @@ import { dbConnect } from '../lib/dbConnect';
 import { getUserId } from '../lib/getUserId';
 import { handleAPIError } from '../lib/handleAPIError';
 import prisma from '../lib/prisma';
-import { supabase } from '../lib/supabase/supabase';
 import { uploadPostImage } from '../lib/uploadImage/uploadPostImage';
 import { findSpecificUser } from '../lib/user/findSpecificUser';
 import { apiRes } from '../types';
@@ -33,21 +32,7 @@ export const GET = async (req: Request, res: NextResponse) =>
       orderBy: { createdAt: 'desc' },
     });
 
-    const postsWithImages = posts.map((post) => {
-      if (post.imageUrl) {
-        post.imageUrl = supabase.storage
-          .from('post-images')
-          .getPublicUrl(post.imageUrl).data.publicUrl;
-      } else {
-        post.imageUrl = null;
-      }
-      return post;
-    });
-
-    return NextResponse.json<apiRes>(
-      { message: 'success', data: postsWithImages },
-      { status: 200 },
-    );
+    return NextResponse.json<apiRes>({ message: 'success', data: posts }, { status: 200 });
   });
 
 export const POST = async (req: Request, res: NextResponse) =>

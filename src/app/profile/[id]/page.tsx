@@ -13,6 +13,7 @@ import { mutate } from 'swr';
 
 import ProfileSkeltonLoading from '@/components/loading/ProfileSkeltonLoading';
 import ProfilePost from '@/components/profile/ProfilePost';
+import { ICON_IMAGE_BASE_URL } from '@/lib/constants';
 import { ProfileSchema } from '@/lib/schemas';
 import { useSession } from 'next-auth/react';
 
@@ -21,7 +22,6 @@ const ProfilePage = () => {
   const userId = usePathname().split('/profile/')[1];
   const { data: session, update } = useSession();
   const { userInfo, isLoading, isError } = useUserInfo(userId, ProfileSchema);
-  console.log('userInfo:', userInfo);
 
   const handleToggleIsImageModalOpen = () => {
     setIsImageModalOpen(!isImageModalOpen);
@@ -60,7 +60,7 @@ const ProfilePage = () => {
                 {userInfo?.iconUrl ? (
                   <button onClick={handleToggleIsImageModalOpen}>
                     <Image
-                      src={userInfo.iconUrl}
+                      src={`${ICON_IMAGE_BASE_URL}${userInfo.iconUrl}`}
                       alt={`${userInfo.name}のアバター`}
                       width={120}
                       height={120}
