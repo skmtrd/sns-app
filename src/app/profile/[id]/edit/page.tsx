@@ -1,5 +1,6 @@
 'use client';
 
+import { ChangeAvatar } from '@/components/element/ChangeAvatar';
 import Header from '@/components/element/Header';
 import { TagPicker } from '@/components/element/TagPicker';
 import useUserInfo from '@/hooks/useUserInfo';
@@ -24,7 +25,7 @@ const formSchema = z.object({
     .string()
     .min(1, '自己紹介は必須です')
     .max(100, '自己紹介は100文字以内で入力してください'),
-  // avatar: z.custom<File>((value) => value instanceof File).optional(),
+  icon: z.custom<File>((value) => value instanceof File).optional(),
 });
 
 const tagFetcher = (url: string) =>
@@ -62,20 +63,30 @@ const ProfileEditForm = ({
       name: userInfo.name,
       userId: userInfo.id,
       introduction: userInfo.introduction,
+      icon: userInfo.iconUrl,
     },
   });
 
+  // const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = (data) => {
+  //   alert(JSON.stringify(data));
+
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (data) => {
+    console.log(data);
     const pathUserId = pathname.split('/profile/')[1].split('/')[0];
+
+    const formData = new FormData();
+    formData.append('name', data.name);
+    formData.append('userId', data.userId);
+    formData.append('introduction', data.introduction);
+    if (data.icon instanceof File) {
+      formData.append('icon', data.icon);
+    }
 
     const updatePromise = toast.promise(
       (async () => {
         const userInfoRes = await fetch(`/api/profile/${pathUserId}`, {
           method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
+          body: formData,
         });
 
         if (!userInfoRes.ok) {
@@ -125,9 +136,9 @@ const ProfileEditForm = ({
     }
   };
 
-  // const onFileChange = async (file: File) => {
-  //   setValue('avatar', file);
-  // };
+  const onFileChange = async (file: File) => {
+    setValue('icon', file);
+  };
 
   if (session?.user?.id !== pageclerkId) return <div>アクセス権がありません。</div>;
 
@@ -141,7 +152,7 @@ const ProfileEditForm = ({
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className='flex'>
-            {/* <ChangeAvatar onFileChange={onFileChange} value={user?.imageUrl} className='mr-6' /> */}
+            <ChangeAvatar onFileChange={onFileChange} value={userInfo.iconUrl} className='mr-6' />
             <div className='w-full space-y-4'>
               <div>
                 <label htmlFor='name' className='block text-sm font-medium text-gray-700'>
@@ -194,13 +205,13 @@ const ProfileEditForm = ({
           <div>
             <TagPicker tags={tags} clerkId={clerkId} userInfo={userInfo} />
           </div>
+          <button
+            type='submit'
+            className='mt-2 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-0 focus:ring-blue-500/50'
+          >
+            保存
+          </button>
         </form>
-        <button
-          className='mt-2 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-0 focus:ring-blue-500/50'
-          onClick={handleSubmit(onSubmit)}
-        >
-          保存
-        </button>
       </main>
     </div>
   );

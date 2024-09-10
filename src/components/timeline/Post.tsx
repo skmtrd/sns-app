@@ -1,6 +1,8 @@
 'use client';
 import { usePostLike } from '@/hooks/Like/usePostLike';
+import { useImageModal } from '@/hooks/useImageModal';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
+import { ICON_IMAGE_BASE_URL, POST_IMAGE_BASE_URL } from '@/lib/constants';
 import { Post as PostType } from '@/lib/types';
 import { Heart, MessageCircleReply, MoreVertical } from 'lucide-react';
 import Image from 'next/image';
@@ -8,8 +10,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { ImageDisplayModal } from '../element/ImageDisplayModal';
 import KebabMenu from '../element/KebabMenu';
-import ProfilePreview from '../element/ProfilePreview';
 import TextContent from '../element/TextContent';
 import UserTag from '../element/UserTag';
 import { AddReplyModal } from './AddReplyModal';
@@ -27,19 +29,18 @@ const REPLY_MAX_LENGTH = 500;
 
 export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserId }) => {
   const router = useRouter();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [showProfilePreview, setShowProfilePreview] = useState(false);
-  const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const profilePreviewRef = useRef<HTMLDivElement>(null);
   const timeAgo = useRelativeTime(post.createdAt);
-  // const [likesCount, setLikesCount] = useState(post.likes.length);
-  // const [isLiked, setIsLiked] = useState(post.likes.some((like) => like.user.id === currentUserId));
-  // const [isLiking, setIsLiking] = useState(false);
   const { likesCount, isLiked, isLiking, handleToggleLike } = usePostLike(
     post.likes,
     currentUserId,
   );
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showProfilePreview, setShowProfilePreview] = useState(false);
+  const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
+  const { isImageModalOpen, modalSrc, openImageModal, closeImageModal } = useImageModal();
 
   const {
     register,
@@ -65,27 +66,6 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
     };
   }, []);
 
-  // const handleLike = async () => {
-  //   if (isLiking) return;
-
-  //   setIsLiking(true);
-  //   setIsLiked(!isLiked);
-  //   setLikesCount(isLiked ? likesCount - 1 : likesCount + 1);
-
-  //   try {
-  //     if (isLiked) {
-  //       await deletePostLike(post.id);
-  //     } else {
-  //       await addPostLike(post.id);
-  //     }
-  //   } catch (error) {
-  //     setIsLiked(isLiked);
-  //     setLikesCount(likesCount);
-  //   } finally {
-  //     setIsLiking(false);
-  //   }
-  // };
-
   const handleReplyModalToggle = () => {
     setIsReplyModalOpen(!isReplyModalOpen);
   };
@@ -95,6 +75,7 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
       onClick={() => router.push(`/posts/${post.id}`)}
       className='w-11/12 rounded-lg bg-white p-4 shadow hover:bg-slate-50'
     >
+      {isImageModalOpen && <ImageDisplayModal src={modalSrc} closeModal={closeImageModal} />}
       {isReplyModalOpen && <AddReplyModal closeModal={handleReplyModalToggle} postId={post.id} />}
       <div className='mb-2 flex items-center justify-start'>
         <div
@@ -102,15 +83,20 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
           onMouseEnter={() => setShowProfilePreview(true)}
           onMouseLeave={() => setShowProfilePreview(false)}
         >
-          {/* <Link href={`/profile/${post.author.id}`} onClick={(e) => e.stopPropagation()}>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              openImageModal(`${ICON_IMAGE_BASE_URL}${post.author.iconUrl}`);
+            }}
+          >
             <Image
-              src='../../lib/images/IMG_0614.jpg'
+              src={`${ICON_IMAGE_BASE_URL}${post.author.iconUrl}`}
               alt={post.author.name}
               width={40}
               height={40}
               className='min-h-10 min-w-10 rounded-full hover:opacity-80'
             />
-          </Link> */}
+          </button>
         </div>
         <div className='ml-2 w-full'>
           <div className='flex w-full items-center justify-between'>
@@ -122,7 +108,7 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
                   </h3>
                 </div>
               </Link>
-              {showProfilePreview && (
+              {/* {showProfilePreview && (
                 <div ref={profilePreviewRef} className='absolute left-0 top-full mt-1'>
                   <ProfilePreview
                     authorName={post.author.name}
@@ -131,7 +117,7 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
                     authorIntroduction={post.author.introduction}
                   />
                 </div>
-              )}
+              )} */}
             </div>
             <p className='mr-1 whitespace-nowrap text-sm text-gray-500'>{timeAgo}</p>
           </div>
@@ -151,13 +137,21 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
       </div>
       {post.imageUrl && (
         <div className='flex w-full items-center justify-center object-contain'>
-          <Image
-            style={{ width: 400, borderRadius: 10 }}
-            src={post.imageUrl}
-            alt='ポストの画像'
-            width={100}
-            height={100}
-          />
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              openImageModal(`${POST_IMAGE_BASE_URL}${post.imageUrl}`);
+            }}
+          >
+            <Image
+              style={{ width: 400, borderRadius: 10 }}
+              src={`${POST_IMAGE_BASE_URL}${post.imageUrl}`}
+              alt='ポストの画像'
+              width={1000}
+              height={1000}
+              quality={100}
+            />
+          </button>
         </div>
       )}
       <div className='relative mt-6 flex w-full items-center justify-between'>

@@ -5,6 +5,7 @@ import Header from '@/components/element/Header';
 import UserTag from '@/components/element/UserTag';
 import useUserInfo from '@/hooks/useUserInfo';
 import { Tag } from '@/lib/types';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
@@ -12,6 +13,7 @@ import { mutate } from 'swr';
 
 import ProfileSkeltonLoading from '@/components/loading/ProfileSkeltonLoading';
 import ProfilePost from '@/components/profile/ProfilePost';
+import { ICON_IMAGE_BASE_URL } from '@/lib/constants';
 import { ProfileSchema } from '@/lib/schemas';
 import { useSession } from 'next-auth/react';
 
@@ -19,12 +21,12 @@ const ProfilePage = () => {
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const userId = usePathname().split('/profile/')[1];
   const { data: session, update } = useSession();
+  const { userInfo, isLoading, isError } = useUserInfo(userId, ProfileSchema);
 
   const handleToggleIsImageModalOpen = () => {
     setIsImageModalOpen(!isImageModalOpen);
   };
 
-  const { userInfo, isLoading, isError } = useUserInfo(userId, ProfileSchema);
   useEffect(() => {
     update();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -55,10 +57,10 @@ const ProfilePage = () => {
           <div className='mx-2 mb-8 rounded-lg bg-white p-6 shadow sm:p-8'>
             <div className='mb-6 flex flex-col items-center sm:flex-row sm:items-start'>
               <div className='mb-4 sm:mb-0 sm:mr-6'>
-                {/* {userInfo?.avatar ? (
+                {userInfo?.iconUrl ? (
                   <button onClick={handleToggleIsImageModalOpen}>
                     <Image
-                      src={userInfo.avatar}
+                      src={`${ICON_IMAGE_BASE_URL}${userInfo.iconUrl}`}
                       alt={`${userInfo.name}のアバター`}
                       width={120}
                       height={120}
@@ -69,10 +71,7 @@ const ProfilePage = () => {
                   <div className='flex size-28 items-center justify-center rounded-full bg-gray-200 text-gray-500'>
                     No Image
                   </div>
-                )} */}
-                <div className='flex size-28 items-center justify-center rounded-full bg-gray-200 text-gray-500'>
-                  No Image
-                </div>
+                )}
               </div>
               <div className='flex-1 text-center sm:text-left'>
                 <h1 className='mb-2 text-3xl font-bold text-gray-900 sm:text-4xl'>
