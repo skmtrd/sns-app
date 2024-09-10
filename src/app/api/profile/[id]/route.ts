@@ -43,6 +43,12 @@ export const GET = async (req: Request, res: NextResponse) =>
     });
     if (!user) return NextResponse.json<apiRes>({ message: 'User not found' }, { status: 404 });
 
+    if (user.iconUrl) {
+      const iconImage = supabase.storage.from('icon-images').getPublicUrl(user.iconUrl)
+        .data.publicUrl;
+      user.iconUrl = iconImage;
+    }
+
     const postsWithImages = user.posts.map((post) => {
       if (post.imageUrl) {
         post.imageUrl = supabase.storage
