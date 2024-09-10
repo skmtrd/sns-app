@@ -5,7 +5,7 @@ import { getUserId } from '../lib/getUserId';
 import { handleAPIError } from '../lib/handleAPIError';
 import prisma from '../lib/prisma';
 import { supabase } from '../lib/supabase/supabase';
-import { uploadPostImage } from '../lib/uploadPostImage';
+import { uploadPostImage } from '../lib/uploadImage/uploadPostImage';
 import { findSpecificUser } from '../lib/user/findSpecificUser';
 import { apiRes } from '../types';
 

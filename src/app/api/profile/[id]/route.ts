@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
 import { dbConnect } from '../../lib/dbConnect';
+import { getUserId } from '../../lib/getUserId';
 import { handleAPIError } from '../../lib/handleAPIError';
 import prisma from '../../lib/prisma';
 import { supabase } from '../../lib/supabase/supabase';
+import { uploadIconImage } from '../../lib/uploadImage/uploadIconImage';
 import { checkUserIdExists } from '../../lib/user/checkUserIdExists';
 import { apiRes } from '../../types';
 
@@ -68,16 +70,26 @@ export const GET = async (req: Request, res: NextResponse) =>
 export const PUT = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
     await dbConnect();
-    const currentUserId = req.url.split('/profile/')[1];
+    const currentUserId = await getUserId();
 
-    const { name, userId, introduction } = await req.json();
+    if (!currentUserId) {
+      return NextResponse.json<apiRes>({ message: 'Unauthorized' }, { status: 401 });
+    }
+
+    const formData = await req.formData();
+    const name = formData.get('name') as string;
+    const userId = formData.get('userId') as string;
+    const introduction = formData.get('introduction') as string;
+    const icon = formData.get('icon') as File;
+
+    const { fileName: iconUrl } = await uploadIconImage(icon);
 
     const isUserIdExists = await checkUserIdExists(userId, currentUserId);
     if (isUserIdExists) {
       return NextResponse.json<apiRes>({ message: 'userId already exits' }, { status: 404 });
     } else {
       const newProfile = await prisma.user.update({
-        data: { name, id: userId, introduction },
+        data: { name, id: userId, introduction, iconUrl },
         where: { id: currentUserId },
       });
 

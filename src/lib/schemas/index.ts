@@ -69,7 +69,7 @@ export const ProfileSchema = z.object({
   id: z.string(),
   email: z.string(),
   introduction: z.string().nullable(),
-  // avatar: z.string().nullable(),
+  iconUrl: z.string().nullable(),
   tags: z.array(z.object({ name: z.string(), id: z.string() })),
   posts: z.array(PostSchema),
 });

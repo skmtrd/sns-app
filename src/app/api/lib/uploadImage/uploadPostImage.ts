@@ -1,5 +1,5 @@
-import { convertToWebp } from './convertToWebp';
-import { supabase } from './supabase/supabase';
+import { convertToWebp } from '../convertToWebp';
+import { supabase } from '../supabase/supabase';
 
 export const uploadPostImage = async (image: File | null) => {
   if (!image) return { fileName: null };
