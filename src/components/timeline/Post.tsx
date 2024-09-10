@@ -108,16 +108,6 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
                   </h3>
                 </div>
               </Link>
-              {/* {showProfilePreview && (
-                <div ref={profilePreviewRef} className='absolute left-0 top-full mt-1'>
-                  <ProfilePreview
-                    authorName={post.author.name}
-                    authorAvatar={'../../app/favicon.ico'}
-                    authorId={post.author.id}
-                    authorIntroduction={post.author.introduction}
-                  />
-                </div>
-              )} */}
             </div>
             <p className='mr-1 whitespace-nowrap text-sm text-gray-500'>{timeAgo}</p>
           </div>
@@ -137,21 +127,23 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
       </div>
       {post.imageUrl && (
         <div className='flex w-full items-center justify-center object-contain'>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              openImageModal(`${POST_IMAGE_BASE_URL}${post.imageUrl}`);
-            }}
-          >
-            <Image
-              style={{ width: 400, borderRadius: 10 }}
-              src={`${POST_IMAGE_BASE_URL}${post.imageUrl}`}
-              alt='ポストの画像'
-              width={1000}
-              height={1000}
-              quality={100}
-            />
-          </button>
+          <div className='w-full md:w-9/12'>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                openImageModal(`${POST_IMAGE_BASE_URL}${post.imageUrl}`);
+              }}
+            >
+              <Image
+                style={{ width: '100%', borderRadius: 10 }}
+                src={`${POST_IMAGE_BASE_URL}${post.imageUrl}`}
+                alt='ポストの画像'
+                width={1000}
+                height={1000}
+                quality={100}
+              />
+            </button>
+          </div>
         </div>
       )}
       <div className='relative mt-6 flex w-full items-center justify-between'>

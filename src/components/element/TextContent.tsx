@@ -16,7 +16,7 @@ const TextContent = ({ textContent }: { textContent: string }) => {
   const lines: string[] = sanitizedText.split('\n');
   return (
     <span>
-      <span className='break-words' onClick={(e) => e.stopPropagation()}>
+      <span className='break-words text-xl' onClick={(e) => e.stopPropagation()}>
         {lines.map((line, lineIndex) => {
           const parts = line.split(URL_REGEX);
           return (
