@@ -78,11 +78,7 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
       {isImageModalOpen && <ImageDisplayModal src={modalSrc} closeModal={closeImageModal} />}
       {isReplyModalOpen && <AddReplyModal closeModal={handleReplyModalToggle} postId={post.id} />}
       <div className='mb-2 flex items-center justify-start'>
-        <div
-          className='relative'
-          onMouseEnter={() => setShowProfilePreview(true)}
-          onMouseLeave={() => setShowProfilePreview(false)}
-        >
+        <div className='flex items-center justify-center'>
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -92,8 +88,8 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
             <Image
               src={`${ICON_IMAGE_BASE_URL}${post.author.iconUrl}`}
               alt={post.author.name}
-              width={40}
-              height={40}
+              width={50}
+              height={50}
               className='min-h-10 min-w-10 rounded-full hover:opacity-80'
             />
           </button>
