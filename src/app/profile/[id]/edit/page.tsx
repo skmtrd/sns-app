@@ -4,6 +4,7 @@ import { ChangeAvatar } from '@/components/element/ChangeAvatar';
 import Header from '@/components/element/Header';
 import { TagPicker } from '@/components/element/TagPicker';
 import useUserInfo from '@/hooks/useUserInfo';
+import { ICON_IMAGE_BASE_URL } from '@/lib/constants';
 import { ProfileSchema } from '@/lib/schemas';
 import { Tag } from '@/lib/types';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -25,7 +26,7 @@ const formSchema = z.object({
     .string()
     .min(1, '自己紹介は必須です')
     .max(100, '自己紹介は100文字以内で入力してください'),
-  icon: z.custom<File>((value) => value instanceof File).optional(),
+  icon: z.union([z.custom<File>((value) => value instanceof File), z.string()]).optional(),
 });
 
 const tagFetcher = (url: string) =>
@@ -66,10 +67,6 @@ const ProfileEditForm = ({
       icon: userInfo.iconUrl,
     },
   });
-
-  // const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = (data) => {
-  //   alert(JSON.stringify(data));
-
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (data) => {
     console.log(data);
     const pathUserId = pathname.split('/profile/')[1].split('/')[0];
@@ -80,6 +77,8 @@ const ProfileEditForm = ({
     formData.append('introduction', data.introduction);
     if (data.icon instanceof File) {
       formData.append('icon', data.icon);
+    } else {
+      formData.append('iconUrl', userInfo.iconUrl);
     }
 
     const updatePromise = toast.promise(
@@ -136,8 +135,13 @@ const ProfileEditForm = ({
     }
   };
 
-  const onFileChange = async (file: File) => {
-    setValue('icon', file);
+  const onFileChange = async (file: File | null) => {
+    if (file) {
+      setValue('icon', file);
+    } else {
+      // ファイルが選択されていない場合、既存のアイコンURLを設定
+      setValue('icon', userInfo.iconUrl);
+    }
   };
 
   if (session?.user?.id !== pageclerkId) return <div>アクセス権がありません。</div>;
@@ -152,7 +156,11 @@ const ProfileEditForm = ({
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className='flex'>
-            <ChangeAvatar onFileChange={onFileChange} value={userInfo.iconUrl} className='mr-6' />
+            <ChangeAvatar
+              onFileChange={onFileChange}
+              value={`${ICON_IMAGE_BASE_URL}${userInfo.iconUrl}`}
+              className='mr-6'
+            />
             <div className='w-full space-y-4'>
               <div>
                 <label htmlFor='name' className='block text-sm font-medium text-gray-700'>

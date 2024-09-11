@@ -15,6 +15,7 @@ import KebabMenu from '../element/KebabMenu';
 import TextContent from '../element/TextContent';
 import UserTag from '../element/UserTag';
 import { AddReplyModal } from './AddReplyModal';
+
 type PostProps = {
   post: PostType;
   currentUserId: string;

@@ -66,9 +66,18 @@ export const PUT = async (req: Request, res: NextResponse) =>
     const name = formData.get('name') as string;
     const userId = formData.get('userId') as string;
     const introduction = formData.get('introduction') as string;
-    const icon = formData.get('icon') as File;
+    const icon = formData.get('icon') as File | null;
 
-    const { fileName: iconUrl } = await uploadIconImage(icon);
+    let iconUrl: string | null;
+    if (icon instanceof File) {
+      const { fileName } = await uploadIconImage(icon);
+      iconUrl = fileName;
+    } else {
+      const user = await prisma.user.findUnique({
+        where: { id: currentUserId },
+      });
+      iconUrl = user?.iconUrl ?? null;
+    }
 
     const isUserIdExists = await checkUserIdExists(userId, currentUserId);
     if (isUserIdExists) {
