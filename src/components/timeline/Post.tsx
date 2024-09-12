@@ -5,7 +5,7 @@ import { ICON_IMAGE_BASE_URL, POST_IMAGE_BASE_URL } from '@/lib/constants';
 import { Post as PostType } from '@/lib/types';
 import { Heart, MessageCircleReply, MoreVertical } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import KebabMenu from '../element/KebabMenu';
 import PostHeader from '../element/PostElement/PostHeader/PostHeader';
@@ -27,8 +27,6 @@ const REPLY_MAX_LENGTH = 500;
 
 export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserId }) => {
   const router = useRouter();
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const profilePreviewRef = useRef<HTMLDivElement>(null);
   const timeAgo = useRelativeTime(post.createdAt);
   const { likesCount, isLiked, isLiking, handleToggleLike } = usePostLike(
     post.likes,
@@ -36,7 +34,6 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
   );
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [showProfilePreview, setShowProfilePreview] = useState(false);
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
 
   const {
