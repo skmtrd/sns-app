@@ -23,15 +23,10 @@ type ReplyFormData = {
   content: string;
 };
 
-const REPLY_MAX_LENGTH = 500;
-
 export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserId }) => {
   const router = useRouter();
   const timeAgo = useRelativeTime(post.createdAt);
-  const { likesCount, isLiked, isLiking, handleToggleLike } = usePostLike(
-    post.likes,
-    currentUserId,
-  );
+  const { likesCount, isLiked, handleToggleLike } = usePostLike(post.likes, currentUserId);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);

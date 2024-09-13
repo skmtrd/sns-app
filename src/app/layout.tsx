@@ -6,9 +6,6 @@ import './globals.css';
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
-  // if (!session?.user?.id) {
-  //   return <div>Loading...</div>;
-  // }
   return (
     <SessionProvider session={session}>
       <html lang='ja'>
