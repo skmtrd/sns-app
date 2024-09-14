@@ -55,11 +55,14 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
         name={post.author.name}
         id={post.author.id}
       />
+      <div className='h-5' />
       <PostMain
         textContent={post.content}
         imageUrl={post.imageUrl ? `${POST_IMAGE_BASE_URL}${post.imageUrl}` : null}
       />
+      <div className='h-5' />
       <PostTags tags={post.author.tags || []} />
+      <div className='h-5' />
       <div className='relative mt-6 flex w-full items-center justify-between'>
         <div className='flex items-center justify-center gap-2'>
           <button

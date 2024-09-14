@@ -12,6 +12,7 @@ const PostMain: React.FC<Props> = ({ textContent, imageUrl }) => {
       <div className='flex w-full md:w-5/6'>
         <TextContent textContent={textContent} />
       </div>
+      <div className='h-6' />
       {imageUrl && <PostImage src={imageUrl} />}
     </div>
   );
