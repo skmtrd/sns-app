@@ -1,20 +1,16 @@
 'use client';
-import { usePostLike } from '@/hooks/Like/usePostLike';
-import { useImageModal } from '@/hooks/useImageModal';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
 import { ICON_IMAGE_BASE_URL, POST_IMAGE_BASE_URL } from '@/lib/constants';
 import { Post as PostType } from '@/lib/types';
-import { Heart, MessageCircleReply, MoreVertical } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { ImageDisplayModal } from '../element/ImageDisplayModal';
-import KebabMenu from '../element/KebabMenu';
-import TextContent from '../element/TextContent';
-import UserTag from '../element/UserTag';
+import PostBottomItems from '../element/PostElement/PostBottomItems/PostBottomItems';
+import PostHeader from '../element/PostElement/PostHeader/PostHeader';
+import PostMain from '../element/PostElement/PostMain/PostMain';
+import PostTags from '../element/PostElement/PostTags/PostTags';
 import { AddReplyModal } from './AddReplyModal';
+
 type PostProps = {
   post: PostType;
   currentUserId: string;
@@ -25,22 +21,12 @@ type ReplyFormData = {
   content: string;
 };
 
-const REPLY_MAX_LENGTH = 500;
-
 export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserId }) => {
   const router = useRouter();
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const profilePreviewRef = useRef<HTMLDivElement>(null);
   const timeAgo = useRelativeTime(post.createdAt);
-  const { likesCount, isLiked, isLiking, handleToggleLike } = usePostLike(
-    post.likes,
-    currentUserId,
-  );
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [showProfilePreview, setShowProfilePreview] = useState(false);
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
-  const { isImageModalOpen, modalSrc, openImageModal, closeImageModal } = useImageModal();
 
   const {
     register,
@@ -49,22 +35,6 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
     watch,
     reset,
   } = useForm<ReplyFormData>();
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false);
-      }
-      if (profilePreviewRef.current && !profilePreviewRef.current.contains(event.target as Node)) {
-        setShowProfilePreview(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
 
   const handleReplyModalToggle = () => {
     setIsReplyModalOpen(!isReplyModalOpen);
@@ -75,119 +45,29 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
       onClick={() => router.push(`/posts/${post.id}`)}
       className='w-11/12 rounded-lg bg-white p-4 shadow hover:bg-slate-50'
     >
-      {isImageModalOpen && <ImageDisplayModal src={modalSrc} closeModal={closeImageModal} />}
       {isReplyModalOpen && <AddReplyModal closeModal={handleReplyModalToggle} postId={post.id} />}
-      <div className='mb-2 flex items-center justify-start'>
-        <div
-          className='relative'
-          onMouseEnter={() => setShowProfilePreview(true)}
-          onMouseLeave={() => setShowProfilePreview(false)}
-        >
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              openImageModal(`${ICON_IMAGE_BASE_URL}${post.author.iconUrl}`);
-            }}
-          >
-            <Image
-              src={`${ICON_IMAGE_BASE_URL}${post.author.iconUrl}`}
-              alt={post.author.name}
-              width={40}
-              height={40}
-              className='min-h-10 min-w-10 rounded-full hover:opacity-80'
-            />
-          </button>
-        </div>
-        <div className='ml-2 w-full'>
-          <div className='flex w-full items-center justify-between'>
-            <div className='relative'>
-              <Link href={`/profile/${post.author.id}`} onClick={(e) => e.stopPropagation()}>
-                <div className='inline-block rounded-md hover:bg-gray-100'>
-                  <h3 className='break-words px-1 py-0.5 font-bold transition-colors duration-100 hover:text-blue-600'>
-                    {post.author.name}
-                  </h3>
-                </div>
-              </Link>
-            </div>
-            <p className='mr-1 whitespace-nowrap text-sm text-gray-500'>{timeAgo}</p>
-          </div>
-          <p className='px-1 py-0.5 text-xs text-gray-500'>@{post.author.id}</p>
-        </div>
-      </div>
-      <div className='mb-4' onClick={(e) => e.stopPropagation()}>
-        <TextContent textContent={post.content} />
-      </div>
-      <div className='flex flex-wrap gap-2'>
-        {post.author.tags &&
-          post.author.tags.map((tag) => (
-            <Link key={tag.id} href={`/timeline/${tag.id}`} onClick={(e) => e.stopPropagation()}>
-              <UserTag tagName={tag.name} />
-            </Link>
-          ))}
-      </div>
-      {post.imageUrl && (
-        <div className='flex w-full items-center justify-center object-contain'>
-          <div className='w-full md:w-9/12'>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                openImageModal(`${POST_IMAGE_BASE_URL}${post.imageUrl}`);
-              }}
-            >
-              <Image
-                style={{ width: '100%', borderRadius: 10 }}
-                src={`${POST_IMAGE_BASE_URL}${post.imageUrl}`}
-                alt='ポストの画像'
-                width={1000}
-                height={1000}
-                quality={100}
-              />
-            </button>
-          </div>
-        </div>
-      )}
-      <div className='relative mt-6 flex w-full items-center justify-between'>
-        <div className='flex items-center justify-center gap-2'>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleReplyModalToggle();
-            }}
-            className='flex items-center justify-center rounded-full bg-blue-400 px-4 py-2 text-white transition-all hover:bg-blue-600 hover:shadow-lg'
-          >
-            <MessageCircleReply size={20} />
-            <span className='ml-1'>
-              {post.replies.filter((reply) => reply.parentReplyId === null).length}
-            </span>
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleToggleLike(post.id);
-            }}
-          >
-            <Heart size={20} color={'#dc143c'} fill={isLiked ? '#dc143c' : 'white'} />
-          </button>
-          <span>{likesCount}</span>
-        </div>
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsDropdownOpen(!isDropdownOpen);
-          }}
-          className='text-gray-500 hover:text-gray-700'
-        >
-          <MoreVertical size={20} fill='red' />
-        </button>
-        {isDropdownOpen && (
-          <KebabMenu
-            currentUserId={currentUserId}
-            authorUserId={post.author.id}
-            contentId={post.id}
-            handleDelete={handleDeletePost}
-          />
-        )}
-      </div>
+      <PostHeader
+        src={`${ICON_IMAGE_BASE_URL}${post.author.iconUrl}`}
+        timeAgo={timeAgo}
+        name={post.author.name}
+        id={post.author.id}
+      />
+      <div className='h-5' />
+      <PostMain
+        textContent={post.content}
+        imageUrl={post.imageUrl ? `${POST_IMAGE_BASE_URL}${post.imageUrl}` : null}
+      />
+      <div className='h-5' />
+      <PostTags tags={post.author.tags || []} />
+      <div className='h-5' />
+      <PostBottomItems
+        replies={post.replies}
+        postId={post.id}
+        currentUserId={currentUserId}
+        postAuthorId={post.author.id}
+        handleDeletePost={handleDeletePost}
+        likes={post.likes}
+      />
     </div>
   );
 };

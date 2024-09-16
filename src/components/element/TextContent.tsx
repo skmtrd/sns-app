@@ -15,7 +15,7 @@ const TextContent = ({ textContent }: { textContent: string }) => {
   const sanitizedText = DOMPurify.sanitize(textContent);
   const lines: string[] = sanitizedText.split('\n');
   return (
-    <span>
+    <span className='w-full'>
       <span className='break-words text-xl' onClick={(e) => e.stopPropagation()}>
         {lines.map((line, lineIndex) => {
           const parts = line.split(URL_REGEX);
