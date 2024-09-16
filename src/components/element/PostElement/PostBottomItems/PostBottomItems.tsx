@@ -1,3 +1,4 @@
+import { AddReplyModal } from '@/components/timeline/AddReplyModal';
 import { usePostLike } from '@/hooks/Like/usePostLike';
 import { Like, Reply } from '@/lib/types';
 import { Heart, MessageCircleReply, MoreVertical } from 'lucide-react';
@@ -36,12 +37,10 @@ const PostBottomItems: React.FC<PostBottomItemsProps> = ({
 
   return (
     <div className='relative flex w-full items-center justify-between'>
-      <div className='flex items-center justify-center gap-2'>
+      {isReplyModalOpen && <AddReplyModal closeModal={handleToggleReplyModal} postId={postId} />}
+      <div onClick={(e) => e.stopPropagation()} className='flex items-center justify-center gap-2'>
         <button
-          onClick={(e) => {
-            e.stopPropagation();
-            handleToggleReplyModal();
-          }}
+          onClick={() => handleToggleReplyModal()}
           className='flex items-center justify-center rounded-full bg-blue-400 px-4 py-2 text-white transition-all hover:bg-blue-600 hover:shadow-lg'
         >
           <MessageCircleReply size={20} />
