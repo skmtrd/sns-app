@@ -70,9 +70,9 @@ const SideBar = () => {
         <Link
           key={page}
           href={page}
-          className={`mb-2 flex w-full items-center justify-center rounded px-6 py-1 font-bold transition-colors duration-200 ${
+          className={`flex w-full items-center justify-center rounded px-6 py-1 font-bold transition-colors duration-200 ${
             isActive(page) ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100 hover:text-blue-600'
-          } xl:mb-4 xl:justify-start xl:px-4 xl:py-2`}
+          } xl:justify-start xl:px-4 xl:py-2`}
         >
           <div className='flex size-10 items-center justify-center'>
             <Icon size={24} />
@@ -80,14 +80,13 @@ const SideBar = () => {
           <span className='hidden xl:ml-3 xl:inline'>{label}</span>
         </Link>
       ))}
-      <div className='mt-4'></div>
       {navItems2.map(({ page, label, icon: Icon }) => (
         <Link
           key={page}
           href={page}
-          className={`mb-2 flex w-full items-center justify-center rounded px-6 py-1 font-bold transition-colors duration-200 ${
+          className={`flex w-full items-center justify-center rounded px-6 py-1 font-bold transition-colors duration-200 ${
             isActive(page) ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100 hover:text-blue-600'
-          } xl:mb-4 xl:justify-start xl:px-4 xl:py-2`}
+          } xl:justify-start xl:px-4 xl:py-2`}
         >
           <div className='flex size-10 items-center justify-center'>
             <Icon size={24} />
