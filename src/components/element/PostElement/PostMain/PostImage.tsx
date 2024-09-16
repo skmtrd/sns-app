@@ -6,7 +6,7 @@ const PostImage = ({ src }: { src: string }) => {
   return (
     <div className='flex w-full items-center justify-center object-contain'>
       {isImageModalOpen && <ImageDisplayModal src={modalSrc} closeModal={closeImageModal} />}
-      <div className='w-full md:w-9/12'>
+      <div className='flex w-full items-center justify-center md:w-9/12'>
         <button
           onClick={(e) => {
             e.stopPropagation();

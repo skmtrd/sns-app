@@ -35,7 +35,7 @@ const PostBottomItems: React.FC<PostBottomItemsProps> = ({
   };
 
   return (
-    <div className='relative mt-6 flex w-full items-center justify-between'>
+    <div className='relative flex w-full items-center justify-between'>
       <div className='flex items-center justify-center gap-2'>
         <button
           onClick={(e) => {

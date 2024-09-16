@@ -8,8 +8,8 @@ type Props = {
 
 const PostMain: React.FC<Props> = ({ textContent, imageUrl }) => {
   return (
-    <div className='flex w-full flex-col items-center'>
-      <div className='flex w-full md:w-5/6'>
+    <div className='flex w-full flex-col items-center justify-center'>
+      <div className='flex w-full items-center justify-center md:w-5/6'>
         <TextContent textContent={textContent} />
       </div>
       <div className='h-6' />
