@@ -1,7 +1,8 @@
 'use client';
 import { cn } from '@/lib/utils';
-import { X } from 'lucide-react';
-import React, { useEffect } from 'react';
+import { ImageIcon, X } from 'lucide-react';
+import Image from 'next/image';
+import React, { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useSWRConfig } from 'swr';
 
@@ -14,12 +15,15 @@ type FormInputs = {
   description: string;
   deadlineDate: string;
   deadlineTime: string;
+  image?: FileList;
 };
 
 const MAX_TITLE_LENGTH = 20;
 const MAX_DESCRIPTION_LENGTH = 500;
 
 export const AddAssignment: React.FC<AddAssignmentProps> = ({ closeModal }) => {
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+
   const { mutate } = useSWRConfig();
   const {
     register,
@@ -37,6 +41,7 @@ export const AddAssignment: React.FC<AddAssignmentProps> = ({ closeModal }) => {
 
   const title = watch('title');
   const description = watch('description');
+  const image = watch('image');
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     clearErrors();
@@ -208,7 +213,21 @@ export const AddAssignment: React.FC<AddAssignmentProps> = ({ closeModal }) => {
                 )}
               </div>
             </div>
-
+            <div className='flex items-center gap-2'>
+              <label htmlFor='image' className='cursor-pointer'>
+                <ImageIcon size={24} className='text-gray-500' />
+              </label>
+              <input
+                type='file'
+                id='image'
+                accept='image/*'
+                {...register('image')}
+                className='hidden'
+              />
+              {previewImage && (
+                <Image src={previewImage} alt='image preview' height={100} width={100} />
+              )}
+            </div>
             <button
               type='submit'
               className={cn(
