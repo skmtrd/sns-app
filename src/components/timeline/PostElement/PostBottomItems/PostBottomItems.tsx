@@ -1,9 +1,9 @@
+import KebabMenu from '@/components/element/KebabMenu';
 import { AddReplyModal } from '@/components/timeline/AddReplyModal';
 import { usePostLike } from '@/hooks/Like/usePostLike';
 import { Like, Reply } from '@/lib/types';
 import { Heart, MessageCircleReply, MoreVertical } from 'lucide-react';
 import { useState } from 'react';
-import KebabMenu from '../../KebabMenu';
 
 type PostBottomItemsProps = {
   replies: Reply[];

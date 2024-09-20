@@ -1,6 +1,6 @@
+import UserTag from '@/components/element/UserTag';
 import { Tag } from '@/lib/types';
 import Link from 'next/link';
-import UserTag from '../../UserTag';
 
 const PostTags = ({ tags }: { tags: Tag[] }) => {
   return (
