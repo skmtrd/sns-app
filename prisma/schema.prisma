@@ -192,6 +192,7 @@ model Assignment {
   title     String 
   description String @db.Text
   deadLine  String 
+  imageUrl  String?
   likes Like[] 
   replies   AssignmentReply[]
   author    User     @relation(fields: [authorId], references: [id]) 
