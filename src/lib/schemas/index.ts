@@ -59,7 +59,7 @@ export const AssignmentSchema = z.object({
   author: authorSchema,
   authorId: z.string(),
   createdAt: z.string(),
-  // avatar: z.string().nullable(),
+  imageUrl: z.string().nullable(),
   likes: z.array(z.object({ user: userSchema })),
   replies: z.array(ReplySchema),
 });
