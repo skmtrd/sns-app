@@ -1,4 +1,4 @@
-import TextContent from '../../TextContent';
+import TextContent from '@/components/element/TextContent';
 import PostImage from './PostImage';
 
 type Props = {
