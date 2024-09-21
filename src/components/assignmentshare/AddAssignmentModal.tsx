@@ -41,11 +41,16 @@ export const AddAssignment: React.FC<AddAssignmentProps> = ({ closeModal }) => {
 
   const title = watch('title');
   const description = watch('description');
+
   const image = watch('image');
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     clearErrors();
+    const formData = new FormData();
 
+    if (image && image.length > 0) {
+      formData.append('image', image[0]);
+    }
     const deadlineDateTime = `${data.deadlineDate}/${data.deadlineTime}`;
 
     console.log(deadlineDateTime);
