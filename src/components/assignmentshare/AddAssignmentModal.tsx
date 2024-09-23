@@ -41,7 +41,6 @@ export const AddAssignment: React.FC<AddAssignmentProps> = ({ closeModal }) => {
 
   const title = watch('title');
   const description = watch('description');
-  const deadlineDate = watch('deadlineDate');
 
   const image = watch('image');
   useEffect(() => {
