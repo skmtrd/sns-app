@@ -1,13 +1,15 @@
 import TextContent from '@/components/element/TextContent';
-
+import AssignmentImage from './AssignmentImage';
 const AssignmentPostMain = ({
   deadlineContent,
   limited,
   description,
+  imageUrl,
 }: {
   deadlineContent: string;
   limited: string;
   description: string;
+  imageUrl: string | null;
 }) => {
   return (
     <div className='items-center text-sm'>
@@ -21,6 +23,7 @@ const AssignmentPostMain = ({
           <p className='text-base font-bold text-red-500'>あと{limited}</p>
         )}
       </div>
+      {imageUrl && <AssignmentImage src={imageUrl} />}
     </div>
   );
 };

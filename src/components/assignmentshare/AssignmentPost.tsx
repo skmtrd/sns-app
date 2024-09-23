@@ -42,10 +42,9 @@ const AssignmentPost = ({
         deadlineContent={deadlineContent}
         limited={limited}
         description={assignment.description}
+        imageUrl={assignment.imageUrl ? `${POST_IMAGE_BASE_URL}${assignment.imageUrl}` : null}
       />
-      {assignment.imageUrl && (
-        <Image src={`${POST_IMAGE_BASE_URL}${assignment.imageUrl}`} alt='課題画像' width={300} height={300} layout="intrinsic" />
-      )}
+
       <div className='h-5' />
       <AssignmentPostBottomItems
         currentUserId={currentUserId}
