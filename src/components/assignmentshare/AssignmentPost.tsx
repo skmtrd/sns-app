@@ -5,8 +5,7 @@ import { useState } from 'react';
 import AssignmentPostBottomItems from './AssignmentPostElements/AssignmentPostButtonItems/AssignmentPostBottomItems';
 import AssignmentPostHeader from './AssignmentPostElements/AssignmentPostHeader/AssignmentPostHeader';
 import AssignmentPostMain from './AssignmentPostElements/AssignmentPostMain/AssignmentPostMain';
-import Image from 'next/image';
-import { POST_IMAGE_BASE_URL } from '@/lib/constants';
+import { ASSIGNMENT_IMAGE_BASE_URL } from '@/lib/constants';
 
 type AssignmentPostProps = {
   assignment: Assignment;
@@ -42,7 +41,7 @@ const AssignmentPost = ({
         deadlineContent={deadlineContent}
         limited={limited}
         description={assignment.description}
-        imageUrl={assignment.imageUrl ? `${POST_IMAGE_BASE_URL}${assignment.imageUrl}` : null}
+        imageUrl={assignment.imageUrl ? `${ASSIGNMENT_IMAGE_BASE_URL}${assignment.imageUrl}` : null}
       />
 
       <div className='h-5' />

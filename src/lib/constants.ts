@@ -3,3 +3,6 @@ export const ICON_IMAGE_BASE_URL =
 
 export const POST_IMAGE_BASE_URL =
   'https://kaoygtesdxkfdiyctlnk.supabase.co/storage/v1/object/public/post-images/';
+
+export const ASSIGNMENT_IMAGE_BASE_URL =
+  'https://kaoygtesdxkfdiyctlnk.supabase.co/storage/v1/object/public/assignment-images/';

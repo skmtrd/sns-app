@@ -3,7 +3,7 @@ import { dbConnect } from '../lib/dbConnect';
 import { getUserId } from '../lib/getUserId';
 import { handleAPIError } from '../lib/handleAPIError';
 import prisma from '../lib/prisma';
-import { uploadPostImage } from '../lib/uploadImage/uploadPostImage';
+import { uploadAssignmentImage } from '../lib/uploadImage/uploadAssignmentImage';
 import { findSpecificUser } from '../lib/user/findSpecificUser';
 import { apiRes } from '../types';
 
@@ -46,7 +46,7 @@ export const POST = async (req: Request, res: NextResponse) =>
     const description = formData.get('description') as string;
     const deadLine = formData.get('deadLine') as string;
 
-    const { fileName: imageUrl } = await uploadPostImage(image);
+    const { fileName: imageUrl } = await uploadAssignmentImage(image);
 
     const userId = await getUserId();
     if (!userId) {
