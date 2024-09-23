@@ -41,6 +41,9 @@ const AssignmentPost = ({
         limited={limited}
         description={assignment.description}
       />
+      {assignment.imageUrl && (
+        <img src={assignment.imageUrl} alt='課題画像' width={300} height={300} />
+      )}
       <div className='h-5' />
       <AssignmentPostBottomItems
         currentUserId={currentUserId}
