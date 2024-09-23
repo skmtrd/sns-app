@@ -5,7 +5,7 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const useData = <T>(url: string, schema: ZodType<T>) => {
   const { data, error, isLoading } = useSWR(url, fetcher, {
-    refreshInterval: 20000,
+    refreshInterval: 10000,
     revalidateOnFocus: true,
   });
 

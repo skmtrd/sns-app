@@ -38,6 +38,12 @@ const SideBar = () => {
   const { data: session } = useSession();
   const userId = session?.user?.id;
 
+  const [activePage, setActivePage] = useState<string | null>(pathname);
+
+  const handlePageChange = (page: string) => {
+    setActivePage(page);
+  };
+
   const navItems1: NavItem[] = [
     { page: '/timeline/all', label: 'タイムライン', icon: Home },
     { page: '/assignmentshare/all', label: '課題共有', icon: ClipboardList },
@@ -51,13 +57,6 @@ const SideBar = () => {
     { page: '/bookmarks', label: 'ブックマークした質問', icon: BookMarked },
   ];
 
-  const isActive = (page: string) => {
-    if (page === '/timeline/all') {
-      return pathname === page || pathname.startsWith('/timeline');
-    }
-    return pathname === page || pathname.startsWith(page);
-  };
-
   return (
     <div className='z-20 flex w-16 flex-col items-center overflow-y-auto overflow-x-hidden border-r border-gray-200 bg-white p-4 transition-all duration-300 ease-in-out xl:w-80'>
       {isPostModalOpen && <AddPost closeModal={handleTogglePostModal} />}
@@ -70,8 +69,11 @@ const SideBar = () => {
         <Link
           key={page}
           href={page}
+          onClick={() => handlePageChange(page)}
           className={`flex w-full items-center justify-center rounded px-6 py-1 font-bold transition-colors duration-200 ${
-            isActive(page) ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100 hover:text-blue-600'
+            activePage === page
+              ? 'bg-blue-100 text-blue-600'
+              : 'hover:bg-gray-100 hover:text-blue-600'
           } xl:justify-start xl:px-4 xl:py-2`}
         >
           <div className='flex size-10 items-center justify-center'>
@@ -84,8 +86,11 @@ const SideBar = () => {
         <Link
           key={page}
           href={page}
+          onClick={() => handlePageChange(page)}
           className={`flex w-full items-center justify-center rounded px-6 py-1 font-bold transition-colors duration-200 ${
-            isActive(page) ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100 hover:text-blue-600'
+            activePage === page
+              ? 'bg-blue-100 text-blue-600'
+              : 'hover:bg-gray-100 hover:text-blue-600'
           } xl:justify-start xl:px-4 xl:py-2`}
         >
           <div className='flex size-10 items-center justify-center'>

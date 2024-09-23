@@ -41,8 +41,21 @@ export const AddAssignment: React.FC<AddAssignmentProps> = ({ closeModal }) => {
 
   const title = watch('title');
   const description = watch('description');
+  const deadlineDate = watch('deadlineDate');
 
   const image = watch('image');
+  useEffect(() => {
+    if (image && image.length > 0) {
+      const file = image[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setPreviewImage(null);
+    }
+  }, [image]);
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
     clearErrors();
@@ -54,22 +67,18 @@ export const AddAssignment: React.FC<AddAssignmentProps> = ({ closeModal }) => {
     const deadlineDateTime = `${data.deadlineDate}/${data.deadlineTime}`;
 
     console.log(deadlineDateTime);
+    formData.append('title', data.title);
+    formData.append('description', data.description);
+    formData.append('deadLine', deadlineDateTime);
 
-    const newAssignment = {
-      title: data.title,
-      description: data.description,
-      deadLine: deadlineDateTime,
-    };
 
-    console.log(newAssignment);
+    // console.log(newAssignment);
 
     try {
       const response = await fetch('/api/assignment', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newAssignment),
+
+        body: formData,
       });
 
       if (!response.ok) {

@@ -1,6 +1,6 @@
+import { ImageDisplayModal } from '@/components/element/ImageDisplayModal';
 import { useImageModal } from '@/hooks/useImageModal';
 import Image from 'next/image';
-import { ImageDisplayModal } from '../../ImageDisplayModal';
 const PostIcon = ({ src }: { src: string }) => {
   const { isImageModalOpen, modalSrc, openImageModal, closeImageModal } = useImageModal();
   return (
