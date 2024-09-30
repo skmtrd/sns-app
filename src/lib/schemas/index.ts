@@ -8,6 +8,9 @@ const tagSchema = z.object({
 export const userSchema = z.object({
   id: z.string(),
   name: z.string(),
+  email: z.string().email(),
+  emailVerified: z.date().nullable(),
+  image: z.string().nullable(),
 });
 
 const authorSchema = userSchema.extend({
@@ -19,7 +22,7 @@ const authorSchema = userSchema.extend({
 export const ReplySchema = z.object({
   id: z.string(),
   content: z.string(),
-  createdAt: z.string(),
+  createdAt: z.date(),
   parentReplyId: z.string().nullable(),
   author: authorSchema,
 });
@@ -33,10 +36,11 @@ export const PostSchema = z.object({
   content: z.string(),
   imageUrl: z.string().nullable(),
   authorId: z.string(),
-  createdAt: z.string(),
+  createdAt: z.date(),
   author: authorSchema,
   likes: z.array(z.object({ user: userSchema })),
   replies: z.array(ReplySchema),
+  updatedAt: z.date(),
 });
 
 export const QuestionSchema = z.object({
@@ -45,8 +49,7 @@ export const QuestionSchema = z.object({
   description: z.string(),
   authorId: z.string(),
   author: authorSchema,
-  createdAt: z.string(),
-  // avatar: z.string().nullable(),
+  createdAt: z.date(),
   likes: z.array(z.object({ user: userSchema })),
   replies: z.array(ReplySchema),
 });
@@ -58,7 +61,7 @@ export const AssignmentSchema = z.object({
   deadLine: z.string(),
   author: authorSchema,
   authorId: z.string(),
-  createdAt: z.string(),
+  createdAt: z.date(),
   imageUrl: z.string().nullable(),
   likes: z.array(z.object({ user: userSchema })),
   replies: z.array(ReplySchema),

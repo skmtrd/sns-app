@@ -1,10 +1,13 @@
+'use client';
+
+import { scrollToTop } from '@/lib/scrollToTop';
+
 type TimeLineHeaderProps = {
   target: string | undefined | null;
   title: string;
-  scrollToTop: () => void;
 };
 
-const FixedHeader: React.FC<TimeLineHeaderProps> = ({ title, target, scrollToTop }) => {
+const FixedHeader: React.FC<TimeLineHeaderProps> = ({ title, target }) => {
   return (
     <div className='relative z-10 w-full'>
       <header className='fixed flex w-full items-center justify-between border-b border-gray-200 bg-white p-4'>

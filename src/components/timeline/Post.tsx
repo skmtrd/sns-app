@@ -30,7 +30,9 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
     <div className='w-11/12 rounded-lg bg-white p-4 shadow hover:bg-slate-50'>
       {isReplyModalOpen && <AddReplyModal closeModal={handleReplyModalToggle} postId={post.id} />}
       <PostHeader
-        src={`${ICON_IMAGE_BASE_URL}${post.author.iconUrl}`}
+        src={
+          post.author.iconUrl ? `${ICON_IMAGE_BASE_URL}${post.author.iconUrl}` : post.author.image
+        }
         timeAgo={timeAgo}
         name={post.author.name}
         id={post.author.id}
