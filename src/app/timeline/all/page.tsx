@@ -12,6 +12,7 @@ const TimelineAll = async () => {
       currentUserId={session?.user?.id ?? ''}
       title={'タイムライン'}
       target={'すべて'}
+      shouldPolling={true}
     />
   );
 };

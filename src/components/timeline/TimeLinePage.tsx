@@ -12,6 +12,7 @@ type TimeLinePageProps = {
   currentUserId: string;
   title: string;
   target: string | null;
+  shouldPolling: boolean;
 };
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -20,8 +21,9 @@ const TimeLinePage: React.FC<TimeLinePageProps> = ({
   currentUserId,
   title,
   target,
+  shouldPolling,
 }) => {
-  const { data, error, isLoading } = useSWR('getPosts', getPosts, {
+  const { data, error, isLoading } = useSWR(shouldPolling ? 'getPosts' : null, getPosts, {
     refreshInterval: 10000,
     fallback: initialPosts,
   });
