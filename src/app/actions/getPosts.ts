@@ -1,7 +1,7 @@
 'use server';
 
 import { PostSchema } from '@/lib/schemas';
-import prisma from './api/lib/prisma';
+import prisma from '../api/lib/prisma';
 
 export const getPosts = async () => {
   const posts = await prisma.post.findMany({

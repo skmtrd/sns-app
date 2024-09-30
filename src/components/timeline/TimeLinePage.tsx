@@ -1,10 +1,10 @@
 'use client';
 
-import { getPosts } from '@/app/actions';
-import { useDeletePost } from '@/hooks/DeleteContent/useDeletePost';
+import { getPosts } from '@/app/actions/getPosts';
 import { Post as PostType } from '@/lib/types';
 import useSWR from 'swr';
 import FixedHeader from '../layout/FixedHeader';
+import TimelineSkeltonLoading from '../loading/TimelineSkeltonLoading';
 import { Post } from './Post';
 
 type TimeLinePageProps = {
@@ -21,12 +21,13 @@ const TimeLinePage: React.FC<TimeLinePageProps> = ({
   title,
   target,
 }) => {
-  const { data, error, isLoading } = useSWR(['getPosts'], getPosts, {
+  const { data, error, isLoading } = useSWR('getPosts', getPosts, {
     refreshInterval: 10000,
+    fallback: initialPosts,
   });
-
   const posts = data || initialPosts;
-  const handleDeletePost = useDeletePost(posts);
+  if (!posts || isLoading)
+    return <TimelineSkeltonLoading title={'タイムライン'} subtitle={'すべて'} />;
   return (
     <div
       id='mainContent'
@@ -36,12 +37,7 @@ const TimeLinePage: React.FC<TimeLinePageProps> = ({
       <div className='mx-auto mt-10 w-full max-w-5xl py-8 sm:px-6 lg:px-8'>
         <div className='flex flex-col items-center space-y-6'>
           {posts.map((post) => (
-            <Post
-              key={post.id}
-              handleDeletePost={handleDeletePost}
-              currentUserId={currentUserId}
-              post={post}
-            />
+            <Post key={post.id} currentUserId={currentUserId} post={post} />
           ))}
         </div>
       </div>

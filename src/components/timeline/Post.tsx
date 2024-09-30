@@ -2,9 +2,6 @@
 import { useRelativeTime } from '@/hooks/useRelativeTime';
 import { ICON_IMAGE_BASE_URL, POST_IMAGE_BASE_URL } from '@/lib/constants';
 import { Post as PostType } from '@/lib/types';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { AddReplyModal } from './AddReplyModal';
 import PostBottomItems from './PostElement/PostBottomItems/PostBottomItems';
 import PostHeader from './PostElement/PostHeader/PostHeader';
 import PostMain from './PostElement/PostMain/PostMain';
@@ -13,25 +10,20 @@ import PostTags from './PostElement/PostTags/PostTags';
 type PostProps = {
   post: PostType;
   currentUserId: string;
-  handleDeletePost: Promise<(postId: string) => Promise<void>>;
 };
 
-export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserId }) => {
-  const router = useRouter();
+export const Post: React.FC<PostProps> = ({ post, currentUserId }) => {
   const timeAgo = useRelativeTime(post.createdAt);
-
-  const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
-
-  const handleReplyModalToggle = () => {
-    setIsReplyModalOpen(!isReplyModalOpen);
-  };
 
   return (
     <div className='w-11/12 rounded-lg bg-white p-4 shadow hover:bg-slate-50'>
-      {isReplyModalOpen && <AddReplyModal closeModal={handleReplyModalToggle} postId={post.id} />}
       <PostHeader
         src={
-          post.author.iconUrl ? `${ICON_IMAGE_BASE_URL}${post.author.iconUrl}` : post.author.image
+          post.author.iconUrl
+            ? `${ICON_IMAGE_BASE_URL}${post.author.iconUrl}`
+            : post.author.image
+              ? post.author.image
+              : ''
         }
         timeAgo={timeAgo}
         name={post.author.name}
@@ -50,7 +42,6 @@ export const Post: React.FC<PostProps> = ({ handleDeletePost, post, currentUserI
         postId={post.id}
         currentUserId={currentUserId}
         postAuthorId={post.author.id}
-        handleDeletePost={handleDeletePost}
         likes={post.likes}
       />
     </div>

@@ -1,4 +1,4 @@
-import { getPosts } from '@/app/actions';
+import { getPosts } from '@/app/actions/getPosts';
 import TimeLinePage from '@/components/timeline/TimeLinePage';
 import { auth } from '../../../../auth';
 

@@ -1,7 +1,7 @@
 import { formatTime } from '@/lib/formatTime';
 import { useEffect, useState } from 'react';
 
-export const useRelativeTime = (timestamp: string): string => {
+export const useRelativeTime = (timestamp: Date): string => {
   const [relativeTime, setRelativeTime] = useState<string>('');
 
   useEffect(() => {
