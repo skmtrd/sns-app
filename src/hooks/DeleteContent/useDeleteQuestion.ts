@@ -1,27 +1,24 @@
-import { useSWRConfig } from 'swr';
-import { deleteQuestion } from '../../lib/deleteRequests';
-import { Question } from '../../lib/types';
+import { getQuestions } from '@/app/actions/getQuestions';
+import { deleteQuestion } from '@/lib/deleteRequests';
+import useSWR from 'swr';
 
-export const useDeleteQuestion = async (questions: Question[]) => {
-  const { mutate } = useSWRConfig();
+export const useDeleteQuestion = async () => {
+  const { data: questions, mutate } = useSWR('getQuestions', getQuestions);
   const handleDeleteQuestion = async (questionId: string) => {
+    if (!questions) return;
     const optimisticData = questions.filter((question) => question.id !== questionId);
     try {
       await mutate(
-        '/api/question',
         async () => {
           await deleteQuestion(questionId);
           return optimisticData;
         },
         {
           optimisticData,
-          revalidate: false,
-          populateCache: true,
-          rollbackOnError: true,
         },
       );
     } catch (error) {
-      console.error('Failed to delete post:', error);
+      console.error('Failed to delete question:', error);
     }
   };
   return handleDeleteQuestion;

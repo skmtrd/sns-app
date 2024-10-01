@@ -1,5 +1,6 @@
 'use client';
 
+import { useDeleteQuestion } from '@/hooks/DeleteContent/useDeleteQuestion';
 import { useQuestionLike } from '@/hooks/Like/useQuestionLike';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
 import { Question } from '@/lib/types';
@@ -20,7 +21,6 @@ import QuestionReplies from './QuestionReplies';
 
 type QuestionPostProps = {
   question: Question;
-  handleDeletePost: Promise<(questionId: string) => Promise<void>>;
   currentUserId: string;
 };
 
@@ -28,11 +28,7 @@ type ReplyFormData = {
   content: string;
 };
 
-const QuestionPost: React.FC<QuestionPostProps> = ({
-  question,
-  handleDeletePost,
-  currentUserId,
-}) => {
+const QuestionPost: React.FC<QuestionPostProps> = ({ question, currentUserId }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isReplyDrawerOpen, setIsReplyDrawerOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -45,6 +41,8 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
     question.likes,
     currentUserId,
   );
+
+  const handleDeleteQuestion = useDeleteQuestion();
 
   const {
     register,
@@ -165,7 +163,7 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
                       currentUserId={currentUserId}
                       authorUserId={question.author.id}
                       contentId={question.id}
-                      handleDelete={handleDeletePost}
+                      handleDelete={handleDeleteQuestion}
                     />
                   )}
                 </div>
@@ -211,7 +209,7 @@ const QuestionPost: React.FC<QuestionPostProps> = ({
               contentId={question.id}
               currentUserId={currentUserId}
               authorUserId={question.author.id}
-              handleDelete={handleDeletePost}
+              handleDelete={handleDeleteQuestion}
             />
           )}
         </div>
