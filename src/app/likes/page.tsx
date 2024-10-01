@@ -14,7 +14,7 @@ const Likes = async () => {
       initialPosts={likedPosts}
       currentUserId={session?.user?.id ?? ''}
       title={'いいねしたポスト一覧'}
-      target={null}
+      target={'いいね'}
       shouldPolling={false}
     />
   );

@@ -1,8 +1,7 @@
 'use client';
 
-import { getAssignments } from '@/app/actions/getAssignmnets';
+import { useGetAssignment } from '@/hooks/SWR/useGetAssignment';
 import { Assignment } from '@/lib/types';
-import useSWR from 'swr';
 import FixedHeader from '../layout/FixedHeader';
 import QuestionSkeltonLoading from '../loading/QuestionSkeltonLoading';
 import AssignmentPost from './AssignmentPost';
@@ -22,14 +21,7 @@ const AssignmnetSharePage: React.FC<AssignmnetSharePageProps> = ({
   target,
   shouldPolling,
 }) => {
-  const { data, error, isLoading } = useSWR(
-    shouldPolling ? 'getAssignments' : null,
-    getAssignments,
-    {
-      refreshInterval: 10000,
-      fallback: initialAssignments,
-    },
-  );
+  const { data, error, isLoading } = useGetAssignment(shouldPolling, initialAssignments);
   const assignments = data || initialAssignments;
   if (!assignments || isLoading)
     return <QuestionSkeltonLoading title={'課題共有'} subtitle={'すべて'} />;

@@ -1,8 +1,7 @@
 'use client';
 
-import { getPosts } from '@/app/actions/getPosts';
+import { useGetPosts } from '@/hooks/SWR/useGetPosts';
 import { Post as PostType } from '@/lib/types';
-import useSWR from 'swr';
 import FixedHeader from '../layout/FixedHeader';
 import TimelineSkeltonLoading from '../loading/TimelineSkeltonLoading';
 import { Post } from './Post';
@@ -23,10 +22,7 @@ const TimeLinePage: React.FC<TimeLinePageProps> = ({
   target,
   shouldPolling,
 }) => {
-  const { data, error, isLoading } = useSWR(shouldPolling ? 'getPosts' : null, getPosts, {
-    refreshInterval: 10000,
-    fallback: initialPosts,
-  });
+  const { data, error, isLoading } = useGetPosts(shouldPolling, initialPosts);
   const posts = data || initialPosts;
   if (!posts || isLoading)
     return <TimelineSkeltonLoading title={'タイムライン'} subtitle={'すべて'} />;
