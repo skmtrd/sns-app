@@ -2,12 +2,10 @@
 import { useImageModal } from '@/hooks/useImageModal';
 import { ICON_IMAGE_BASE_URL } from '@/lib/constants';
 import { ProfileSchema, SessionSchema } from '@/lib/schemas';
-import { Tag } from '@prisma/client';
 import Image from 'next/image';
 import { z } from 'zod';
 import Button from '../element/Button';
 import { ImageDisplayModal } from '../element/ImageDisplayModal';
-import UserTag from '../element/UserTag';
 
 type userInfo = z.infer<typeof ProfileSchema>;
 type session = z.infer<typeof SessionSchema>;
@@ -19,46 +17,51 @@ const ProfileCard = ({ userInfo, session }: { userInfo: userInfo; session: sessi
     : userInfo.image
       ? userInfo.image
       : '';
+  // <button
+  //       onClick={(e) => {
+  //         e.stopPropagation();
+  //         openImageModal(imageUrl);
+  //       }}
+  //     >
+  //       <Image
+  //         src={imageUrl}
+  //         alt={`${userInfo.name}のアバター`}
+  //         width={150}
+  //         height={150}
+  //         className='min-h-10 min-w-10 rounded-full'
+  //       />
+  //     </button>
   return (
     <div className='mx-2 mb-8 rounded-lg bg-white p-6 shadow sm:p-8'>
       {isImageModalOpen && <ImageDisplayModal src={modalSrc} closeModal={closeImageModal} />}
-      <div className='mb-6 flex flex-col items-center sm:flex-row sm:items-start'>
-        <div className='mb-4 sm:mb-0 sm:mr-6'>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              openImageModal(imageUrl);
-            }}
-          >
-            <Image
-              src={imageUrl}
-              alt={`${userInfo.name}のアバター`}
-              width={120}
-              height={120}
-              className='rounded-full'
-            />
-          </button>
-        </div>
-        <div className='flex-1 text-center sm:text-left'>
-          <h1 className='mb-2 text-4xl font-bold text-gray-900 sm:text-3xl'>{userInfo?.name}</h1>
-          <p className='mb-2 text-base text-gray-500 sm:text-lg'>@{userInfo?.id}</p>
-          <p className='mb-4 break-words text-base text-gray-700 sm:text-lg'>
-            {userInfo?.introduction}
-          </p>
-          <div className='mb-4'>
-            <div className='flex flex-wrap gap-2'>
-              {userInfo?.tags && userInfo?.tags.length > 0 ? (
-                userInfo?.tags.map((tag: Tag) => <UserTag key={tag.id} tagName={tag.name} />)
-              ) : (
-                <p className='text-base text-gray-500'>タグが設定されていません</p>
-              )}
-            </div>
+      <div className='flex flex-col gap-6 sm:flex sm:flex-row sm:gap-10'>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            openImageModal(imageUrl);
+          }}
+          className='size-36'
+        >
+          <Image
+            src={imageUrl}
+            alt={`${userInfo.name}のアバター`}
+            width={144}
+            height={144}
+            className='min-h-36 min-w-36 rounded-full'
+          />
+        </button>
+        <div className='flex max-w-full grow flex-col justify-evenly gap-3 sm:gap-0'>
+          <div>
+            <p className='text-2xl font-bold'>{userInfo.name}</p>
+            <p className='text-gray-500'>@{userInfo.id}</p>
           </div>
+          <div className='max-w-full break-words'>{userInfo.introduction}</div>
         </div>
       </div>
+
       {session.id === userInfo.id && (
-        <div className='flex w-full justify-center sm:justify-end'>
-          <Button title={'プロフィール編集'} href={`${userInfo.id}/edit`} />
+        <div className='flex w-full justify-end'>
+          <Button title={'編集'} href={`${userInfo.id}/edit`} />
         </div>
       )}
     </div>
