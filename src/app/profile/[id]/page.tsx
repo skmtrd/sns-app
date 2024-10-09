@@ -7,19 +7,9 @@ import ProfileSkeltonLoading from '@/components/loading/ProfileSkeltonLoading';
 import ProfileCard from '@/components/profile/ProfileCard';
 import ProfilePost from '@/components/profile/ProfilePost';
 
-const ProfilePage = async () => {
-  // const { data: session, update } = useSession();
-  //RSCでurlを取得するための処理
-
-  const userInfo = await getUserInfo('cm1oarj240000lge0x1khwwh7');
+const ProfilePage = async ({ params }: { params: { id: string } }) => {
   const session = await getSession();
-  // const { isImageModalOpen, modalSrc, openImageModal, closeImageModal } = useImageModal();
-
-  // useEffect(() => {
-  //   update();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
-
+  const userInfo = await getUserInfo(params.id);
   if (!userInfo) {
     return <ProfileSkeltonLoading title={'プロフィール'} subtitle={''} />;
   }
@@ -31,7 +21,7 @@ const ProfilePage = async () => {
         <Toaster />
         <div className='mx-auto max-w-5xl py-8 sm:px-6 lg:px-8'>
           <ProfileCard userInfo={userInfo} session={session} />
-          <ProfilePost posts={userInfo.posts} currentUserId={'cm1oarj240000lge0x1khwwh7'} />
+          <ProfilePost posts={userInfo.posts} currentUserId={'session.id'} />
         </div>
       </main>
     </div>

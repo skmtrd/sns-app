@@ -1,7 +1,7 @@
 'use client';
 import { useImageModal } from '@/hooks/useImageModal';
 import { ICON_IMAGE_BASE_URL } from '@/lib/constants';
-import { ProfileSchema } from '@/lib/schemas';
+import { ProfileSchema, SessionSchema } from '@/lib/schemas';
 import { Tag } from '@prisma/client';
 import Image from 'next/image';
 import { z } from 'zod';
@@ -10,7 +10,7 @@ import { ImageDisplayModal } from '../element/ImageDisplayModal';
 import UserTag from '../element/UserTag';
 
 type userInfo = z.infer<typeof ProfileSchema>;
-type session = z.infer<typeof ProfileSchema>;
+type session = z.infer<typeof SessionSchema>;
 
 const ProfileCard = ({ userInfo, session }: { userInfo: userInfo; session: session }) => {
   const { isImageModalOpen, modalSrc, openImageModal, closeImageModal } = useImageModal();
@@ -40,7 +40,7 @@ const ProfileCard = ({ userInfo, session }: { userInfo: userInfo; session: sessi
           </button>
         </div>
         <div className='flex-1 text-center sm:text-left'>
-          <h1 className='mb-2 text-3xl font-bold text-gray-900 sm:text-4xl'>{userInfo?.name}</h1>
+          <h1 className='mb-2 text-4xl font-bold text-gray-900 sm:text-3xl'>{userInfo?.name}</h1>
           <p className='mb-2 text-base text-gray-500 sm:text-lg'>@{userInfo?.id}</p>
           <p className='mb-4 break-words text-base text-gray-700 sm:text-lg'>
             {userInfo?.introduction}
