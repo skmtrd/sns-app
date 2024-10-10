@@ -17,20 +17,6 @@ const ProfileCard = ({ userInfo, session }: { userInfo: userInfo; session: sessi
     : userInfo.image
       ? userInfo.image
       : '';
-  // <button
-  //       onClick={(e) => {
-  //         e.stopPropagation();
-  //         openImageModal(imageUrl);
-  //       }}
-  //     >
-  //       <Image
-  //         src={imageUrl}
-  //         alt={`${userInfo.name}のアバター`}
-  //         width={150}
-  //         height={150}
-  //         className='min-h-10 min-w-10 rounded-full'
-  //       />
-  //     </button>
   return (
     <div className='mx-2 mb-8 rounded-lg bg-white p-6 shadow sm:p-8'>
       {isImageModalOpen && <ImageDisplayModal src={modalSrc} closeModal={closeImageModal} />}

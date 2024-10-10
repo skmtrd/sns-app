@@ -35,7 +35,7 @@ const SideBar = () => {
   const handleToggleQuestionModal = () => setIsQuestionModalOpen(!isQuestionModalOpen);
   const handleToggleAssignmentModal = () => setIsAssignmentModalOpen(!isAssignmentModalOpen);
   const pathname = usePathname();
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const userId = session?.user?.id;
 
   const [activePage, setActivePage] = useState<string | null>(pathname);

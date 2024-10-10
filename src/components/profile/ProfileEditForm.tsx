@@ -4,6 +4,7 @@ import { ICON_IMAGE_BASE_URL } from '@/lib/constants';
 import { ProfileSchema } from '@/lib/schemas';
 import { Tag } from '@/lib/types';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast, { Toaster } from 'react-hot-toast';
@@ -33,6 +34,7 @@ type userInfo = z.infer<typeof ProfileSchema>;
 
 const ProfileEditForm = ({ userInfo }: { userInfo: userInfo }) => {
   const router = useRouter();
+  const { update } = useSession();
 
   const {
     register,
@@ -117,6 +119,7 @@ const ProfileEditForm = ({ userInfo }: { userInfo: userInfo }) => {
       console.error('Failed to update user info:', error);
       setError('root.error', { message: 'ユーザー情報の更新に失敗しました。' });
     }
+    update();
   };
 
   const onFileChange = async (file: File | null) => {
