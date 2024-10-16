@@ -1,16 +1,18 @@
 'use client';
 
 import { ICON_IMAGE_BASE_URL } from '@/lib/constants';
-import { ProfileSchema } from '@/lib/schemas';
+import { ProfileSchema, tagSchema } from '@/lib/schemas';
 import { Tag } from '@/lib/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import toast, { Toaster } from 'react-hot-toast';
 import { z } from 'zod';
 import { ChangeAvatar } from '../element/ChangeAvatar';
 import Header from '../element/Header';
+import { TagPicker } from '../element/TagPicker';
 
 const formSchema = z.object({
   name: z.string().min(1, '名前は必須です').max(20, '名前は20文字以内で入力してください'),
@@ -31,10 +33,16 @@ const formSchema = z.object({
 });
 
 type userInfo = z.infer<typeof ProfileSchema>;
+type tag = z.infer<typeof tagSchema>;
 
-const ProfileEditForm = ({ userInfo }: { userInfo: userInfo }) => {
+const ProfileEditForm = ({ userInfo, allTags }: { userInfo: userInfo; allTags: tag[] }) => {
+  const [updatedTags, setUpdatedTags] = useState<Tag[]>(userInfo.tags);
   const router = useRouter();
   const { update } = useSession();
+
+  const updateTags = (newTags: Tag[]) => {
+    setUpdatedTags(newTags);
+  };
 
   const {
     register,
@@ -84,8 +92,7 @@ const ProfileEditForm = ({ userInfo }: { userInfo: userInfo }) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            tagNames: userInfo?.tags.map((tag: Tag) => tag.name),
-            userId: userInfo.id,
+            tagNames: updatedTags.map((tag: Tag) => tag.name),
           }),
         });
 
@@ -197,9 +204,14 @@ const ProfileEditForm = ({ userInfo }: { userInfo: userInfo }) => {
               <p className='mt-2 text-sm text-red-500'>{errors.introduction.message}</p>
             )}
           </div>
-          {/* <div>
-            <TagPicker tags={tags} clerkId={clerkId} userInfo={userInfo} />
-          </div> */}
+          <div>
+            <TagPicker
+              userInfo={userInfo}
+              allTags={allTags}
+              updateTags={updateTags}
+              updatedTags={updatedTags}
+            />
+          </div>
           <button
             type='submit'
             className='mt-2 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-0 focus:ring-blue-500/50'

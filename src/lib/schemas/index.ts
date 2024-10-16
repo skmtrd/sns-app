@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const tagSchema = z.object({
+export const tagSchema = z.object({
   id: z.string(),
   name: z.string(),
 });
