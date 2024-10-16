@@ -1,18 +1,9 @@
-'use client';
-import TimelineSkeltonLoading from '@/components/loading/TimelineSkeltonLoading';
+import { getPosts } from '@/app/actions/getPosts';
 import TimeLinePage from '@/components/timeline/TimeLinePage';
-import useData from '@/hooks/useData';
-import { PostSchema } from '@/lib/schemas';
-import { useSession } from 'next-auth/react';
-import { z } from 'zod';
-
-const Likes = () => {
-  const { data: session, status } = useSession();
-  const { data: posts, error, isLoading } = useData('/api/post', z.array(PostSchema));
-
-  if (isLoading || !posts || !session?.user?.id) {
-    return <TimelineSkeltonLoading title={'いいねしたポスト一覧'} subtitle={'すべて'} />;
-  }
+import { auth } from '../../../auth';
+const Likes = async () => {
+  const session = await auth();
+  const posts = await getPosts();
 
   const likedPosts = posts.filter((post) =>
     post.likes.some((like) => like.user.id === session?.user?.id),
@@ -20,10 +11,11 @@ const Likes = () => {
 
   return (
     <TimeLinePage
-      posts={likedPosts}
-      currentUserId={session.user.id}
+      initialPosts={likedPosts}
+      currentUserId={session?.user?.id ?? ''}
       title={'いいねしたポスト一覧'}
-      target={null}
+      target={'いいね'}
+      shouldPolling={false}
     />
   );
 };

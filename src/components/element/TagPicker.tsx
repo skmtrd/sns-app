@@ -1,44 +1,51 @@
 'use client';
 
+import { ProfileSchema, tagSchema } from '@/lib/schemas';
 import { Tag } from '@/lib/types';
 import { ChevronDown, ChevronUp, Plus } from 'lucide-react';
-import { useCallback, useState } from 'react';
-import { useSWRConfig } from 'swr';
+import { useState } from 'react';
+import { z } from 'zod';
 import RemovableUserTag from './RemovableUserTag';
 import UserTag from './UserTag';
 
+type userInfo = z.infer<typeof ProfileSchema>;
+type tag = z.infer<typeof tagSchema>;
+
 type TagPickerProps = {
-  tags: Tag[];
-  clerkId: string;
-  userInfo: any;
+  userInfo: userInfo;
+  allTags: tag[];
+  updateTags: (newTags: Tag[]) => void;
+  updatedTags: Tag[];
 };
 
-export const TagPicker: React.FC<TagPickerProps> = ({ tags, clerkId, userInfo }) => {
-  const { mutate } = useSWRConfig();
+export const TagPicker: React.FC<TagPickerProps> = ({
+  userInfo,
+  allTags,
+  updateTags,
+  updatedTags,
+}) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const handleAddTag = useCallback(
-    (tag: Tag) => {
-      const newSelectedTags = [...userInfo.tags, tag];
-      mutate(`/api/profile/${clerkId}`, { ...userInfo, tags: newSelectedTags }, false);
-    },
-    [clerkId, userInfo, mutate],
-  );
+  const availableTags = allTags.filter((tag) => updatedTags.every((t: Tag) => t.name !== tag.name));
 
-  const handleRemoveTag = useCallback(
-    (tagName: string) => {
-      const newSelectedTags = userInfo.tags.filter((tag: Tag) => tag.name !== tagName);
-      mutate(`/api/profile/${clerkId}`, { ...userInfo, tags: newSelectedTags }, false);
-    },
-    [clerkId, userInfo, mutate],
-  );
+  const handleAddTag = (tagName: string) => {
+    const newSelectedTags = [...updatedTags, { id: '', name: tagName }];
+    updateTags(newSelectedTags);
+  };
+
+  const handleRemoveTag = (tagName: string) => {
+    const newSelectedTags = updatedTags.filter((tag: Tag) => tag.name !== tagName);
+    updateTags(newSelectedTags);
+  };
+
+  console.log(availableTags);
 
   return (
     <div>
       <label className='block text-sm font-medium text-gray-700'>タグ</label>
       <div className='mt-2 flex flex-wrap'>
-        {userInfo.tags.map((tag: Tag) => (
-          <RemovableUserTag key={tag.id} tagName={tag.name} handleRemoveTag={handleRemoveTag} />
+        {updatedTags.map((tag: Tag) => (
+          <RemovableUserTag key={tag.name} tagName={tag.name} handleRemoveTag={handleRemoveTag} />
         ))}
       </div>
       <button
@@ -65,20 +72,18 @@ export const TagPicker: React.FC<TagPickerProps> = ({ tags, clerkId, userInfo })
             className='mb-4 w-full rounded-md border px-3 py-2'
           />
           <div className='flex flex-wrap gap-2'>
-            {tags
-              .filter((tag) => !userInfo.tags.some((t: Tag) => t.id === tag.id))
-              .map((tag) => (
-                <div
-                  key={tag.id}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    handleAddTag(tag);
-                  }}
-                >
-                  <UserTag tagName={tag.name}></UserTag>
-                </div>
-              ))}
+            {availableTags.map((tag) => (
+              <div
+                key={tag.name}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleAddTag(tag.name);
+                }}
+              >
+                <UserTag tagName={tag.name}></UserTag>
+              </div>
+            ))}
           </div>
         </div>
       </div>

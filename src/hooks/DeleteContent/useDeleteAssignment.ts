@@ -1,23 +1,19 @@
-import { useSWRConfig } from 'swr';
+import { getAssignments } from '@/app/actions/getAssignmnets';
+import useSWR from 'swr';
 import { deleteAssignment } from '../../lib/deleteRequests';
-import { Assignment } from '../../lib/types';
 
-export const useDeleteAssignment = async (assignments: Assignment[]) => {
-  const { mutate } = useSWRConfig();
+export const useDeleteAssignment = async () => {
+  const { data: assignments, mutate } = useSWR('getAssignments', getAssignments);
   const handleDeleteAssignment = async (assignmentId: string) => {
-    const optimisticData = assignments.filter((assignment) => assignment.id !== assignmentId);
+    const optimisticData = assignments?.filter((assignment) => assignment.id !== assignmentId);
     try {
       await mutate(
-        '/api/assignment',
         async () => {
           await deleteAssignment(assignmentId);
           return optimisticData;
         },
         {
           optimisticData,
-          revalidate: false,
-          populateCache: true,
-          rollbackOnError: true,
         },
       );
     } catch (error) {

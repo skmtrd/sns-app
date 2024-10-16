@@ -1,23 +1,19 @@
+'use client';
 import { useDeadline } from '@/hooks/useDeadline';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
+import { ASSIGNMENT_IMAGE_BASE_URL } from '@/lib/constants';
 import { Assignment } from '@/lib/types';
 import { useState } from 'react';
 import AssignmentPostBottomItems from './AssignmentPostElements/AssignmentPostButtonItems/AssignmentPostBottomItems';
 import AssignmentPostHeader from './AssignmentPostElements/AssignmentPostHeader/AssignmentPostHeader';
 import AssignmentPostMain from './AssignmentPostElements/AssignmentPostMain/AssignmentPostMain';
-import { ASSIGNMENT_IMAGE_BASE_URL } from '@/lib/constants';
 
 type AssignmentPostProps = {
   assignment: Assignment;
-  handleDeleteAssignment: Promise<(assignmentId: string) => Promise<void>>;
   currentUserId: string;
 };
 
-const AssignmentPost = ({
-  assignment,
-  handleDeleteAssignment,
-  currentUserId,
-}: AssignmentPostProps) => {
+const AssignmentPost = ({ assignment, currentUserId }: AssignmentPostProps) => {
   const timeAgo = useRelativeTime(assignment.createdAt);
   const limited = useDeadline(assignment.deadLine);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -49,7 +45,6 @@ const AssignmentPost = ({
         currentUserId={currentUserId}
         assignmentId={assignment.id}
         assignmentAuthorId={assignment.author.id}
-        handleDeleteAssignment={handleDeleteAssignment}
         likes={assignment.likes}
         isDropdownOpen={isDropdownOpen}
         setIsDropdownOpen={setIsDropdownOpen}

@@ -70,7 +70,6 @@ export const AddAssignment: React.FC<AddAssignmentProps> = ({ closeModal }) => {
     formData.append('description', data.description);
     formData.append('deadLine', deadlineDateTime);
 
-
     // console.log(newAssignment);
 
     try {

@@ -1,0 +1,24 @@
+services:
+  # web:
+  #   build: .
+  #   ports:
+  #     - '3000:3000'
+  #   depends_on:
+  #     - db
+  #   environment:
+  #     DATABASE_URL: postgresql://root:root@db:5432/db?schema=public
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+    ports:
+      - '5432:5432'
+
+volumes:
+  postgres_data:

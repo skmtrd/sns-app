@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import PostIcon from './PostIcon';
 
 const PostHeader = ({
@@ -16,9 +17,11 @@ const PostHeader = ({
       <div className='flex items-center justify-center gap-x-2'>
         <PostIcon src={src} />
         <div className='flex flex-col justify-center'>
-          <p className='break-words text-lg font-bold transition-colors duration-100 hover:text-blue-600'>
-            {name}
-          </p>
+          <Link href={`/profile/${id}`}>
+            <p className='break-words text-lg font-bold transition-colors duration-100 hover:text-blue-600'>
+              {name}
+            </p>
+          </Link>
           <p className='text-sm text-gray-500'>@{id}</p>
         </div>
       </div>

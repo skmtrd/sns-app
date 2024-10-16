@@ -1,38 +1,23 @@
-'use client';
 import AssignmnetSharePage from '@/components/assignmentshare/AssignmnetSharePage';
-import QuestionSkeltonLoading from '@/components/loading/QuestionSkeltonLoading';
-import useData from '@/hooks/useData';
-import { AssignmentSchema } from '@/lib/schemas';
-import { useSession } from 'next-auth/react';
-import { z } from 'zod';
+import { auth } from '../../../auth';
+import { getAssignments } from '../actions/getAssignmnets';
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
-const AssignmentAll = () => {
-  const { data: session, status } = useSession();
-  const {
-    data: assignments,
-    error,
-    isLoading,
-  } = useData(`/api/assignment`, z.array(AssignmentSchema));
-
-  if (isLoading) {
-    return <QuestionSkeltonLoading title={'課題共有'} subtitle={'すべて'} />;
-  }
-  if (error || !assignments || !session?.user?.id) {
-    return <div>Error</div>;
-  }
+const MyAssignments = async () => {
+  const assignments = await getAssignments();
+  const session = await auth();
 
   const filteredAssignments = assignments.filter((assignment) =>
     assignment.likes.some((like) => like.user.id === session?.user?.id),
   );
   return (
     <AssignmnetSharePage
-      currentUserId={session?.user?.id}
-      assignments={filteredAssignments}
+      currentUserId={session?.user?.id ?? ''}
+      initialAssignments={filteredAssignments}
       title={'登録した課題'}
       target={null}
+      shouldPolling={false}
     />
   );
 };
 
-export default AssignmentAll;
+export default MyAssignments;

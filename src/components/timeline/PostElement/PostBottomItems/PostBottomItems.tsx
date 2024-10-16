@@ -1,5 +1,6 @@
 import KebabMenu from '@/components/element/KebabMenu';
 import { AddReplyModal } from '@/components/timeline/AddReplyModal';
+import { useDeletePost } from '@/hooks/DeleteContent/useDeletePost';
 import { usePostLike } from '@/hooks/Like/usePostLike';
 import { Like, Reply } from '@/lib/types';
 import { Heart, MessageCircleReply, MoreVertical } from 'lucide-react';
@@ -11,7 +12,6 @@ type PostBottomItemsProps = {
   postId: string;
   currentUserId: string;
   postAuthorId: string;
-  handleDeletePost: Promise<(postId: string) => Promise<void>>;
 };
 
 const PostBottomItems: React.FC<PostBottomItemsProps> = ({
@@ -19,7 +19,6 @@ const PostBottomItems: React.FC<PostBottomItemsProps> = ({
   postId,
   currentUserId,
   postAuthorId,
-  handleDeletePost,
   likes,
 }) => {
   const [isKebabMenuOpen, setIsKebabMenuOpen] = useState(false);
@@ -34,6 +33,8 @@ const PostBottomItems: React.FC<PostBottomItemsProps> = ({
   const handleToggleReplyModal = () => {
     setIsReplyModalOpen(!isReplyModalOpen);
   };
+
+  const handleDeletePost = useDeletePost();
 
   return (
     <div className='relative flex w-full items-center justify-between'>

@@ -1,29 +1,17 @@
-'use client';
-import QuestionSkeltonLoading from '@/components/loading/QuestionSkeltonLoading';
+import { getAssignments } from '@/app/actions/getAssignmnets';
 import QuestionPage from '@/components/question/QuestionPage';
-import useData from '@/hooks/useData';
-import { QuestionSchema } from '@/lib/schemas';
-import { useSession } from 'next-auth/react';
-import { z } from 'zod';
+import { auth } from '../../../../auth';
 
-const QuestionAll = () => {
-  const { data: session, status } = useSession();
-  const { data: questions, error, isLoading } = useData('/api/question', z.array(QuestionSchema));
-
-  if (error) {
-    return <div>Error</div>;
-  }
-
-  if (isLoading || !questions || !session?.user?.id) {
-    return <QuestionSkeltonLoading title={'質問'} subtitle={'すべて'} />;
-  }
-
+const QuestionAll = async () => {
+  const assignments = await getAssignments();
+  const session = await auth();
   return (
     <QuestionPage
-      questions={questions}
-      currentUserId={session.user.id}
+      currentUserId={session?.user?.id ?? ''}
+      initialQuestions={assignments}
       title={'質問'}
       target={'すべて'}
+      shouldPolling={true}
     />
   );
 };

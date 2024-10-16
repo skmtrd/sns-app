@@ -1,4 +1,5 @@
 import KebabMenu from '@/components/element/KebabMenu';
+import { useDeleteAssignment } from '@/hooks/DeleteContent/useDeleteAssignment';
 import { useAssignmentLike } from '@/hooks/Like/useAssignmentLike';
 import { Like } from '@/lib/types';
 import { Folder, FolderOpen, MoreVertical } from 'lucide-react';
@@ -6,7 +7,6 @@ import { Folder, FolderOpen, MoreVertical } from 'lucide-react';
 type Props = {
   likes: Like[];
   currentUserId: string;
-  handleDeleteAssignment: Promise<(postId: string) => Promise<void>>;
   isDropdownOpen: boolean;
   setIsDropdownOpen: (isDropdownOpen: boolean) => void;
   assignmentId: string;
@@ -16,7 +16,6 @@ type Props = {
 const AssignmentPostBottomItems: React.FC<Props> = ({
   likes,
   currentUserId,
-  handleDeleteAssignment,
   isDropdownOpen,
   setIsDropdownOpen,
   assignmentId,
@@ -26,6 +25,8 @@ const AssignmentPostBottomItems: React.FC<Props> = ({
     likes,
     currentUserId,
   );
+
+  const handleDeleteAssignment = useDeleteAssignment();
 
   return (
     <div className='relative mt-3 flex justify-between text-blue-600'>
