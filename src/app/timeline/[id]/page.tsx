@@ -1,32 +1,24 @@
-'use client';
-import TimelineSkeltonLoading from '@/components/loading/TimelineSkeltonLoading';
+import { getPosts } from '@/app/actions/getPosts';
 import TimeLinePage from '@/components/timeline/TimeLinePage';
-import useData from '@/hooks/useData';
-import { PostSchema } from '@/lib/schemas';
-import { useAuth } from '@clerk/nextjs';
-import { usePathname } from 'next/navigation';
-import { z } from 'zod';
+import { auth } from '../../../../auth';
 
-const TagFilteredTimeline = () => {
-  const { data: posts, error, isLoading } = useData('/api/post', z.array(PostSchema));
-  const { userId: currentClerkId } = useAuth();
-  const tagId = usePathname().split('/timeline/')[1];
+const TimelineAll = async ({ params }: { params: { id: string } }) => {
+  const session = await auth();
+  const posts = await getPosts();
 
-  if (isLoading || !posts || !currentClerkId) {
-    return <TimelineSkeltonLoading title={'検索'} subtitle={'...'} />;
-  }
-
-  const filteredPosts = posts.filter((post) => post.author.tags?.some((tag) => tag.id === tagId));
-  const filteredTagName = filteredPosts[0].author.tags?.find((tag) => tag.id === tagId)?.name;
+  const { id } = params;
+  const filteredPosts = posts.filter((post) => post.author.tags?.some((tag) => tag.id === id));
+  const filteredTagName = filteredPosts[0].author.tags?.find((tag) => tag.id === id)?.name;
 
   return (
     <TimeLinePage
-      posts={filteredPosts}
-      currentClerkId={currentClerkId}
+      initialPosts={posts}
+      currentUserId={session?.user?.id ?? ''}
       title={'タイムライン'}
-      target={`タグ検索-"${filteredTagName}"`}
+      target={`タグ検索: ${filteredTagName}`}
+      shouldPolling={true}
     />
   );
 };
 
-export default TagFilteredTimeline;
+export default TimelineAll;

@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { z } from 'zod';
 import Button from '../element/Button';
 import { ImageDisplayModal } from '../element/ImageDisplayModal';
+import UserTag from '../element/UserTag';
 
 type userInfo = z.infer<typeof ProfileSchema>;
 type session = z.infer<typeof SessionSchema>;
@@ -44,7 +45,12 @@ const ProfileCard = ({ userInfo, session }: { userInfo: userInfo; session: sessi
           <div className='max-w-full break-words'>{userInfo.introduction}</div>
         </div>
       </div>
-
+      <div className='h-5' />
+      <div className='flex w-full flex-wrap'>
+        {userInfo.tags.map((tag, index) => (
+          <UserTag key={tag.id} tagName={tag.name} />
+        ))}
+      </div>
       {session.id === userInfo.id && (
         <div className='flex w-full justify-end'>
           <Button title={'編集'} href={`${userInfo.id}/edit`} />

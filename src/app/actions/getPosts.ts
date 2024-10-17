@@ -26,6 +26,7 @@ export const getPosts = async () => {
     orderBy: { createdAt: 'desc' },
   });
   revalidatePath('/likes');
+  revalidatePath('/timeline/all');
   const parsedPosts = PostSchema.array().parse(posts);
   return parsedPosts;
 };
