@@ -2,9 +2,11 @@
 
 import { ProfileSchema, tagSchema } from '@/lib/schemas';
 import { Tag } from '@/lib/types';
-import { ChevronDown, ChevronUp, Plus } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
 import { z } from 'zod';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
 import RemovableUserTag from './RemovableUserTag';
 import UserTag from './UserTag';
 
@@ -12,18 +14,12 @@ type userInfo = z.infer<typeof ProfileSchema>;
 type tag = z.infer<typeof tagSchema>;
 
 type TagPickerProps = {
-  userInfo: userInfo;
   allTags: tag[];
   updateTags: (newTags: Tag[]) => void;
   updatedTags: Tag[];
 };
 
-export const TagPicker: React.FC<TagPickerProps> = ({
-  userInfo,
-  allTags,
-  updateTags,
-  updatedTags,
-}) => {
+export const TagPicker: React.FC<TagPickerProps> = ({ allTags, updateTags, updatedTags }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const availableTags = allTags.filter((tag) => updatedTags.every((t: Tag) => t.name !== tag.name));
@@ -42,35 +38,31 @@ export const TagPicker: React.FC<TagPickerProps> = ({
 
   return (
     <div>
-      <label className='block text-sm font-medium text-gray-700'>タグ</label>
-      <div className='mt-2 flex flex-wrap'>
-        {updatedTags.map((tag: Tag) => (
-          <RemovableUserTag key={tag.name} tagName={tag.name} handleRemoveTag={handleRemoveTag} />
-        ))}
+      <div className='flex flex-wrap'>
+        {updatedTags.length >= 1 ? (
+          updatedTags.map((tag: Tag) => (
+            <RemovableUserTag key={tag.name} tagName={tag.name} handleRemoveTag={handleRemoveTag} />
+          ))
+        ) : (
+          <p className='text-base text-black/80'>タグなし</p>
+        )}
       </div>
-      <button
+      <Button
         type='button'
+        variant={'secondary'}
+        className='mt-2 w-full'
         onClick={() => setIsDrawerOpen(!isDrawerOpen)}
-        className='mt-4 flex w-full items-center justify-between rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50'
       >
-        <span className='flex items-center'>
-          <Plus size={20} className='mr-2' />
-          タグを追加
-        </span>
-        {isDrawerOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-      </button>
+        追加
+        {} {isDrawerOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+      </Button>
       <div
         className={`mt-2 w-full overflow-x-hidden overflow-y-scroll rounded-md border border-gray-200 bg-white transition-all duration-300 ease-in-out ${
           isDrawerOpen ? 'max-h-64' : 'max-h-0'
         }`}
       >
         <div className='w-full p-4'>
-          <input
-            type='text'
-            placeholder='タグを検索'
-            id='tag-search'
-            className='mb-4 w-full rounded-md border px-3 py-2'
-          />
+          <Input className='mb-4' id='word' placeholder='タグを検索'></Input>
           <div className='flex flex-wrap gap-2'>
             {availableTags.map((tag) => (
               <div

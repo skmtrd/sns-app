@@ -205,12 +205,7 @@ const ProfileEditForm = ({ userInfo, allTags }: { userInfo: userInfo; allTags: t
             )}
           </div>
           <div>
-            <TagPicker
-              userInfo={userInfo}
-              allTags={allTags}
-              updateTags={updateTags}
-              updatedTags={updatedTags}
-            />
+            <TagPicker allTags={allTags} updateTags={updateTags} updatedTags={updatedTags} />
           </div>
           <button
             type='submit'
