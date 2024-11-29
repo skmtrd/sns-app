@@ -51,7 +51,7 @@ const SearchingDialog: React.FC<Props> = ({ allTags }) => {
                   key={item}
                   value={item}
                   aria-label='Toggle bold'
-                  className='ring-secondary border-transparent ring-2 transition-all duration-200 data-[state=on]:bg-white data-[state=on]:ring-black data-[state=on]:ease-in-out'
+                  className='border-transparent ring-1 ring-secondary transition-all duration-200 data-[state=on]:bg-white data-[state=on]:ring-black data-[state=on]:ease-in-out'
                 >
                   <p className=''>{item}</p>
                 </ToggleGroupItem>
