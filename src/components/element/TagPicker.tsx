@@ -1,84 +1,81 @@
 'use client';
 
+import { ProfileSchema, tagSchema } from '@/lib/schemas';
 import { Tag } from '@/lib/types';
-import { ChevronDown, ChevronUp, Plus } from 'lucide-react';
-import { useCallback, useState } from 'react';
-import { useSWRConfig } from 'swr';
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import { useState } from 'react';
+import { z } from 'zod';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
 import RemovableUserTag from './RemovableUserTag';
 import UserTag from './UserTag';
 
+type userInfo = z.infer<typeof ProfileSchema>;
+type tag = z.infer<typeof tagSchema>;
+
 type TagPickerProps = {
-  tags: Tag[];
-  clerkId: string;
-  userInfo: any;
+  allTags: tag[];
+  updateTags: (newTags: Tag[]) => void;
+  updatedTags: Tag[];
 };
 
-export const TagPicker: React.FC<TagPickerProps> = ({ tags, clerkId, userInfo }) => {
-  const { mutate } = useSWRConfig();
+export const TagPicker: React.FC<TagPickerProps> = ({ allTags, updateTags, updatedTags }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const handleAddTag = useCallback(
-    (tag: Tag) => {
-      const newSelectedTags = [...userInfo.tags, tag];
-      mutate(`/api/profile/${clerkId}`, { ...userInfo, tags: newSelectedTags }, false);
-    },
-    [clerkId, userInfo, mutate],
-  );
+  const availableTags = allTags.filter((tag) => updatedTags.every((t: Tag) => t.name !== tag.name));
 
-  const handleRemoveTag = useCallback(
-    (tagName: string) => {
-      const newSelectedTags = userInfo.tags.filter((tag: Tag) => tag.name !== tagName);
-      mutate(`/api/profile/${clerkId}`, { ...userInfo, tags: newSelectedTags }, false);
-    },
-    [clerkId, userInfo, mutate],
-  );
+  const handleAddTag = (tagName: string) => {
+    const newSelectedTags = [...updatedTags, { id: '', name: tagName }];
+    updateTags(newSelectedTags);
+  };
+
+  const handleRemoveTag = (tagName: string) => {
+    const newSelectedTags = updatedTags.filter((tag: Tag) => tag.name !== tagName);
+    updateTags(newSelectedTags);
+  };
+
+  console.log(availableTags);
 
   return (
     <div>
-      <label className='block text-sm font-medium text-gray-700'>タグ</label>
-      <div className='mt-2 flex flex-wrap'>
-        {userInfo.tags.map((tag: Tag) => (
-          <RemovableUserTag key={tag.id} tagName={tag.name} handleRemoveTag={handleRemoveTag} />
-        ))}
+      <div className='flex flex-wrap'>
+        {updatedTags.length >= 1 ? (
+          updatedTags.map((tag: Tag) => (
+            <RemovableUserTag key={tag.name} tagName={tag.name} handleRemoveTag={handleRemoveTag} />
+          ))
+        ) : (
+          <p className='text-base text-black/80'>タグなし</p>
+        )}
       </div>
-      <button
+      <Button
         type='button'
+        variant={'secondary'}
+        className='mt-2 w-full'
         onClick={() => setIsDrawerOpen(!isDrawerOpen)}
-        className='mt-4 flex w-full items-center justify-between rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50'
       >
-        <span className='flex items-center'>
-          <Plus size={20} className='mr-2' />
-          タグを追加
-        </span>
-        {isDrawerOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-      </button>
+        追加
+        {} {isDrawerOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+      </Button>
       <div
         className={`mt-2 w-full overflow-x-hidden overflow-y-scroll rounded-md border border-gray-200 bg-white transition-all duration-300 ease-in-out ${
           isDrawerOpen ? 'max-h-64' : 'max-h-0'
         }`}
       >
         <div className='w-full p-4'>
-          <input
-            type='text'
-            placeholder='タグを検索'
-            id='tag-search'
-            className='mb-4 w-full rounded-md border px-3 py-2'
-          />
+          <Input className='mb-4' id='word' placeholder='タグを検索'></Input>
           <div className='flex flex-wrap gap-2'>
-            {tags
-              .filter((tag) => !userInfo.tags.some((t: Tag) => t.id === tag.id))
-              .map((tag) => (
-                <div
-                  key={tag.id}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    handleAddTag(tag);
-                  }}
-                >
-                  <UserTag tagName={tag.name}></UserTag>
-                </div>
-              ))}
+            {availableTags.map((tag) => (
+              <div
+                key={tag.name}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleAddTag(tag.name);
+                }}
+              >
+                <UserTag tagName={tag.name}></UserTag>
+              </div>
+            ))}
           </div>
         </div>
       </div>

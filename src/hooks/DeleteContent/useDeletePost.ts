@@ -1,23 +1,20 @@
-import { useSWRConfig } from 'swr';
+import { getPosts } from '@/app/actions/getPosts';
+import useSWR from 'swr';
 import { deletePost } from '../../lib/deleteRequests';
-import { Post } from '../../lib/types';
 
-export const useDeletePost = async (posts: Post[]) => {
-  const { mutate } = useSWRConfig();
+export const useDeletePost = async () => {
+  const { data: posts, mutate } = useSWR('getPosts', getPosts);
   const handleDeletePost = async (postId: string) => {
+    if (!posts) return;
     const optimisticData = posts.filter((post) => post.id !== postId);
     try {
       await mutate(
-        '/api/post',
         async () => {
           await deletePost(postId);
           return optimisticData;
         },
         {
           optimisticData,
-          revalidate: false,
-          populateCache: true,
-          rollbackOnError: true,
         },
       );
     } catch (error) {
