@@ -51,7 +51,7 @@ const QuestionSkeltonLoading = ({ title, subtitle }: { title: string; subtitle: 
   };
   return (
     <div className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-auto bg-gray-100'>
-      <FixedHeader title={title} target={subtitle} scrollToTop={duummy} />
+      <FixedHeader title={title} target={subtitle} />
       <Header title={''} />
       <div className='h-1 w-full'></div>
       <div className='flex w-full flex-col items-center gap-y-4'>
