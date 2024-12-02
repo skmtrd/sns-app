@@ -1,5 +1,14 @@
 import KebabMenu from '@/components/element/KebabMenu';
 import { AddReplyModal } from '@/components/timeline/AddReplyModal';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { useDeletePost } from '@/hooks/DeleteContent/useDeletePost';
 import { usePostLike } from '@/hooks/Like/usePostLike';
 import { Like, Reply } from '@/lib/types';
@@ -57,7 +66,24 @@ const PostBottomItems: React.FC<PostBottomItemsProps> = ({
         >
           <Heart size={20} color={'#dc143c'} fill={isLiked ? '#dc143c' : 'white'} />
         </button>
-        <span>{likesCount}</span>
+        <Dialog>
+          <DialogTrigger>{likesCount}</DialogTrigger>
+          <DialogContent className='rounded-md'>
+            <DialogHeader>
+              <DialogTitle>いいねしているユーザー</DialogTitle>
+              <DialogDescription className='p-0'>
+                <ScrollArea className='h-[300px] w-full rounded-md p-4'>
+                  Jokester began sneaking into the castle in the middle of the night and leaving
+                  jokes all over the place: under the kins pillow, in his soup, even in the royal
+                  toilet. The king was furious, but he t seem to stop Jokester. And then, one day,
+                  the people of the kingdom discovered that the jokes left by Jokester were so funny
+                  that they couldnt help but laugh. And once they started laughing, they couldt
+                  stop. Jokester began sneaking into the castle in the middle of the night
+                </ScrollArea>
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
       </div>
       <button
         onClick={(e) => {
