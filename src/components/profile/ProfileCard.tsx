@@ -34,7 +34,7 @@ const ProfileCard = ({ userInfo, session }: { userInfo: userInfo; session: sessi
             alt={`${userInfo.name}のアバター`}
             width={144}
             height={144}
-            className='min-h-36 min-w-36 rounded-full'
+            className='size-36 rounded-full object-cover'
           />
         </button>
         <div className='flex max-w-full grow flex-col justify-evenly gap-3 sm:gap-0'>

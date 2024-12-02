@@ -16,7 +16,7 @@ const PostIcon = ({ src }: { src: string }) => {
         alt={'postImage'}
         width={50}
         height={50}
-        className='min-h-10 min-w-10 rounded-full hover:opacity-80'
+        className='size-12 rounded-full object-cover hover:opacity-80'
       />
     </button>
   );
