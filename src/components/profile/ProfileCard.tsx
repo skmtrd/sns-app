@@ -46,7 +46,7 @@ const ProfileCard = ({ userInfo, session }: { userInfo: userInfo; session: sessi
         </div>
       </div>
       <div className='h-5' />
-      <div className='flex w-full flex-wrap'>
+      <div className='flex w-full flex-wrap gap-x-4'>
         {userInfo.tags.map((tag, index) => (
           <UserTag key={tag.id} tagName={tag.name} />
         ))}
