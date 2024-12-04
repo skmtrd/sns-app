@@ -1,10 +1,21 @@
 import KebabMenu from '@/components/element/KebabMenu';
 import { AddReplyModal } from '@/components/timeline/AddReplyModal';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { useDeletePost } from '@/hooks/DeleteContent/useDeletePost';
 import { usePostLike } from '@/hooks/Like/usePostLike';
+import { ICON_IMAGE_BASE_URL } from '@/lib/constants';
 import { Like, Reply } from '@/lib/types';
 import { Heart, MessageCircleReply, MoreVertical } from 'lucide-react';
 import { useState } from 'react';
+import PostIcon from '../PostHeader/PostIcon';
 
 type PostBottomItemsProps = {
   replies: Reply[];
@@ -57,7 +68,40 @@ const PostBottomItems: React.FC<PostBottomItemsProps> = ({
         >
           <Heart size={20} color={'#dc143c'} fill={isLiked ? '#dc143c' : 'white'} />
         </button>
-        <span>{likesCount}</span>
+        <Dialog>
+          <DialogTrigger>{likesCount}</DialogTrigger>
+          <DialogContent className='rounded-md'>
+            <DialogHeader>
+              <DialogTitle>いいねしているユーザー</DialogTitle>
+              <DialogDescription className='p-0'>
+                <ScrollArea className='h-[300px] w-full rounded-md px-10 py-7'>
+                  {likes.length === 0 && <p>いいねしているユーザーはいません</p>}
+                  {likes.length > 0 && (
+                    <div className='flex w-full flex-col justify-center gap-4'>
+                      {likes.map((like) => (
+                        <div key={like.user.id} className='flex items-center gap-4'>
+                          <PostIcon
+                            src={
+                              like.user.iconUrl
+                                ? `${ICON_IMAGE_BASE_URL}${like.user.iconUrl}`
+                                : like.user.image
+                                  ? like.user.image
+                                  : ''
+                            }
+                          />
+                          <div className='flex flex-col items-start'>
+                            <p className='text-black'>{like.user.name}</p>
+                            <p>@{like.user.id}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </ScrollArea>
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
       </div>
       <button
         onClick={(e) => {

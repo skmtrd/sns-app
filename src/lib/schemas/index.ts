@@ -11,6 +11,7 @@ export const userSchema = z.object({
   email: z.string().email(),
   emailVerified: z.date().nullable(),
   image: z.string().nullable(),
+  iconUrl: z.string().nullable(),
 });
 
 const authorSchema = userSchema.extend({
