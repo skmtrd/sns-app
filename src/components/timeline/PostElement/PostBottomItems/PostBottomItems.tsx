@@ -11,9 +11,11 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useDeletePost } from '@/hooks/DeleteContent/useDeletePost';
 import { usePostLike } from '@/hooks/Like/usePostLike';
+import { ICON_IMAGE_BASE_URL } from '@/lib/constants';
 import { Like, Reply } from '@/lib/types';
 import { Heart, MessageCircleReply, MoreVertical } from 'lucide-react';
 import { useState } from 'react';
+import PostIcon from '../PostHeader/PostIcon';
 
 type PostBottomItemsProps = {
   replies: Reply[];
@@ -72,13 +74,29 @@ const PostBottomItems: React.FC<PostBottomItemsProps> = ({
             <DialogHeader>
               <DialogTitle>いいねしているユーザー</DialogTitle>
               <DialogDescription className='p-0'>
-                <ScrollArea className='h-[300px] w-full rounded-md p-4'>
-                  Jokester began sneaking into the castle in the middle of the night and leaving
-                  jokes all over the place: under the kins pillow, in his soup, even in the royal
-                  toilet. The king was furious, but he t seem to stop Jokester. And then, one day,
-                  the people of the kingdom discovered that the jokes left by Jokester were so funny
-                  that they couldnt help but laugh. And once they started laughing, they couldt
-                  stop. Jokester began sneaking into the castle in the middle of the night
+                <ScrollArea className='h-[300px] w-full rounded-md px-10 py-7'>
+                  {likes.length === 0 && <p>いいねしているユーザーはいません</p>}
+                  {likes.length > 0 && (
+                    <div className='flex w-full flex-col justify-center gap-4'>
+                      {likes.map((like) => (
+                        <div key={like.user.id} className='flex items-center gap-4'>
+                          <PostIcon
+                            src={
+                              like.user.iconUrl
+                                ? `${ICON_IMAGE_BASE_URL}${like.user.iconUrl}`
+                                : like.user.image
+                                  ? like.user.image
+                                  : ''
+                            }
+                          />
+                          <div className='flex flex-col items-start'>
+                            <p className='text-black'>{like.user.name}</p>
+                            <p>@{like.user.id}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </ScrollArea>
               </DialogDescription>
             </DialogHeader>
