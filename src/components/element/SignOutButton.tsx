@@ -9,7 +9,7 @@ const SignOutButton = () => {
         await signOut();
       }}
     >
-      <button type='submit'>SignOudsadsadt</button>
+      <button type='submit'>ログアウト</button>
     </form>
   );
 };
