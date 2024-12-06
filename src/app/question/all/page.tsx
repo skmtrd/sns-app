@@ -1,10 +1,13 @@
 import { getAssignments } from '@/app/actions/getAssignmnets';
 import QuestionPage from '@/components/question/QuestionPage';
+import { redirect } from 'next/navigation';
 import { auth } from '../../../../auth';
 
 const QuestionAll = async () => {
   const assignments = await getAssignments();
   const session = await auth();
+  if (!session) redirect('/');
+
   return (
     <QuestionPage
       currentUserId={session?.user?.id ?? ''}

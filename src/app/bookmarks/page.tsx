@@ -1,10 +1,12 @@
 import { getQuestions } from '@/app/actions/getQuestions';
 import QuestionPage from '@/components/question/QuestionPage';
+import { redirect } from 'next/navigation';
 import { auth } from '../../../auth';
 
 const Bookmarks = async () => {
   const questions = await getQuestions();
   const session = await auth();
+  if (!session) redirect('/');
 
   const filteredQuestions = questions.filter((question) =>
     question.likes.some((like) => like.user.id === session?.user?.id),

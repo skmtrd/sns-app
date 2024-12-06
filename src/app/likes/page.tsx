@@ -1,8 +1,10 @@
 import { getPosts } from '@/app/actions/getPosts';
 import TimeLinePage from '@/components/timeline/TimeLinePage';
+import { redirect } from 'next/navigation';
 import { auth } from '../../../auth';
 const Likes = async () => {
   const session = await auth();
+  if (!session) redirect('/');
   const posts = await getPosts();
 
   const likedPosts = posts.filter((post) =>

@@ -99,6 +99,7 @@ const SideBar = () => {
           <span className='hidden xl:ml-3 xl:inline'>{label}</span>
         </Link>
       ))}
+
       <div
         className='mt-4 flex w-full items-center justify-center rounded bg-blue-600 px-6 py-3 font-bold text-white transition-colors duration-200 hover:bg-blue-800 xl:w-2/4'
         onClick={handleTogglePostModal}
