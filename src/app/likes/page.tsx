@@ -1,20 +1,16 @@
 import { getPosts } from '@/app/actions/getPosts';
 import TimeLinePage from '@/components/timeline/TimeLinePage';
-import { redirect } from 'next/navigation';
-import { auth } from '../../../auth';
+import { getSession } from '../actions/getSession';
 const Likes = async () => {
-  const session = await auth();
-  if (!session) redirect('/');
+  const session = await getSession();
   const posts = await getPosts();
 
-  const likedPosts = posts.filter((post) =>
-    post.likes.some((like) => like.user.id === session?.user?.id),
-  );
+  const likedPosts = posts.filter((post) => post.likes.some((like) => like.user.id === session.id));
 
   return (
     <TimeLinePage
       initialPosts={likedPosts}
-      currentUserId={session?.user?.id ?? ''}
+      currentUserId={session.id}
       title={'いいねしたポスト一覧'}
       target={'いいね'}
       shouldPolling={false}

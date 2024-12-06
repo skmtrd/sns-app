@@ -1,19 +1,17 @@
 import AssignmnetSharePage from '@/components/assignmentshare/AssignmnetSharePage';
-import { redirect } from 'next/navigation';
-import { auth } from '../../../auth';
 import { getAssignments } from '../actions/getAssignmnets';
+import { getSession } from '../actions/getSession';
 
 const MyAssignments = async () => {
   const assignments = await getAssignments();
-  const session = await auth();
-  if (!session) redirect('/');
+  const session = await getSession();
 
   const filteredAssignments = assignments.filter((assignment) =>
-    assignment.likes.some((like) => like.user.id === session?.user?.id),
+    assignment.likes.some((like) => like.user.id === session.id),
   );
   return (
     <AssignmnetSharePage
-      currentUserId={session?.user?.id ?? ''}
+      currentUserId={session.id}
       initialAssignments={filteredAssignments}
       title={'登録した課題'}
       target={null}

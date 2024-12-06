@@ -1,18 +1,17 @@
 import { getPosts } from '@/app/actions/getPosts';
+import { getSession } from '@/app/actions/getSession';
 import TimeLinePage from '@/components/timeline/TimeLinePage';
+
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
-import { auth } from '../../../../auth';
 
 const TimelineAll = async () => {
-  const session = await auth();
-  if (!session) redirect('/');
+  const session = await getSession();
   const posts = await getPosts();
   revalidatePath('/timeline/all');
   return (
     <TimeLinePage
       initialPosts={posts}
-      currentUserId={session?.user?.id ?? ''}
+      currentUserId={session.id}
       title={'タイムライン'}
       target={'すべて'}
       shouldPolling={true}
