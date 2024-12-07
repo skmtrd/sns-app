@@ -21,7 +21,7 @@ const Home = async () => {
               alt='image of user'
               width={60}
               height={20}
-            ></Image>
+            />
           </div>
         )}
       </div>

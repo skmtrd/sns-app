@@ -1,11 +1,10 @@
-import Header from '@/components/element/Header';
-import { Toaster } from 'react-hot-toast';
-
 import { getSession } from '@/app/actions/getSession';
 import { getUserInfo } from '@/app/actions/getUserInfo';
+import Header from '@/components/element/Header';
 import ProfileSkeltonLoading from '@/components/loading/ProfileSkeltonLoading';
 import ProfileCard from '@/components/profile/ProfileCard';
 import ProfilePost from '@/components/profile/ProfilePost';
+import { Toaster } from 'react-hot-toast';
 
 const ProfilePage = async ({ params }: { params: { id: string } }) => {
   const session = await getSession();

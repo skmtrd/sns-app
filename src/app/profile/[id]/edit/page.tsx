@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation';
 
 const ProfileEditPage = async ({ params }: { params: { id: string } }) => {
   const userInfo = await getUserInfo(params.id);
+  if (!userInfo) redirect('/');
   const allTags = await getAllTags();
   const currentUserInfo = await getSession();
 

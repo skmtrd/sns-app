@@ -9,7 +9,7 @@ const SignInButton = () => {
         await signIn('google');
       }}
     >
-      <button type='submit'>Signin with Google</button>
+      <button type='submit'>ログイン</button>
     </form>
   );
 };

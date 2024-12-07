@@ -99,39 +99,46 @@ const SideBar = () => {
           <span className='hidden xl:ml-3 xl:inline'>{label}</span>
         </Link>
       ))}
-      <div
-        className='mt-4 flex w-full items-center justify-center rounded bg-blue-600 px-6 py-3 font-bold text-white transition-colors duration-200 hover:bg-blue-800 xl:w-2/4'
-        onClick={handleTogglePostModal}
-      >
-        <div className='flex w-full items-center justify-center'>
-          <div className='flex items-center xl:mr-2'>
-            <Antenna size={22} />
+
+      {session && (
+        <div
+          className='mt-4 flex w-full items-center justify-center rounded bg-blue-600 px-6 py-3 font-bold text-white transition-colors duration-200 hover:bg-blue-800 xl:w-2/4'
+          onClick={handleTogglePostModal}
+        >
+          <div className='flex w-full items-center justify-center'>
+            <div className='flex items-center xl:mr-2'>
+              <Antenna size={22} />
+            </div>
+            <span className='hidden xl:inline'>ポスト</span>
           </div>
-          <span className='hidden xl:inline'>ポスト</span>
         </div>
-      </div>
-      <div
-        className='mt-4 flex w-full items-center justify-center rounded bg-blue-600 px-6 py-3 font-bold text-white transition-colors duration-200 hover:bg-blue-800 xl:w-2/4'
-        onClick={handleToggleQuestionModal}
-      >
-        <div className='flex w-full items-center justify-center'>
-          <div className='flex items-center xl:mr-2'>
-            <Hand size={22} />
+      )}
+      {session && (
+        <div
+          className='mt-4 flex w-full items-center justify-center rounded bg-blue-600 px-6 py-3 font-bold text-white transition-colors duration-200 hover:bg-blue-800 xl:w-2/4'
+          onClick={handleToggleQuestionModal}
+        >
+          <div className='flex w-full items-center justify-center'>
+            <div className='flex items-center xl:mr-2'>
+              <Hand size={22} />
+            </div>
+            <span className='hidden xl:inline'>質問</span>
           </div>
-          <span className='hidden xl:inline'>質問</span>
         </div>
-      </div>
-      <div
-        className='mt-4 flex w-full items-center justify-center rounded bg-blue-600 px-6 py-3 font-bold text-white transition-colors duration-200 hover:bg-blue-800 xl:w-2/4'
-        onClick={handleToggleAssignmentModal}
-      >
-        <div className='flex w-full items-center justify-center'>
-          <div className='flex items-center xl:mr-2'>
-            <FilePenLine size={22} />
+      )}
+      {session && (
+        <div
+          className='mt-4 flex w-full items-center justify-center rounded bg-blue-600 px-6 py-3 font-bold text-white transition-colors duration-200 hover:bg-blue-800 xl:w-2/4'
+          onClick={handleToggleAssignmentModal}
+        >
+          <div className='flex w-full items-center justify-center'>
+            <div className='flex items-center xl:mr-2'>
+              <FilePenLine size={22} />
+            </div>
+            <span className='hidden xl:inline'>課題</span>
           </div>
-          <span className='hidden xl:inline'>課題</span>
         </div>
-      </div>
+      )}
     </div>
   );
 };

@@ -30,7 +30,7 @@ export const ChangeAvatar: React.FC<changeAvatarProps> = ({ onFileChange, classN
           <Image
             src={avatar}
             alt='avatar'
-            className='box-border w-full cursor-pointer rounded-full border-2 border-gray-300'
+            className='box-border size-28 cursor-pointer rounded-full border-2 border-gray-300 object-cover'
             width={160}
             height={160}
             onClick={() => setIsModalOpen(true)}
