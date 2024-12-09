@@ -10,7 +10,6 @@ import { apiRes } from '../types';
 
 export const GET = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
-    await dbConnect();
     const posts = await prisma.post.findMany({
       include: {
         author: {

@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { dbConnect } from '../lib/dbConnect';
 import { getUserId } from '../lib/getUserId';
 import { handleAPIError } from '../lib/handleAPIError';
 import prisma from '../lib/prisma';
@@ -9,7 +8,6 @@ import { apiRes } from '../types';
 
 export const GET = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
-    await dbConnect();
     const assignments = await prisma.assignment.findMany({
       include: {
         replies: {
@@ -37,8 +35,6 @@ export const GET = async (req: Request, res: NextResponse) =>
 
 export const POST = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
-    dbConnect();
-
     const formData = await req.formData();
 
     const title = formData.get('title') as string;
