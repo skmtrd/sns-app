@@ -36,6 +36,21 @@ export const GET = async (req: Request, res: NextResponse) =>
       return target < now;
     });
 
+    const now = new Date();
+
+    const time = assignments[0].deadLine;
+
+    const [datePart, timePart] = time.split('/');
+    const [year, month, day] = datePart.split('-').map(Number);
+    const [hour, minute] = timePart.split(':').map(Number);
+    const target = new Date(year, month - 1, day, hour, minute);
+
+    const result = {
+      now,
+      target,
+      result: target < now,
+    };
+
     const deletedAssignments = await prisma.assignment.deleteMany({
       where: {
         id: {
@@ -44,8 +59,5 @@ export const GET = async (req: Request, res: NextResponse) =>
       },
     });
 
-    return NextResponse.json<apiRes>(
-      { message: 'success', data: overDeadlinedAssignments },
-      { status: 200 },
-    );
+    return NextResponse.json<apiRes>({ message: 'success', data: result }, { status: 200 });
   });
