@@ -22,4 +22,3 @@ export const useDeadline = (timestamp: string): string => {
 
   return timeUntil;
 };
-export { formatTimeUntil };
