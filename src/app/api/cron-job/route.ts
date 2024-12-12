@@ -6,7 +6,27 @@ import { apiRes } from '../types';
 
 export const GET = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
-    const assignments = await prisma.assignment.findMany();
+    const assignments = await prisma.assignment.findMany({
+      include: {
+        replies: {
+          include: {
+            author: true,
+            childReplies: true,
+          },
+        },
+        likes: {
+          include: {
+            user: true,
+          },
+        },
+        author: {
+          include: {
+            tags: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
     for (const assignment of assignments) {
       const [datePart, timePart] = assignment.deadLine.split('/');
       const [year, month, day] = datePart.split('-').map(Number);
