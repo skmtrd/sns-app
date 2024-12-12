@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const formatTimeUntil = (target: Date): string => {
+export const formatTimeUntil = (target: Date): string => {
   const now = new Date();
   const diff = target.getTime() - now.getTime();
 
