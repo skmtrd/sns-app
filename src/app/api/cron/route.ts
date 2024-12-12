@@ -1,4 +1,4 @@
-import { formatTimeUntil } from '@/hooks/useDeadline';
+import { formatTimeUntil } from '@/lib/formatTimeUntil';
 import { NextResponse } from 'next/server';
 import { handleAPIError } from '../lib/handleAPIError';
 import prisma from '../lib/prisma';
