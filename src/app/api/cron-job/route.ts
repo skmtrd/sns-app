@@ -14,10 +14,15 @@ export const GET = async (req: Request, res: NextResponse) =>
       const target = new Date(year, month - 1, day, hour, minute);
       const timeUntil = formatTimeUntil(target);
       if (timeUntil === 'over') {
+        const deletedReplies = await prisma.assignmentReply.deleteMany({
+          where: { assignmentId: assignment.id },
+        });
+        const deletedLikes = await prisma.like.deleteMany({
+          where: { assignmentId: assignment.id },
+        });
         const deletedAssignment = await prisma.assignment.delete({
           where: { id: assignment.id },
         });
-        console.log(`Deleted assignment: ${deletedAssignment.title}`);
       }
     }
 
