@@ -29,5 +29,25 @@ export const GET = async (req: Request, res: NextResponse) =>
       orderBy: { createdAt: 'desc' },
     });
 
-    return NextResponse.json<apiRes>({ message: 'success', data: assignments }, { status: 200 });
+    const overDeadlinedAssignments = assignments.filter((assignment) => {
+      const [datePart, timePart] = assignment.deadLine.split('/');
+      const [year, month, day] = datePart.split('-').map(Number);
+      const [hour, minute] = timePart.split(':').map(Number);
+      const target = new Date(year, month - 1, day, hour, minute);
+      const now = new Date();
+      return target < now;
+    });
+
+    const deletedAssignments = await prisma.assignment.deleteMany({
+      where: {
+        id: {
+          in: overDeadlinedAssignments.map((assignment) => assignment.id),
+        },
+      },
+    });
+
+    return NextResponse.json<apiRes>(
+      { message: 'success', data: deletedAssignments },
+      { status: 200 },
+    );
   });
