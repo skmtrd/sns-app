@@ -1,4 +1,5 @@
 import { Trash } from 'lucide-react';
+import { isAdminUser } from '../../app/api/lib/isAdminUser';
 
 type KebabMenuProps = {
   currentUserId: string;
@@ -13,8 +14,7 @@ const KebabMenu: React.FC<KebabMenuProps> = ({
   handleDelete,
   contentId,
 }) => {
-  const adminUserId = process.env.ADMIN_USER_ID;
-  const isAdmin = currentUserId === adminUserId;
+  const isAdmin = isAdminUser(currentUserId);
   return (
     <div className='absolute bottom-full right-0 mb-2 w-32 rounded-md bg-white shadow-lg ring-1 ring-black/20'>
       <div className='py-1'>
@@ -30,7 +30,6 @@ const KebabMenu: React.FC<KebabMenuProps> = ({
             削除
           </button>
         )}
-        {/* <SharePost postId={contentId} /> */}
       </div>
     </div>
   );
