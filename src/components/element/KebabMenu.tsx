@@ -13,10 +13,12 @@ const KebabMenu: React.FC<KebabMenuProps> = ({
   handleDelete,
   contentId,
 }) => {
+  const adminUserId = process.env.ADMIN_USER_ID;
+  const isAdmin = currentUserId === adminUserId;
   return (
     <div className='absolute bottom-full right-0 mb-2 w-32 rounded-md bg-white shadow-lg ring-1 ring-black/20'>
       <div className='py-1'>
-        {currentUserId === authorUserId && (
+        {(currentUserId === authorUserId || isAdmin) && (
           <button
             onClick={async (e: React.MouseEvent<HTMLButtonElement>) => {
               e.stopPropagation();
