@@ -1,5 +1,4 @@
 import { Trash } from 'lucide-react';
-import { SharePost } from '../timeline/SharePost';
 
 type KebabMenuProps = {
   currentUserId: string;
@@ -29,7 +28,7 @@ const KebabMenu: React.FC<KebabMenuProps> = ({
             削除
           </button>
         )}
-        <SharePost postId={contentId} />
+        {/* <SharePost postId={contentId} /> */}
       </div>
     </div>
   );
