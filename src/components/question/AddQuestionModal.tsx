@@ -79,15 +79,24 @@ export const AddQuestion: React.FC<AddQuestionProps> = ({ closeModal }) => {
   }, []);
 
   return (
-    <div className='animate-fadeIn fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-md'>
+    <div
+      onClick={(e) => {
+        e.stopPropagation();
+        closeModal();
+      }}
+      className='animate-fadeIn fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-md'
+    >
       <div
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
         className='animate-scaleIn w-full max-w-md rounded-lg bg-white shadow-xl'
         role='dialog'
         aria-modal='true'
         aria-labelledby='modal-title'
       >
         <div className='flex items-center justify-between border-b p-4'>
-          <h2 id='modal-title' className='text-lg font-semibold'>
+          <h2 id='modal-title' className='text-lg font-semibold text-black'>
             質問する
           </h2>
           <button
@@ -113,7 +122,7 @@ export const AddQuestion: React.FC<AddQuestionProps> = ({ closeModal }) => {
                 })}
                 maxLength={MAX_TITLE_LENGTH}
                 placeholder='質問のタイトル'
-                className='w-full rounded-md border p-2 outline-none'
+                className='w-full rounded-md border p-2 font-medium text-black outline-none'
                 aria-invalid={errors.title ? 'true' : 'false'}
                 onKeyDown={handleKeyDown}
               />
@@ -143,7 +152,7 @@ export const AddQuestion: React.FC<AddQuestionProps> = ({ closeModal }) => {
                 placeholder='質問の詳細'
                 maxLength={MAX_DESCRIPTION_LENGTH}
                 rows={6}
-                className='w-full rounded-md border p-2 outline-none'
+                className='w-full rounded-md border p-2 font-medium text-black outline-none'
                 aria-invalid={errors.description ? 'true' : 'false'}
                 onKeyDown={handleKeyDown}
               />

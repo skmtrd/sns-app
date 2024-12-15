@@ -110,15 +110,24 @@ export const AddAssignment: React.FC<AddAssignmentProps> = ({ closeModal }) => {
   }, []);
 
   return (
-    <div className='animate-fadeIn fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-md'>
+    <div
+      onClick={(e) => {
+        e.stopPropagation();
+        closeModal();
+      }}
+      className='animate-fadeIn fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-md'
+    >
       <div
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
         className='animate-scaleIn w-full max-w-md rounded-lg bg-white shadow-xl'
         role='dialog'
         aria-modal='true'
         aria-labelledby='modal-title'
       >
         <div className='flex items-center justify-between border-b p-4'>
-          <h2 id='modal-title' className='text-lg font-semibold'>
+          <h2 id='modal-title' className='text-lg font-semibold text-black'>
             課題を共有する
           </h2>
           <button
@@ -144,7 +153,7 @@ export const AddAssignment: React.FC<AddAssignmentProps> = ({ closeModal }) => {
                 })}
                 maxLength={MAX_TITLE_LENGTH}
                 placeholder='課題のタイトル'
-                className='w-full rounded-md border p-2 outline-none'
+                className='w-full rounded-md border p-2 font-medium text-black outline-none'
                 aria-invalid={errors.title ? 'true' : 'false'}
                 onKeyDown={handleKeyDown}
               />
@@ -174,7 +183,7 @@ export const AddAssignment: React.FC<AddAssignmentProps> = ({ closeModal }) => {
                 placeholder='課題の詳細'
                 maxLength={MAX_DESCRIPTION_LENGTH}
                 rows={6}
-                className='w-full rounded-md border p-2 outline-none'
+                className='w-full rounded-md border p-2 font-medium text-black outline-none'
                 aria-invalid={errors.description ? 'true' : 'false'}
                 onKeyDown={handleKeyDown}
               />
@@ -203,7 +212,7 @@ export const AddAssignment: React.FC<AddAssignmentProps> = ({ closeModal }) => {
                   {...register('deadlineDate', {
                     required: '締め切り日を入力してください',
                   })}
-                  className='w-full rounded-md border p-2 outline-none'
+                  className='w-full rounded-md border p-2 font-medium text-black outline-none'
                   aria-invalid={errors.deadlineDate ? 'true' : 'false'}
                 />
                 {errors.deadlineDate && (
@@ -217,7 +226,7 @@ export const AddAssignment: React.FC<AddAssignmentProps> = ({ closeModal }) => {
                   {...register('deadlineTime', {
                     required: '締め切り時刻を入力してください',
                   })}
-                  className='w-full rounded-md border p-2 outline-none'
+                  className='w-full rounded-md border p-2 font-medium text-black outline-none'
                   aria-invalid={errors.deadlineTime ? 'true' : 'false'}
                 />
                 {errors.deadlineTime && (
