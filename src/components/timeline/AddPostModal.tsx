@@ -93,20 +93,32 @@ export const AddPost: React.FC<AddPostProps> = ({ closeModal }) => {
   }, []);
 
   return (
-    <div className='animate-fadeIn fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-md'>
+    <div
+      onKeyDown={handleKeyDown}
+      onClick={(e) => {
+        e.stopPropagation();
+        closeModal();
+      }}
+      className='animate-fadeIn fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-md'
+    >
       <div
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
         className='animate-scaleIn w-full max-w-md rounded-lg bg-white shadow-xl'
         role='dialog'
         aria-modal='true'
         aria-labelledby='modal-title'
       >
         <div className='flex items-center justify-between border-b p-4'>
-          <h2 id='modal-title' className='text-lg font-semibold'>
+          <h2 id='modal-title' className='text-lg font-semibold text-black'>
             ポストする
           </h2>
           <button
-            onClick={closeModal}
-            className='text-gray-500 hover:text-gray-700'
+            onClick={() => {
+              closeModal();
+            }}
+            className='z-50 text-gray-500 hover:text-gray-700'
             aria-label='閉じる'
           >
             <X size={20} />
@@ -126,8 +138,7 @@ export const AddPost: React.FC<AddPostProps> = ({ closeModal }) => {
               placeholder='内容を入力してください'
               maxLength={MAX_CONTENT_LENGTH}
               rows={10}
-              onKeyDown={handleKeyDown}
-              className='w-full rounded-md border p-2 outline-none'
+              className='w-full rounded-md border p-2 font-medium text-black outline-none'
               aria-invalid={errors.content ? 'true' : 'false'}
             />
             <div className='flex w-full justify-end'>

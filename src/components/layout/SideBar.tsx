@@ -1,144 +1,74 @@
-'use client';
-
+import { getUserId } from '@/app/api/lib/getUserId';
 import {
   Antenna,
   BookHeart,
   BookMarked,
+  CircleUser,
   ClipboardList,
   FilePenLine,
   FolderClock,
   Hand,
   HelpCircle,
   Home,
-  LucideIcon,
-  User,
 } from 'lucide-react';
-import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useState } from 'react';
-import { AddAssignment } from '../assignmentshare/AddAssignmentModal';
-import { AddQuestion } from '../question/AddQuestionModal';
-import { AddPost } from '../timeline/AddPostModal';
-
+import SidebarLinkingButton from '../element/SidebarButton';
+import SidebarPostingButton from '../element/SidebarPostingButton';
 type NavItem = {
   page: string;
   label: string;
-  icon: LucideIcon;
+  icon: React.ReactNode;
 };
 
-const SideBar = () => {
-  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
-  const [isQuestionModalOpen, setIsQuestionModalOpen] = useState(false);
-  const [isAssignmentModalOpen, setIsAssignmentModalOpen] = useState(false);
-  const handleTogglePostModal = () => setIsPostModalOpen(!isPostModalOpen);
-  const handleToggleQuestionModal = () => setIsQuestionModalOpen(!isQuestionModalOpen);
-  const handleToggleAssignmentModal = () => setIsAssignmentModalOpen(!isAssignmentModalOpen);
-  const pathname = usePathname();
-  const { data: session, update } = useSession();
-  const userId = session?.user?.id;
-
-  const [activePage, setActivePage] = useState<string | null>(pathname);
-
-  const handlePageChange = (page: string) => {
-    setActivePage(page);
-  };
+const SideBar = async () => {
+  const userId = await getUserId();
 
   const navItems1: NavItem[] = [
-    { page: '/timeline/all', label: 'タイムライン', icon: Home },
-    { page: '/assignmentshare/all', label: '課題共有', icon: ClipboardList },
-    { page: '/question/all', label: '質問スペース', icon: HelpCircle },
-    { page: `/profile/${userId}`, label: 'プロフィール', icon: User },
+    { page: '/timeline/all', label: 'タイムライン', icon: <Home /> },
+    { page: '/assignmentshare/all', label: '課題共有', icon: <ClipboardList /> },
+    { page: '/question/all', label: '質問スペース', icon: <HelpCircle /> },
   ];
 
   const navItems2: NavItem[] = [
-    { page: '/likes', label: 'いいねしたポスト', icon: BookHeart },
-    { page: '/my-assignments', label: '登録した課題', icon: FolderClock },
-    { page: '/bookmarks', label: 'ブックマークした質問', icon: BookMarked },
+    { page: '/likes', label: 'いいねしたポスト', icon: <BookHeart /> },
+    { page: '/my-assignments', label: '登録した課題', icon: <FolderClock /> },
+    { page: '/bookmarks', label: 'ブックマークした質問', icon: <BookMarked /> },
+  ];
+
+  const navItems3: NavItem[] = [
+    {
+      page: `/profile/${userId}`,
+      label: 'プロフィール',
+      icon: <CircleUser size={22} />,
+    },
+  ];
+
+  const postingItems: NavItem[] = [
+    { page: '/post/new', label: 'ポスト', icon: <Antenna size={22} /> },
+    { page: '/question/new', label: '質問', icon: <Hand size={22} /> },
+    { page: '/assignment/new', label: '課題', icon: <FilePenLine size={22} /> },
   ];
 
   return (
     <div className='z-20 flex w-16 flex-col items-center overflow-y-auto overflow-x-hidden border-r border-gray-200 bg-white p-4 transition-all duration-300 ease-in-out xl:w-80'>
-      {isPostModalOpen && <AddPost closeModal={handleTogglePostModal} />}
-      {isQuestionModalOpen && <AddQuestion closeModal={handleToggleQuestionModal} />}
-      {isAssignmentModalOpen && <AddAssignment closeModal={handleToggleAssignmentModal} />}
       <Link href={'/timeline/all'}>
         <h1 className='mb-4 hidden text-2xl font-bold text-blue-600 xl:block'>INIAD SNS</h1>
       </Link>
-      {navItems1.map(({ page, label, icon: Icon }) => (
-        <Link
-          key={page}
-          href={page}
-          onClick={() => handlePageChange(page)}
-          className={`flex w-full items-center justify-center rounded px-6 py-1 font-bold transition-colors duration-200 ${
-            activePage === page
-              ? 'bg-blue-100 text-blue-600'
-              : 'hover:bg-gray-100 hover:text-blue-600'
-          } xl:justify-start xl:px-4 xl:py-2`}
-        >
-          <div className='flex size-10 items-center justify-center'>
-            <Icon size={24} />
-          </div>
-          <span className='hidden xl:ml-3 xl:inline'>{label}</span>
-        </Link>
-      ))}
-      {navItems2.map(({ page, label, icon: Icon }) => (
-        <Link
-          key={page}
-          href={page}
-          onClick={() => handlePageChange(page)}
-          className={`flex w-full items-center justify-center rounded px-6 py-1 font-bold transition-colors duration-200 ${
-            activePage === page
-              ? 'bg-blue-100 text-blue-600'
-              : 'hover:bg-gray-100 hover:text-blue-600'
-          } xl:justify-start xl:px-4 xl:py-2`}
-        >
-          <div className='flex size-10 items-center justify-center'>
-            <Icon size={24} />
-          </div>
-          <span className='hidden xl:ml-3 xl:inline'>{label}</span>
-        </Link>
-      ))}
 
-      {session && (
-        <div
-          className='mt-4 flex w-full items-center justify-center rounded bg-blue-600 px-6 py-3 font-bold text-white transition-colors duration-200 hover:bg-blue-800 xl:w-2/4'
-          onClick={handleTogglePostModal}
-        >
-          <div className='flex w-full items-center justify-center'>
-            <div className='flex items-center xl:mr-2'>
-              <Antenna size={22} />
-            </div>
-            <span className='hidden xl:inline'>ポスト</span>
-          </div>
-        </div>
-      )}
-      {session && (
-        <div
-          className='mt-4 flex w-full items-center justify-center rounded bg-blue-600 px-6 py-3 font-bold text-white transition-colors duration-200 hover:bg-blue-800 xl:w-2/4'
-          onClick={handleToggleQuestionModal}
-        >
-          <div className='flex w-full items-center justify-center'>
-            <div className='flex items-center xl:mr-2'>
-              <Hand size={22} />
-            </div>
-            <span className='hidden xl:inline'>質問</span>
-          </div>
-        </div>
-      )}
-      {session && (
-        <div
-          className='mt-4 flex w-full items-center justify-center rounded bg-blue-600 px-6 py-3 font-bold text-white transition-colors duration-200 hover:bg-blue-800 xl:w-2/4'
-          onClick={handleToggleAssignmentModal}
-        >
-          <div className='flex w-full items-center justify-center'>
-            <div className='flex items-center xl:mr-2'>
-              <FilePenLine size={22} />
-            </div>
-            <span className='hidden xl:inline'>課題</span>
-          </div>
-        </div>
-      )}
+      {navItems1.map(({ page, label, icon: Icon }) => (
+        <SidebarLinkingButton key={page} page={page} label={label} icon={Icon} />
+      ))}
+      <div className='my-[10px] h-[3px] w-full bg-gray-200' />
+      {navItems2.map(({ page, label, icon: Icon }) => (
+        <SidebarLinkingButton key={page} page={page} label={label} icon={Icon} />
+      ))}
+      <div className='my-[10px] h-[3px] w-full bg-gray-200' />
+      {navItems3.map(({ page, label, icon: Icon }) => (
+        <SidebarLinkingButton key={page} page={page} label={label} icon={Icon} />
+      ))}
+      {postingItems.map(({ label, icon: Icon }) => (
+        <SidebarPostingButton key={label} label={label as 'ポスト' | '質問' | '課題'} icon={Icon} />
+      ))}
     </div>
   );
 };
