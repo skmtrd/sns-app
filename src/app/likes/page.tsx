@@ -1,6 +1,12 @@
 import { getPosts } from '@/app/actions/getPosts';
 import TimeLinePage from '@/components/timeline/TimeLinePage';
+import { Metadata } from 'next';
 import { getSession } from '../actions/getSession';
+
+export const metadata: Metadata = {
+  title: 'いいねしたポスト / INIAD',
+};
+
 const Likes = async () => {
   const session = await getSession();
   const posts = await getPosts();

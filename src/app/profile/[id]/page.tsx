@@ -6,6 +6,13 @@ import ProfileCard from '@/components/profile/ProfileCard';
 import ProfilePost from '@/components/profile/ProfilePost';
 import { Toaster } from 'react-hot-toast';
 
+export const generateMetadata = async ({ params }: { params: { id: string } }) => {
+  const userInfo = await getUserInfo(params.id);
+  return {
+    title: `${userInfo?.name} / INIAD`,
+  };
+};
+
 const ProfilePage = async ({ params }: { params: { id: string } }) => {
   const session = await getSession();
   const userInfo = await getUserInfo(params.id);

@@ -1,6 +1,11 @@
 import { getQuestions } from '@/app/actions/getQuestions';
 import QuestionPage from '@/components/question/QuestionPage';
+import { Metadata } from 'next';
 import { getSession } from '../actions/getSession';
+
+export const metadata: Metadata = {
+  title: 'ブックマークした質問 / INIAD',
+};
 
 const Bookmarks = async () => {
   const questions = await getQuestions();
