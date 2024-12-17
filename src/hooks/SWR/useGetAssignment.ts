@@ -3,7 +3,7 @@ import { Assignment } from '@/lib/types';
 import useSWR from 'swr';
 
 export const useGetAssignment = (shouldPolling: boolean, initialAssignments: Assignment[]) => {
-  const { data, error, isLoading } = useSWR(
+  const { data, error, isLoading, mutate } = useSWR(
     shouldPolling ? 'getAssignments' : null,
     getAssigments,
     {
@@ -12,5 +12,5 @@ export const useGetAssignment = (shouldPolling: boolean, initialAssignments: Ass
       revalidateOnFocus: true,
     },
   );
-  return { data, error, isLoading };
+  return { data, error, isLoading, mutate };
 };
