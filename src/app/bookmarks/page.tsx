@@ -2,14 +2,14 @@ import { getQuestions } from '@/app/actions/getQuestions';
 import QuestionPage from '@/components/question/QuestionPage';
 import { Metadata } from 'next';
 import { getSession } from '../actions/getSession';
-
+import { getUserInfo } from '../actions/getUserInfo';
 export const metadata: Metadata = {
   title: 'ブックマークした質問 / INIAD',
 };
 
 const Bookmarks = async () => {
-  const questions = await getQuestions();
-  const session = await getSession();
+  const [session, questions] = await Promise.all([getSession(), getQuestions()]);
+  const userInfo = await getUserInfo(session.id);
 
   const filteredQuestions = questions.filter((question) =>
     question.likes.some((like) => like.user.id === session.id),
@@ -19,9 +19,8 @@ const Bookmarks = async () => {
     <QuestionPage
       currentUserId={session.id}
       initialQuestions={filteredQuestions}
-      title={'ブックマークした質問'}
-      target={null}
       shouldPolling={false}
+      userInfo={userInfo}
     />
   );
 };

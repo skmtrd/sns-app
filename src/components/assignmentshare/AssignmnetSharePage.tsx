@@ -33,6 +33,7 @@ const AssignmnetSharePage: React.FC<AssignmnetSharePageProps> = ({
 
   if (!assignments || isLoading)
     return <QuestionSkeltonLoading title={'課題共有'} subtitle={'すべて'} />;
+
   return (
     <div
       id='mainContent'

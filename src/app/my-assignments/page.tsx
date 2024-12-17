@@ -2,13 +2,15 @@ import AssignmnetSharePage from '@/components/assignmentshare/AssignmnetSharePag
 import { Metadata } from 'next';
 import { getAssignments } from '../actions/getAssignmnets';
 import { getSession } from '../actions/getSession';
+import { getUserInfo } from '../actions/getUserInfo';
+
 export const metadata: Metadata = {
   title: '登録した課題 / INIAD',
 };
 
 const MyAssignments = async () => {
-  const assignments = await getAssignments();
-  const session = await getSession();
+  const [assignments, session] = await Promise.all([getAssignments(), getSession()]);
+  const userInfo = await getUserInfo(session.id);
 
   const filteredAssignments = assignments.filter((assignment) =>
     assignment.likes.some((like) => like.user.id === session.id),
@@ -17,9 +19,8 @@ const MyAssignments = async () => {
     <AssignmnetSharePage
       currentUserId={session.id}
       initialAssignments={filteredAssignments}
-      title={'登録した課題'}
-      target={null}
       shouldPolling={false}
+      userInfo={userInfo}
     />
   );
 };
