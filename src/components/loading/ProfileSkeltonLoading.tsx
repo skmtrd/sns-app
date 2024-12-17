@@ -1,3 +1,4 @@
+import { Profile } from '@/lib/types';
 import { Heart, MessageCircleReply, MoreVertical } from 'lucide-react';
 import FixedHeader from '../layout/FixedHeader';
 
@@ -86,9 +87,19 @@ const ProfileSkeltonLoading = ({ title, subtitle }: { title: string; subtitle: s
   const duummy = () => {
     return;
   };
+  const userInfo: Profile = {
+    id: '',
+    name: '',
+    email: '',
+    introduction: '',
+    iconUrl: '',
+    image: '',
+    tags: [],
+    posts: [],
+  };
   return (
     <div className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-auto bg-gray-100'>
-      <FixedHeader title={title} target={subtitle} />
+      <FixedHeader userInfo={userInfo} handleTagClick={duummy} currentTagId={null} />
       <div className='flex w-full flex-col items-center gap-y-4'>
         <SkeltonProfile />
         <div className='mt-2'></div>

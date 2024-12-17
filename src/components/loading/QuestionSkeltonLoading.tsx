@@ -1,7 +1,7 @@
+import { Profile } from '@/lib/types';
 import { ChevronDown, Heart, MessageCircleReply, MoreVertical } from 'lucide-react';
 import Header from '../element/Header';
 import FixedHeader from '../layout/FixedHeader';
-
 const SkeltonPost = () => {
   return (
     <div className='relative w-11/12 rounded-lg bg-white p-6 shadow'>
@@ -49,9 +49,19 @@ const QuestionSkeltonLoading = ({ title, subtitle }: { title: string; subtitle: 
   const duummy = () => {
     return;
   };
+  const userInfo: Profile = {
+    id: '',
+    name: '',
+    email: '',
+    introduction: '',
+    iconUrl: '',
+    image: '',
+    tags: [],
+    posts: [],
+  };
   return (
     <div className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-auto bg-gray-100'>
-      <FixedHeader title={title} target={subtitle} />
+      <FixedHeader userInfo={userInfo} handleTagClick={duummy} currentTagId={null} />
       <Header title={''} />
       <div className='h-1 w-full'></div>
       <div className='flex w-full flex-col items-center gap-y-4'>
