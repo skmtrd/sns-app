@@ -27,7 +27,7 @@ const AssignmnetSharePage: React.FC<AssignmnetSharePageProps> = ({
   const filteredAssignments =
     currentTagId === 'all'
       ? assignments
-      : assignments.filter((assignment) =>
+      : assignments.filter((assignment: Assignment) =>
           assignment.author.tags?.some((tag) => tag.id === currentTagId),
         );
 
@@ -46,7 +46,7 @@ const AssignmnetSharePage: React.FC<AssignmnetSharePageProps> = ({
       />
       <div className='mx-auto mt-16 w-full max-w-5xl py-8 sm:px-6 lg:px-8'>
         <div className='flex flex-col items-center space-y-6'>
-          {filteredAssignments.map((assignment) => (
+          {filteredAssignments.map((assignment: Assignment) => (
             <AssignmentPost
               key={assignment.id}
               assignment={assignment}
