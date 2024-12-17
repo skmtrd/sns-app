@@ -1,8 +1,8 @@
-import { getAssignments } from '@/app/actions/getAssignmnets';
 import { getSession } from '@/app/actions/getSession';
-import AssignmnetSharePage from '@/components/assignmentshare/AssignmnetSharePage';
+import AssignmnetSharePage from '@/components/assignmentshare/AssignmentSharePage';
 import { Metadata } from 'next';
 import { revalidatePath } from 'next/cache';
+import { getAssigments } from '../actions/getAssignments';
 import { getUserInfo } from '../actions/getUserInfo';
 
 export const metadata: Metadata = {
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 const AssignmentAll = async () => {
-  const [assignments, session] = await Promise.all([getAssignments(), getSession()]);
+  const [assignments, session] = await Promise.all([getAssigments(), getSession()]);
   const userInfo = await getUserInfo(session.id);
   revalidatePath('/assignmentshare');
 

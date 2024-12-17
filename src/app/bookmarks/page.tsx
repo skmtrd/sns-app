@@ -3,6 +3,7 @@ import QuestionPage from '@/components/question/QuestionPage';
 import { Metadata } from 'next';
 import { getSession } from '../actions/getSession';
 import { getUserInfo } from '../actions/getUserInfo';
+
 export const metadata: Metadata = {
   title: 'ブックマークした質問 / INIAD',
 };

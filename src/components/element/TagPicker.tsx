@@ -24,13 +24,13 @@ export const TagPicker: React.FC<TagPickerProps> = ({ allTags, updateTags, updat
 
   const availableTags = allTags.filter((tag) => updatedTags.every((t: Tag) => t.name !== tag.name));
 
-  const handleAddTag = (tagName: string) => {
-    const newSelectedTags = [...updatedTags, { id: '', name: tagName }];
+  const handleAddTag = (tagId: string, tagName: string) => {
+    const newSelectedTags = [...updatedTags, { id: tagId, name: tagName }];
     updateTags(newSelectedTags);
   };
 
-  const handleRemoveTag = (tagName: string) => {
-    const newSelectedTags = updatedTags.filter((tag: Tag) => tag.name !== tagName);
+  const handleRemoveTag = (tagId: string, tagName: string) => {
+    const newSelectedTags = updatedTags.filter((tag: Tag) => tag.id !== tagId);
     updateTags(newSelectedTags);
   };
 
@@ -41,7 +41,12 @@ export const TagPicker: React.FC<TagPickerProps> = ({ allTags, updateTags, updat
       <div className='flex flex-wrap'>
         {updatedTags.length >= 1 ? (
           updatedTags.map((tag: Tag) => (
-            <RemovableUserTag key={tag.name} tagName={tag.name} handleRemoveTag={handleRemoveTag} />
+            <RemovableUserTag
+              key={tag.name}
+              tagId={tag.id}
+              tagName={tag.name}
+              handleRemoveTag={handleRemoveTag}
+            />
           ))
         ) : (
           <p className='text-base text-black/80'>タグなし</p>
@@ -70,7 +75,7 @@ export const TagPicker: React.FC<TagPickerProps> = ({ allTags, updateTags, updat
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  handleAddTag(tag.name);
+                  handleAddTag(tag.id, tag.name);
                 }}
               >
                 <UserTag tagName={tag.name}></UserTag>

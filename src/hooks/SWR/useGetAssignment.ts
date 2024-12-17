@@ -1,4 +1,4 @@
-import { getAssignments } from '@/app/actions/getAssignmnets';
+import { getAssignments } from '@/app/actions/getAssignments';
 import { Assignment } from '@/lib/types';
 import useSWR from 'swr';
 

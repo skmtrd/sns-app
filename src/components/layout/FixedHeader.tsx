@@ -30,19 +30,25 @@ const FixedHeader: React.FC<TimeLineHeaderProps> = ({ userInfo, handleTagClick, 
   }
 
   return (
-    <div className='fixed left-16 top-0 z-10 w-[calc(100%-4rem)] flex-col items-center justify-center overflow-x-hidden border-b-gray-200 bg-white px-4 py-5 xl:left-80 xl:w-[calc(100%-40rem)]'>
-      <div className='flex justify-evenly'>
-        {tags.map((tag) => (
-          <div key={tag.id} className='flex flex-col items-center'>
-            <button className='text-base font-bold' onClick={() => handleTagClick(tag.id)}>
-              {tag.name}
-            </button>
-            <div
-              className={`h-[3px] w-full rounded-full ${currentTagId === tag.id ? 'bg-blue-600' : 'bg-transparent'}`}
-            />
-          </div>
-        ))}
-      </div>
+    <div className='fixed left-16 top-0 z-10 w-[calc(100%-4rem)] flex-col items-center justify-center overflow-x-hidden border-b-gray-200 bg-white px-8 py-5 xl:left-80 xl:w-[calc(100%-40rem)]'>
+      {pathname.includes('search') ? (
+        <div className='flex justify-start'>
+          <div className='text-lg font-bold'>検索</div>
+        </div>
+      ) : (
+        <div className='flex justify-evenly'>
+          {tags.map((tag) => (
+            <div key={tag.id} className='flex flex-col items-center'>
+              <button className='text-base font-bold' onClick={() => handleTagClick(tag.id)}>
+                {tag.name}
+              </button>
+              <div
+                className={`h-[3px] w-full rounded-full ${currentTagId === tag.id ? 'bg-blue-600' : 'bg-transparent'}`}
+              />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

@@ -4,10 +4,11 @@ import { X } from 'lucide-react';
 
 type Props = {
   tagName: string;
-  handleRemoveTag: (tagName: string) => void;
+  tagId: string;
+  handleRemoveTag: (tagId: string, tagName: string) => void;
 };
 
-const RemovableUserTag: React.FC<Props> = ({ tagName, handleRemoveTag }) => {
+const RemovableUserTag: React.FC<Props> = ({ tagName, tagId, handleRemoveTag }) => {
   return (
     <div>
       <span className='mb-2 mr-2 inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-sm text-blue-800 shadow hover:bg-blue-300'>
@@ -17,7 +18,7 @@ const RemovableUserTag: React.FC<Props> = ({ tagName, handleRemoveTag }) => {
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            handleRemoveTag(tagName);
+            handleRemoveTag(tagId, tagName);
           }}
         >
           <X size={15} />

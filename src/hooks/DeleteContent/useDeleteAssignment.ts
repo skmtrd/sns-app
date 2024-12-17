@@ -1,4 +1,4 @@
-import { getAssignments } from '@/app/actions/getAssignmnets';
+import { getAssignments } from '@/app/actions/getAssignments';
 import useSWR from 'swr';
 import { deleteAssignment } from '../../lib/deleteRequests';
 
