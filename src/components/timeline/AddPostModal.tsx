@@ -126,6 +126,11 @@ export const AddPost: React.FC<AddPostProps> = ({ closeModal }) => {
         </div>
         <div className='w-full p-4'>
           <form className='flex flex-col gap-4' onSubmit={handleSubmit(onSubmit)}>
+            <div className='flex w-full overflow-x-auto pb-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300'>
+              <div className='flex gap-2 whitespace-nowrap'>
+                {/* タグの内容 */}
+              </div>
+            </div>
             <textarea
               id='content'
               {...register('content', {

@@ -31,7 +31,7 @@ const AssignmnetSharePage: React.FC<AssignmnetSharePageProps> = ({
       className='flex w-full flex-1 grow flex-col items-center overflow-y-scroll bg-gray-100'
     >
       <FixedHeader title={title} target={target} />
-      <div className='mx-auto mt-10 w-full max-w-5xl py-8 sm:px-6 lg:px-8'>
+      <div className='mx-auto mt-16 w-full max-w-5xl py-8 sm:px-6 lg:px-8'>
         <div className='flex flex-col items-center space-y-6'>
           {assignments.map((assignment) => (
             <AssignmentPost
