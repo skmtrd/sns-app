@@ -13,13 +13,11 @@ export const metadata: Metadata = {
 const TimelineAll = async () => {
   const [session, posts] = await Promise.all([getSession(), getPosts()]);
   const userInfo = await getUserInfo(session.id);
-  revalidatePath('/timeline/all');
+  revalidatePath('/timeline');
   return (
     <TimeLinePage
       initialPosts={posts}
       currentUserId={session.id}
-      title={'タイムライン'}
-      target={'すべて'}
       shouldPolling={true}
       userInfo={userInfo}
     />

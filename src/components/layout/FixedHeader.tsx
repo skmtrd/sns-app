@@ -30,7 +30,7 @@ const FixedHeader: React.FC<TimeLineHeaderProps> = ({ userInfo, handleTagClick, 
   }
 
   return (
-    <div className='fixed left-16 top-0 z-10 w-[calc(100%-4rem)] flex-col items-center justify-center overflow-x-hidden border-x-gray-200 border-t-gray-200 bg-white px-4 py-6 xl:left-80 xl:w-[calc(100%-40rem)]'>
+    <div className='fixed left-16 top-0 z-10 w-[calc(100%-4rem)] flex-col items-center justify-center overflow-x-hidden border-x-gray-200 border-t-gray-200 bg-white px-4 py-5 xl:left-80 xl:w-[calc(100%-40rem)]'>
       <div className='flex justify-evenly'>
         {tags.map((tag) => (
           <div key={tag.id} className='flex flex-col items-center'>

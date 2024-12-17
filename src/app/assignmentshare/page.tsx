@@ -2,22 +2,24 @@ import { getAssignments } from '@/app/actions/getAssignmnets';
 import { getSession } from '@/app/actions/getSession';
 import AssignmnetSharePage from '@/components/assignmentshare/AssignmnetSharePage';
 import { Metadata } from 'next';
+import { revalidatePath } from 'next/cache';
+import { getUserInfo } from '../actions/getUserInfo';
 
 export const metadata: Metadata = {
   title: '課題共有 / INIAD',
 };
 
 const AssignmentAll = async () => {
-  const assignments = await getAssignments();
-  const session = await getSession();
+  const [assignments, session] = await Promise.all([getAssignments(), getSession()]);
+  const userInfo = await getUserInfo(session.id);
+  revalidatePath('/assignmentshare');
 
   return (
     <AssignmnetSharePage
       currentUserId={session.id}
       initialAssignments={assignments}
-      title={'課題共有'}
-      target={'すべて'}
       shouldPolling={true}
+      userInfo={userInfo}
     />
   );
 };

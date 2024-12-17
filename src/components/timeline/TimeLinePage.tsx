@@ -10,8 +10,6 @@ import { Post } from './Post';
 type TimeLinePageProps = {
   initialPosts: PostType[];
   currentUserId: string;
-  title: string;
-  target: string | null;
   shouldPolling: boolean;
   userInfo: Profile;
 };
@@ -20,8 +18,6 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 const TimeLinePage: React.FC<TimeLinePageProps> = ({
   initialPosts,
   currentUserId,
-  title,
-  target,
   shouldPolling,
   userInfo,
 }) => {

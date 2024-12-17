@@ -24,9 +24,9 @@ const SideBar = async () => {
   const userId = await getUserId();
 
   const navItems1: NavItem[] = [
-    { page: '/timeline/all', label: 'タイムライン', icon: <Home /> },
-    { page: '/assignmentshare/all', label: '課題共有', icon: <ClipboardList /> },
-    { page: '/question/all', label: '質問スペース', icon: <HelpCircle /> },
+    { page: '/timeline', label: 'タイムライン', icon: <Home /> },
+    { page: '/assignmentshare', label: '課題共有', icon: <ClipboardList /> },
+    { page: '/question', label: '質問スペース', icon: <HelpCircle /> },
   ];
 
   const navItems2: NavItem[] = [
