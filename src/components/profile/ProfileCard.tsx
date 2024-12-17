@@ -1,7 +1,7 @@
 'use client';
 import { useImageModal } from '@/hooks/useImageModal';
 import { ICON_IMAGE_BASE_URL } from '@/lib/constants';
-import { ProfileSchema, SessionSchema } from '@/lib/schemas';
+import { ProfileSchema } from '@/lib/schemas';
 import Image from 'next/image';
 import { z } from 'zod';
 import Button from '../element/Button';
@@ -9,9 +9,14 @@ import { ImageDisplayModal } from '../element/ImageDisplayModal';
 import UserTag from '../element/UserTag';
 
 type userInfo = z.infer<typeof ProfileSchema>;
-type session = z.infer<typeof SessionSchema>;
 
-const ProfileCard = ({ userInfo, session }: { userInfo: userInfo; session: session }) => {
+const ProfileCard = ({
+  userInfo,
+  currentUserId,
+}: {
+  userInfo: userInfo;
+  currentUserId: string;
+}) => {
   const { isImageModalOpen, modalSrc, openImageModal, closeImageModal } = useImageModal();
   const imageUrl = userInfo.iconUrl
     ? `${ICON_IMAGE_BASE_URL}${userInfo.iconUrl}`
@@ -51,7 +56,7 @@ const ProfileCard = ({ userInfo, session }: { userInfo: userInfo; session: sessi
           <UserTag key={tag.id} tagName={tag.name} />
         ))}
       </div>
-      {session.id === userInfo.id && (
+      {currentUserId === userInfo.id && (
         <div className='flex w-full justify-end'>
           <Button title={'編集'} href={`${userInfo.id}/edit`} />
         </div>
