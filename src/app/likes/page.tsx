@@ -7,6 +7,8 @@ export const metadata: Metadata = {
   title: 'いいねしたポスト / INIAD',
 };
 
+export const dynamic = 'force-dynamic';
+
 const Likes = async () => {
   const [session, posts] = await Promise.all([getSession(), getPosts()]);
   const userInfo = await getUserInfo(session.id);

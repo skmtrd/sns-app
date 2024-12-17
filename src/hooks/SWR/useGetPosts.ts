@@ -7,6 +7,7 @@ export const useGetPosts = (shouldPolling: boolean, initialPosts: Post[]) => {
     refreshInterval: 10000,
     revalidateOnFocus: true,
     fallback: initialPosts,
+    revalidateOnMount: true,
   });
   return { data, error, isLoading, mutate };
 };

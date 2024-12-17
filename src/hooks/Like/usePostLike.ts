@@ -1,6 +1,7 @@
-import { addPostLike, deletePostLike } from '@/lib/likeRequests';
+import { likePost, unLikePost } from '@/app/actions/like/likePost';
 import { Like } from '@/lib/types';
 import { useState } from 'react';
+import { mutate } from 'swr';
 
 export const usePostLike = (likes: Like[], currentUserId: string) => {
   const [likesCount, setLikesCount] = useState(likes.length);
@@ -16,15 +17,16 @@ export const usePostLike = (likes: Like[], currentUserId: string) => {
 
     try {
       if (isLiked) {
-        await deletePostLike(postId);
+        await unLikePost(postId);
       } else {
-        await addPostLike(postId);
+        await likePost(postId);
       }
     } catch (error) {
       setIsLiked(isLiked);
       setLikesCount(likesCount);
     } finally {
       setIsLiking(false);
+      mutate('getPosts');
     }
   };
 
