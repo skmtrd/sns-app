@@ -80,5 +80,4 @@ export const SessionSchema = z.object({
   id: z.string(),
   name: z.string(),
   image: z.string().nullable(),
-  iconUrl: z.string().nullable(),
 });
