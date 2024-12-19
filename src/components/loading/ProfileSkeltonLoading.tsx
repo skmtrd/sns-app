@@ -90,7 +90,6 @@ const ProfileSkeltonLoading = ({ title, subtitle }: { title: string; subtitle: s
   const userInfo: Profile = {
     id: '',
     name: '',
-    email: '',
     introduction: '',
     iconUrl: '',
     image: '',

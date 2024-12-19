@@ -52,7 +52,6 @@ const QuestionSkeltonLoading = ({ title, subtitle }: { title: string; subtitle: 
   const userInfo: Profile = {
     id: '',
     name: '',
-    email: '',
     introduction: '',
     iconUrl: '',
     image: '',
