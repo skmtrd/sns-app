@@ -6,6 +6,13 @@ import ProfileCard from '@/components/profile/ProfileCard';
 import ProfilePost from '@/components/profile/ProfilePost';
 import { Toaster } from 'react-hot-toast';
 
+export const generateMetadata = async ({ params }: { params: { id: string } }) => {
+  const userInfo = await getUserInfo(params.id);
+  return {
+    title: `${userInfo?.name} / INIAD`,
+  };
+};
+
 const ProfilePage = async ({ params }: { params: { id: string } }) => {
   const session = await getSession();
   const userInfo = await getUserInfo(params.id);
@@ -19,8 +26,8 @@ const ProfilePage = async ({ params }: { params: { id: string } }) => {
       <main className='h-screen overflow-y-auto bg-gray-100'>
         <Toaster />
         <div className='mx-auto max-w-5xl py-8 sm:px-6 lg:px-8'>
-          <ProfileCard userInfo={userInfo} session={session} />
-          <ProfilePost posts={userInfo.posts} currentUserId={session.id} />
+          <ProfileCard userInfo={userInfo} currentUserId={session.id} />
+          <ProfilePost posts={userInfo.posts} currentUserId={session?.id} />
         </div>
       </main>
     </div>

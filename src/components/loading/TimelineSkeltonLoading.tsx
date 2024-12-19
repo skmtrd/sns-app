@@ -1,3 +1,4 @@
+import { Profile } from '@/lib/types';
 import { Heart, MessageCircleReply, MoreVertical } from 'lucide-react';
 import Header from '../element/Header';
 import FixedHeader from '../layout/FixedHeader';
@@ -50,9 +51,18 @@ const TimelineSkeltonLoading = ({ title, subtitle }: { title: string; subtitle: 
   const duummy = () => {
     return;
   };
+  const userInfo: Profile = {
+    id: '',
+    name: '',
+    introduction: '',
+    iconUrl: '',
+    image: '',
+    tags: [],
+    posts: [],
+  };
   return (
     <div className='flex w-full flex-1 grow flex-col items-center gap-4 overflow-y-auto bg-gray-100'>
-      <FixedHeader title={title} target={subtitle} />
+      <FixedHeader userInfo={userInfo} handleTagClick={duummy} currentTagId={null} />
       <Header title={''} />
       <div className='h-1 w-full'></div>
       <div className='flex w-full flex-col items-center gap-y-4'>

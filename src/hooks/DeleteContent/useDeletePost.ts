@@ -1,9 +1,8 @@
-import { getPosts } from '@/app/actions/getPosts';
-import useSWR from 'swr';
-import { deletePost } from '../../lib/deleteRequests';
+import { deletePost } from '@/app/actions/delete/delete';
+import { useGetPosts } from '../SWR/useGetPosts';
 
 export const useDeletePost = async () => {
-  const { data: posts, mutate } = useSWR('getPosts', getPosts);
+  const { data: posts, mutate } = useGetPosts(true, []);
   const handleDeletePost = async (postId: string) => {
     if (!posts) return;
     const optimisticData = posts.filter((post) => post.id !== postId);

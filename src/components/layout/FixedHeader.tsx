@@ -1,29 +1,54 @@
 'use client';
 
-import { scrollToTop } from '@/lib/scrollToTop';
+import { Profile } from '@/lib/types';
+import { usePathname } from 'next/navigation';
 
 type TimeLineHeaderProps = {
-  target: string | undefined | null;
-  title: string;
+  userInfo: Profile;
+  handleTagClick: (tagId: string) => void;
+  currentTagId: string | null;
 };
 
-const FixedHeader: React.FC<TimeLineHeaderProps> = ({ title, target }) => {
+const FixedHeader: React.FC<TimeLineHeaderProps> = ({ userInfo, handleTagClick, currentTagId }) => {
+  const pathname = usePathname();
+
+  const tags = [
+    {
+      id: 'all',
+      name: 'すべて',
+    },
+    ...(userInfo?.tags.map((tag) => ({
+      id: tag.id,
+      name: tag.name,
+    })) || []),
+  ];
+
+  if (currentTagId === null) {
+    const path = pathname.split('/');
+    const tagId = path[path.length - 1];
+    handleTagClick(tagId);
+  }
+
   return (
-    <div className='relative z-10 w-full'>
-      <header className='fixed flex w-full items-center justify-between border-b border-gray-200 bg-white p-4'>
-        <button onClick={scrollToTop}>
-          {!target ? (
-            <h2 className='text-xl font-bold'>{title}</h2>
-          ) : (
-            <h2 className='text-xl font-bold'>
-              {title}-{target}
-            </h2>
-          )}
-        </button>
-        <div className='flex items-center'>
-          <div className='relative mr-4'></div>
+    <div className='fixed left-16 top-0 z-10 w-[calc(100%-4rem)] flex-col items-center justify-center overflow-x-hidden border-b-gray-200 bg-white px-8 py-5 xl:left-80 xl:w-[calc(100%-40rem)]'>
+      {pathname.includes('search') ? (
+        <div className='flex justify-start'>
+          <div className='text-lg font-bold'>検索</div>
         </div>
-      </header>
+      ) : (
+        <div className='flex justify-evenly'>
+          {tags.map((tag) => (
+            <div key={tag.id} className='flex flex-col items-center'>
+              <button className='text-base font-bold' onClick={() => handleTagClick(tag.id)}>
+                {tag.name}
+              </button>
+              <div
+                className={`h-[3px] w-full rounded-full ${currentTagId === tag.id ? 'bg-blue-600' : 'bg-transparent'}`}
+              />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

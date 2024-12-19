@@ -1,13 +1,14 @@
-import { addQuestionLike, deleteQuestionLike } from '@/lib/likeRequests';
+import { bookmarkQuestion, unBookmarkQuestion } from '@/app/actions/like/bookmarkQuestion';
 import { Like } from '@/lib/types';
 import { useState } from 'react';
+import { mutate } from 'swr';
 
 export const useQuestionLike = (likes: Like[], currentUserId: string) => {
   const [likesCount, setLikesCount] = useState(likes.length);
   const [isLiked, setIsLiked] = useState(likes.some((like) => like.user.id === currentUserId));
   const [isLiking, setIsLiking] = useState(false);
 
-  const handleToggleLike = async (postId: string) => {
+  const handleToggleLike = async (questionId: string) => {
     if (isLiking) return;
 
     setIsLiking(true);
@@ -16,15 +17,16 @@ export const useQuestionLike = (likes: Like[], currentUserId: string) => {
 
     try {
       if (isLiked) {
-        await deleteQuestionLike(postId);
+        await unBookmarkQuestion(questionId);
       } else {
-        await addQuestionLike(postId);
+        await bookmarkQuestion(questionId);
       }
     } catch (error) {
       setIsLiked(isLiked);
       setLikesCount(likesCount);
     } finally {
       setIsLiking(false);
+      mutate('getQuestions');
     }
   };
 

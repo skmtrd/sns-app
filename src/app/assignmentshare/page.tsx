@@ -1,27 +1,27 @@
+import { getSession } from '@/app/actions/getSession';
 import AssignmnetSharePage from '@/components/assignmentshare/AssignmentSharePage';
 import { Metadata } from 'next';
+import { revalidatePath } from 'next/cache';
 import { getAssigments } from '../actions/getAssignments';
-import { getSession } from '../actions/getSession';
 import { getUserInfo } from '../actions/getUserInfo';
+
 export const metadata: Metadata = {
-  title: '登録した課題 / INIAD',
+  title: '課題共有 / INIAD',
 };
 
-const MyAssignments = async () => {
+const AssignmentAll = async () => {
   const [assignments, session] = await Promise.all([getAssigments(), getSession()]);
   const userInfo = await getUserInfo(session.id);
+  revalidatePath('/assignmentshare');
 
-  const filteredAssignments = assignments.filter((assignment) =>
-    assignment.likes.some((like) => like.user.id === session.id),
-  );
   return (
     <AssignmnetSharePage
       currentUserId={session.id}
-      initialAssignments={filteredAssignments}
-      shouldPolling={false}
+      initialAssignments={assignments}
+      shouldPolling={true}
       userInfo={userInfo}
     />
   );
 };
 
-export default MyAssignments;
+export default AssignmentAll;

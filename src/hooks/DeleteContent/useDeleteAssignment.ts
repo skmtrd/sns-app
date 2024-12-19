@@ -1,9 +1,8 @@
-import { getAssignments } from '@/app/actions/getAssignmnets';
-import useSWR from 'swr';
-import { deleteAssignment } from '../../lib/deleteRequests';
+import { deleteAssignment } from '@/app/actions/delete/delete';
+import { useGetAssignment } from '../SWR/useGetAssignment';
 
 export const useDeleteAssignment = async () => {
-  const { data: assignments, mutate } = useSWR('getAssignments', getAssignments);
+  const { data: assignments, mutate } = useGetAssignment(true, []);
   const handleDeleteAssignment = async (assignmentId: string) => {
     const optimisticData = assignments?.filter((assignment) => assignment.id !== assignmentId);
     try {

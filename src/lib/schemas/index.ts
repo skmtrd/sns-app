@@ -8,8 +8,8 @@ export const tagSchema = z.object({
 export const userSchema = z.object({
   id: z.string(),
   name: z.string(),
-  email: z.string().email(),
-  emailVerified: z.date().nullable(),
+  // email: z.string().email(),
+  // emailVerified: z.date().nullable(),
   image: z.string().nullable(),
   iconUrl: z.string().nullable(),
 });
@@ -71,7 +71,6 @@ export const AssignmentSchema = z.object({
 export const ProfileSchema = z.object({
   name: z.string(),
   id: z.string(),
-  email: z.string(),
   introduction: z.string().nullable(),
   iconUrl: z.string().nullable(),
   image: z.string().nullable(),
