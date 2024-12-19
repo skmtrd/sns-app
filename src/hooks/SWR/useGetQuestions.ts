@@ -10,6 +10,7 @@ export const useGetQuestions = (shouldPolling: boolean, initialQuestions: Questi
       refreshInterval: 10000,
       fallback: initialQuestions,
       revalidateOnFocus: true,
+      revalidateOnMount: true,
     },
   );
   return { data, error, isLoading, mutate };
