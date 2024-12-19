@@ -1,6 +1,10 @@
 import Header from '@/components/element/Header';
 import { PATCHNOTE_LIST } from '@/lib/constants/patchnote';
 
+export const metadata = {
+  title: 'パッチノート / INIAD',
+};
+
 const page = ({ params }: { params: { id: string } }) => {
   const patchnote = PATCHNOTE_LIST.find((patchnote) => patchnote.id === params.id);
   return (

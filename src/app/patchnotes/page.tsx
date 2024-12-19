@@ -2,6 +2,10 @@ import Header from '@/components/element/Header';
 import { PATCHNOTE_LIST } from '@/lib/constants/patchnote';
 import Link from 'next/link';
 
+export const metadata = {
+  title: 'パッチノート / INIAD',
+};
+
 const PatchnoteBox = ({ title, date, id }: { title: string; date: string; id: string }) => {
   return (
     <div className='flex w-full flex-col rounded-lg bg-white p-4 shadow-md'>

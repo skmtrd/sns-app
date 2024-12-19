@@ -24,6 +24,10 @@ export const PATCHNOTE_LIST = [
         description:
           'タイムラインで画面上側に、自分につけているタグの名前が表示され、クリックするとそのタグをつけているユーザーの投稿のみが表示されます。',
       },
+      {
+        title: 'メタデータの追加',
+        description: 'メタデータを追加しました。',
+      },
     ],
     minorChanges: [
       {
