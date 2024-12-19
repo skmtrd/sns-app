@@ -1,4 +1,4 @@
-import { formatTimeUntil } from '@/lib/formatTimeUntil';
+import { formatTimeUntil } from '@/lib/functions/formatTimeUntil';
 import { useEffect, useState } from 'react';
 
 export const useDeadline = (timestamp: string): string => {

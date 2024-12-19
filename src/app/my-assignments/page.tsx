@@ -1,6 +1,6 @@
 import AssignmnetSharePage from '@/components/assignmentshare/AssignmentSharePage';
 import { Metadata } from 'next';
-import { getAssigments } from '../actions/getAssignments';
+import { getAssignments } from '../actions/getAssignments';
 import { getSession } from '../actions/getSession';
 import { getUserInfo } from '../actions/getUserInfo';
 export const metadata: Metadata = {
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 const MyAssignments = async () => {
-  const [assignments, session] = await Promise.all([getAssigments(), getSession()]);
+  const [assignments, session] = await Promise.all([getAssignments(), getSession()]);
   const userInfo = await getUserInfo(session.id);
 
   const filteredAssignments = assignments.filter((assignment) =>

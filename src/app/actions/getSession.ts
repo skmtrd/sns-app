@@ -1,8 +1,8 @@
 'use server';
 
+import { auth } from '@/auth';
 import { SessionSchema } from '@/lib/schemas';
 import { redirect } from 'next/navigation';
-import { auth } from '../../../auth';
 
 export const getSession = async () => {
   const session = await auth();

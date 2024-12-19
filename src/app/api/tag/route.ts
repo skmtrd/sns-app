@@ -1,5 +1,5 @@
+import { auth } from '@/auth';
 import { NextResponse } from 'next/server';
-import { auth } from '../../../../auth';
 import { dbConnect } from '../lib/dbConnect';
 import { handleAPIError } from '../lib/handleAPIError';
 import prisma from '../lib/prisma';

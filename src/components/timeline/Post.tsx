@@ -1,6 +1,6 @@
 'use client';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
-import { ICON_IMAGE_BASE_URL, POST_IMAGE_BASE_URL } from '@/lib/constants';
+import { ICON_IMAGE_BASE_URL, POST_IMAGE_BASE_URL } from '@/lib/constants/baseUrl';
 import { Post as PostType } from '@/lib/types';
 import PostBottomItems from './PostElement/PostBottomItems/PostBottomItems';
 import PostHeader from './PostElement/PostHeader/PostHeader';

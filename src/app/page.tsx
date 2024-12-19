@@ -1,5 +1,4 @@
-import { auth } from './../../auth';
-
+import { auth } from '@/auth';
 import SignInButton from '@/components/element/SignInButton';
 import SignOutButton from '@/components/element/SignOutButton';
 import { redirect } from 'next/navigation';

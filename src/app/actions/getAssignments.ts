@@ -3,7 +3,7 @@ import { AssignmentSchema } from '@/lib/schemas';
 import { revalidatePath } from 'next/cache';
 import prisma from '../api/lib/prisma';
 
-export const getAssigments = async () => {
+export const getAssignments = async () => {
   const assignments = await prisma.assignment.findMany({
     include: {
       replies: {

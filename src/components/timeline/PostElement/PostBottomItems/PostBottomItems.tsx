@@ -11,7 +11,7 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useDeletePost } from '@/hooks/DeleteContent/useDeletePost';
 import { usePostLike } from '@/hooks/Like/usePostLike';
-import { ICON_IMAGE_BASE_URL } from '@/lib/constants';
+import { ICON_IMAGE_BASE_URL } from '@/lib/constants/baseUrl';
 import { Like, Reply } from '@/lib/types';
 import { Heart, MessageCircleReply, MoreVertical } from 'lucide-react';
 import { useState } from 'react';

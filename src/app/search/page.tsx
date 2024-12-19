@@ -1,7 +1,7 @@
 import AssignmentSharePage from '@/components/assignmentshare/AssignmentSharePage';
 import QuestionPage from '@/components/question/QuestionPage';
 import TimeLinePage from '@/components/timeline/TimeLinePage';
-import { getAssigments } from '../actions/getAssignments';
+import { getAssignments } from '../actions/getAssignments';
 import { getPosts } from '../actions/getPosts';
 import { getQuestions } from '../actions/getQuestions';
 import { getSession } from '../actions/getSession';
@@ -57,7 +57,7 @@ const page = async ({
       />
     );
   } else if (type === '課題') {
-    const [session, assignments] = await Promise.all([getSession(), getAssigments()]);
+    const [session, assignments] = await Promise.all([getSession(), getAssignments()]);
     const userInfo = await getUserInfo(session.id);
     const filteredAssignments = assignments.filter((assignment) => {
       const matchesTags =

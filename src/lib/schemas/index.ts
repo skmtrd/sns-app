@@ -8,8 +8,6 @@ export const tagSchema = z.object({
 export const userSchema = z.object({
   id: z.string(),
   name: z.string(),
-  // email: z.string().email(),
-  // emailVerified: z.date().nullable(),
   image: z.string().nullable(),
   iconUrl: z.string().nullable(),
 });

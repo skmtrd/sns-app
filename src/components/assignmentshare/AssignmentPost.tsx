@@ -1,7 +1,7 @@
 'use client';
 import { useDeadline } from '@/hooks/useDeadline';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
-import { ASSIGNMENT_IMAGE_BASE_URL } from '@/lib/constants';
+import { ASSIGNMENT_IMAGE_BASE_URL } from '@/lib/constants/baseUrl';
 import { Assignment } from '@/lib/types';
 import { useState } from 'react';
 import AssignmentPostBottomItems from './AssignmentPostElements/AssignmentPostButtonItems/AssignmentPostBottomItems';

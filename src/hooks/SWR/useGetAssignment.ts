@@ -1,11 +1,11 @@
-import { getAssigments } from '@/app/actions/getAssignments';
+import { getAssignments } from '@/app/actions/getAssignments';
 import { Assignment } from '@/lib/types';
 import useSWR from 'swr';
 
 export const useGetAssignment = (shouldPolling: boolean, initialAssignments: Assignment[]) => {
   const { data, error, isLoading, mutate } = useSWR(
     shouldPolling ? 'getAssignments' : null,
-    getAssigments,
+    getAssignments,
     {
       refreshInterval: 10000,
       fallback: initialAssignments,
