@@ -71,7 +71,6 @@ export const AssignmentSchema = z.object({
 export const ProfileSchema = z.object({
   name: z.string(),
   id: z.string(),
-  email: z.string(),
   introduction: z.string().nullable(),
   iconUrl: z.string().nullable(),
   image: z.string().nullable(),

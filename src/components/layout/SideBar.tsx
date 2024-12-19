@@ -45,8 +45,8 @@ const SideBar = async () => {
 
   const postingItems: NavItem[] = [
     { page: '/post/new', label: 'ポスト', icon: <Antenna size={22} /> },
-    { page: '/question/new', label: '質問', icon: <Hand size={22} /> },
     { page: '/assignment/new', label: '課題', icon: <FilePenLine size={22} /> },
+    { page: '/question/new', label: '質問', icon: <Hand size={22} /> },
   ];
 
   return (
