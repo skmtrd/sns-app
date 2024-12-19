@@ -1,6 +1,4 @@
 import { NextResponse } from 'next/server';
-import { dbConnect } from '../../lib/dbConnect';
-
 import { getUserId } from '../../lib/getUserId';
 import { handleAPIError } from '../../lib/handleAPIError';
 import prisma from '../../lib/prisma';
@@ -9,7 +7,6 @@ import { apiRes } from '../../types';
 
 export const POST = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
-    dbConnect();
     const { postReplyId } = await req.json();
 
     const userId = await getUserId();
@@ -36,8 +33,6 @@ export const POST = async (req: Request, res: NextResponse) =>
 
 export const DELETE = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
-    dbConnect();
-
     const { postReplyId } = await req.json();
 
     const userId = await getUserId();

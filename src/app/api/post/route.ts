@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { dbConnect } from '../lib/dbConnect';
 
 import { getUserId } from '../lib/getUserId';
 import { handleAPIError } from '../lib/handleAPIError';
@@ -36,8 +35,6 @@ export const GET = async (req: Request, res: NextResponse) =>
 
 export const POST = async (req: Request, res: NextResponse) =>
   handleAPIError(async () => {
-    dbConnect();
-
     const formData = await req.formData();
 
     const content = formData.get('content') as string;
