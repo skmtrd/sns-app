@@ -1,4 +1,4 @@
-import { deleteQuestion } from '@/lib/deleteRequests';
+import { deleteQuestion } from '@/app/actions/delete/delete';
 import { useGetQuestions } from '../SWR/useGetQuestions';
 
 export const useDeleteQuestion = async () => {

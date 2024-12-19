@@ -1,4 +1,4 @@
-import { deleteAssignment } from '../../lib/deleteRequests';
+import { deleteAssignment } from '@/app/actions/delete/delete';
 import { useGetAssignment } from '../SWR/useGetAssignment';
 
 export const useDeleteAssignment = async () => {

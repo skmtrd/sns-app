@@ -1,4 +1,4 @@
-import { deletePost } from '../../lib/deleteRequests';
+import { deletePost } from '@/app/actions/delete/delete';
 import { useGetPosts } from '../SWR/useGetPosts';
 
 export const useDeletePost = async () => {
