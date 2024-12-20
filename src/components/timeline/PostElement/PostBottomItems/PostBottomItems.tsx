@@ -48,11 +48,21 @@ const PostBottomItems: React.FC<PostBottomItemsProps> = ({
   const handleDeletePost = useDeletePost();
 
   return (
-    <div className='relative flex w-full items-center justify-between'>
+    <div
+      className='relative flex w-full items-center justify-between'
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+    >
       {isReplyModalOpen && <AddReplyModal closeModal={handleToggleReplyModal} postId={postId} />}
-      <div onClick={(e) => e.stopPropagation()} className='flex items-center justify-center gap-2'>
+      <div className='flex items-center justify-center gap-2'>
         <button
-          onClick={() => handleToggleReplyModal()}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleToggleReplyModal();
+          }}
           className='flex items-center justify-center rounded-full bg-blue-400 px-4 py-2 text-white transition-all hover:bg-blue-600 hover:shadow-lg'
         >
           <MessageCircleReply size={20} />
@@ -62,6 +72,7 @@ const PostBottomItems: React.FC<PostBottomItemsProps> = ({
         </button>
         <button
           onClick={(e) => {
+            e.preventDefault();
             e.stopPropagation();
             handleToggleLike(postId);
           }}
@@ -105,6 +116,7 @@ const PostBottomItems: React.FC<PostBottomItemsProps> = ({
       </div>
       <button
         onClick={(e) => {
+          e.preventDefault();
           e.stopPropagation();
           setIsKebabMenuOpen(!isKebabMenuOpen);
         }}

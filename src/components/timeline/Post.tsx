@@ -2,6 +2,7 @@
 import { useRelativeTime } from '@/hooks/useRelativeTime';
 import { ICON_IMAGE_BASE_URL, POST_IMAGE_BASE_URL } from '@/lib/constants/baseUrl';
 import { Post as PostType } from '@/lib/types';
+import Link from 'next/link';
 import PostBottomItems from './PostElement/PostBottomItems/PostBottomItems';
 import PostHeader from './PostElement/PostHeader/PostHeader';
 import PostMain from './PostElement/PostMain/PostMain';
@@ -16,7 +17,10 @@ export const Post: React.FC<PostProps> = ({ post, currentUserId }) => {
   const timeAgo = useRelativeTime(post.createdAt);
 
   return (
-    <div className='w-11/12 rounded-lg bg-white p-4 shadow hover:bg-slate-50'>
+    <Link
+      href={`/post/${post.id}`}
+      className='w-11/12 rounded-lg bg-white p-4 shadow hover:bg-slate-50'
+    >
       <PostHeader
         src={
           post.author.iconUrl
@@ -44,6 +48,6 @@ export const Post: React.FC<PostProps> = ({ post, currentUserId }) => {
         postAuthorId={post.author.id}
         likes={post.likes}
       />
-    </div>
+    </Link>
   );
 };

@@ -57,6 +57,8 @@ export const AddReplyModal: React.FC<AddPostProps> = ({ closeModal, postId }) =>
         type: 'manual',
         message: err.message,
       });
+    } finally {
+      mutate('getPostsdk l;sakk');
     }
   };
 
@@ -78,10 +80,18 @@ export const AddReplyModal: React.FC<AddPostProps> = ({ closeModal, postId }) =>
 
   return (
     <div
-      onClick={(e) => e.stopPropagation()}
+      onKeyDown={handleKeyDown}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeModal();
+      }}
       className='animate-fadeIn fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-md'
     >
       <div
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
         className='animate-scaleIn w-full max-w-md rounded-lg bg-white shadow-xl'
         role='dialog'
         aria-modal='true'
@@ -113,8 +123,7 @@ export const AddReplyModal: React.FC<AddPostProps> = ({ closeModal, postId }) =>
               placeholder='内容を入力してください'
               maxLength={MAX_CONTENT_LENGTH}
               rows={10}
-              onKeyDown={handleKeyDown}
-              className='w-full rounded-md border p-2 outline-none'
+              className='w-full rounded-md border p-2 font-medium text-black outline-none'
               aria-invalid={errors.content ? 'true' : 'false'}
             />
             <div className='flex w-full justify-end'>
@@ -131,7 +140,7 @@ export const AddReplyModal: React.FC<AddPostProps> = ({ closeModal, postId }) =>
             <button
               type='submit'
               className={cn(
-                'rounded-md bg-blue-500 py-2 text-white',
+                'z-40 rounded-md bg-blue-500 py-2 text-white',
                 (isSubmitting || !content) && 'opacity-50',
               )}
               disabled={isSubmitting || !content}

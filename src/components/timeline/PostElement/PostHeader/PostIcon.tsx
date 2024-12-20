@@ -3,13 +3,15 @@ import { useImageModal } from '@/hooks/useImageModal';
 import Image from 'next/image';
 const PostIcon = ({ src }: { src: string }) => {
   const { isImageModalOpen, modalSrc, openImageModal, closeImageModal } = useImageModal();
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    openImageModal(src);
+  };
+
   return (
-    <button
-      onClick={(e) => {
-        e.stopPropagation();
-        openImageModal(src);
-      }}
-    >
+    <div onClick={handleClick} role='button' tabIndex={0}>
       {isImageModalOpen && <ImageDisplayModal src={modalSrc} closeModal={closeImageModal} />}
       <Image
         src={src}
@@ -18,7 +20,7 @@ const PostIcon = ({ src }: { src: string }) => {
         height={50}
         className='size-12 rounded-full object-cover hover:opacity-80'
       />
-    </button>
+    </div>
   );
 };
 
