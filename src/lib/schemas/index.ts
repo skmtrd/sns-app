@@ -24,6 +24,8 @@ export const ReplySchema = z.object({
   createdAt: z.date(),
   parentReplyId: z.string().nullable(),
   author: authorSchema,
+  authorId: z.string(),
+  // likes: z.array(z.object({ user: userSchema })),
 });
 
 export const LikeSchema = z.object({

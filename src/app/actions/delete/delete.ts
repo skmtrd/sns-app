@@ -38,3 +38,15 @@ export const deleteAssignment = async (assignmentId: string) => {
   revalidatePath('/my-assignments');
   return deletedAssignment;
 };
+
+export const deletePostReply = async (postReplyId: string) => {
+  const deletedPostReply = await prisma.$transaction(async (tx) => {
+    return await tx.postReply.delete({
+      where: { id: postReplyId },
+      include: { post: true },
+    });
+  });
+
+  revalidatePath(`/post/${deletedPostReply.post.id}`);
+  return deletedPostReply;
+};
