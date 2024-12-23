@@ -30,7 +30,8 @@ const QuestionPage: React.FC<QuestionPageProps> = ({
           question.author.tags?.some((tag) => tag.id === currentTagId),
         );
 
-  if (!questions || isLoading) return <QuestionSkeltonLoading title={'質問'} subtitle={'すべて'} />;
+  if (!questions && isLoading) return <QuestionSkeltonLoading title={'質問'} subtitle={'すべて'} />;
+
   return (
     <div
       id='mainContent'
@@ -43,7 +44,7 @@ const QuestionPage: React.FC<QuestionPageProps> = ({
       />
       <div className='mx-auto mt-16 w-full max-w-5xl py-8 sm:px-6 lg:px-8'>
         <div className='flex flex-col items-center space-y-6'>
-          {filteredQuestions.map((question: Question) => (
+          {filteredQuestisons.map((question: Question) => (
             <QuestionPost key={question.id} question={question} currentUserId={currentUserId} />
           ))}
         </div>

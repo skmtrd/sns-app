@@ -30,7 +30,7 @@ const TimeLinePage: React.FC<TimeLinePageProps> = ({
       ? posts
       : posts.filter((post) => post.author.tags?.some((tag) => tag.id === currentTagId));
 
-  if (!posts || isLoading)
+  if (!posts && isLoading)
     return <TimelineSkeltonLoading title={'タイムライン'} subtitle={'すべて'} />;
 
   return (
