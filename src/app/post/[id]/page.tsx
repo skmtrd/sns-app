@@ -1,10 +1,12 @@
 import { getSession } from '@/app/actions/getSession';
 import { getSpecificPost } from '@/app/actions/getSpecificPost';
 import SpecificPostPage from '@/components/timeline/ReplyElement/SpecificPostPage';
-import { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'タイムライン / INIAD',
+export const generateMetadata = async ({ params: { id } }: { params: { id: string } }) => {
+  const post = await getSpecificPost(id);
+  return {
+    title: `${post.author.name}のポスト / INIAD`,
+  };
 };
 
 const TimelineAll = async ({ params: { id } }: { params: { id: string } }) => {
