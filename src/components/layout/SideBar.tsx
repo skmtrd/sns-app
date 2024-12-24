@@ -1,3 +1,4 @@
+import { getUserInfo } from '@/app/actions/getUserInfo';
 import { getUserId } from '@/app/api/lib/getUserId';
 import {
   Antenna,
@@ -11,9 +12,9 @@ import {
   HelpCircle,
   Home,
 } from 'lucide-react';
-import Link from 'next/link';
 import SidebarLinkingButton from '../element/SidebarButton';
 import SidebarPostingButton from '../element/SidebarPostingButton';
+import SidebarProfileLinkButton from '../element/SidebarProfileLinkButton';
 type NavItem = {
   page: string;
   label: string;
@@ -22,6 +23,7 @@ type NavItem = {
 
 const SideBar = async () => {
   const userId = await getUserId();
+  const userInfo = await getUserInfo(userId);
 
   const navItems1: NavItem[] = [
     { page: '/timeline', label: 'タイムライン', icon: <Home /> },
@@ -51,10 +53,6 @@ const SideBar = async () => {
 
   return (
     <div className='z-20 flex w-16 flex-col items-center overflow-y-auto overflow-x-hidden border-r border-gray-200 bg-white p-4 transition-all duration-300 ease-in-out xl:w-80'>
-      <Link href={'/timeline/all'}>
-        <h1 className='mb-4 hidden text-2xl font-bold text-blue-600 xl:block'>INIAD SNS</h1>
-      </Link>
-
       {navItems1.map(({ page, label, icon: Icon }) => (
         <SidebarLinkingButton key={page} page={page} label={label} icon={Icon} />
       ))}
@@ -64,7 +62,12 @@ const SideBar = async () => {
       ))}
       <div className='my-[10px] h-[3px] w-full bg-gray-200' />
       {navItems3.map(({ page, label, icon: Icon }) => (
-        <SidebarLinkingButton key={page} page={page} label={label} icon={Icon} />
+        <SidebarProfileLinkButton
+          key={page}
+          page={page}
+          label={label}
+          iconUrl={userInfo.iconUrl || userInfo.image || ''}
+        />
       ))}
       {postingItems.map(({ label, icon: Icon }) => (
         <SidebarPostingButton key={label} label={label as 'ポスト' | '質問' | '課題'} icon={Icon} />

@@ -14,6 +14,7 @@ const MyAssignments = async () => {
   const filteredAssignments = assignments.filter((assignment) =>
     assignment.likes.some((like) => like.user.id === session.id),
   );
+
   return (
     <AssignmnetSharePage
       currentUserId={session.id}

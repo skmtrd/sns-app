@@ -1,5 +1,4 @@
 'use server';
-import { revalidatePath } from 'next/cache';
 import prisma from '../api/lib/prisma';
 export const getQuestions = async () => {
   const questions = await prisma.question.findMany({
@@ -23,6 +22,5 @@ export const getQuestions = async () => {
     },
     orderBy: { createdAt: 'desc' },
   });
-  revalidatePath('/bookmarks');
   return questions;
 };

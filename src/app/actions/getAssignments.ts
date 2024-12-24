@@ -1,6 +1,5 @@
 'use server';
 import { AssignmentSchema } from '@/lib/schemas';
-import { revalidatePath } from 'next/cache';
 import prisma from '../api/lib/prisma';
 
 export const getAssignments = async () => {
@@ -25,7 +24,6 @@ export const getAssignments = async () => {
     },
     orderBy: { createdAt: 'desc' },
   });
-  revalidatePath('/my-assignments');
   const parsedAssignments = AssignmentSchema.array().parse(assignments);
   return parsedAssignments;
 };
