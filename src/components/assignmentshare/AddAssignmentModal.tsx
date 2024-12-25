@@ -70,8 +70,6 @@ export const AddAssignment: React.FC<AddAssignmentProps> = ({ closeModal }) => {
     formData.append('description', data.description);
     formData.append('deadLine', deadlineDateTime);
 
-    // console.log(newAssignment);
-
     try {
       const response = await fetch('/api/assignment', {
         method: 'POST',
@@ -83,7 +81,7 @@ export const AddAssignment: React.FC<AddAssignmentProps> = ({ closeModal }) => {
         throw new Error('課題の投稿に失敗しました');
       }
 
-      mutate('/api/assignment');
+      mutate('getAssignments');
       closeModal();
     } catch (err: any) {
       setError('root', {

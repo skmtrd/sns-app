@@ -58,7 +58,7 @@ export const AddReplyModal: React.FC<AddPostProps> = ({ closeModal, postId }) =>
         message: err.message,
       });
     } finally {
-      mutate('getPostsdk l;sakk');
+      mutate('getPosts');
     }
   };
 
