@@ -1,8 +1,7 @@
 import { auth } from '@/auth';
-import { redirect } from 'next/navigation';
 
 export const getUserId = async () => {
   const session = await auth();
-  if (!session?.user.id) redirect('');
+  if (!session) return '';
   return session?.user?.id;
 };

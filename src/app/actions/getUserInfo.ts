@@ -2,6 +2,7 @@
 import { ProfileSchema } from '@/lib/schemas';
 import prisma from '../api/lib/prisma';
 export const getUserInfo = async (userId: string) => {
+  if (userId === '') return;
   const userInfo = await prisma.user.findUnique({
     where: { id: userId },
     include: {

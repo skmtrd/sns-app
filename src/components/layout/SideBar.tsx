@@ -66,7 +66,7 @@ const SideBar = async () => {
           key={page}
           page={page}
           label={label}
-          iconUrl={userInfo.iconUrl || userInfo.image || ''}
+          iconUrl={userInfo?.iconUrl || userInfo?.image || ''}
         />
       ))}
       {postingItems.map(({ label, icon: Icon }) => (

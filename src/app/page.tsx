@@ -4,7 +4,6 @@ import SignOutButton from '@/components/element/SignOutButton';
 
 const Home = async () => {
   const session = await auth();
-  console.log(session);
   // if (session) redirect('/timeline');
 
   return (
