@@ -13,7 +13,7 @@ import { useDeletePost } from '@/hooks/DeleteContent/useDeletePost';
 import { usePostLike } from '@/hooks/Like/usePostLike';
 import { ICON_IMAGE_BASE_URL } from '@/lib/constants/baseUrl';
 import { Like, Reply } from '@/lib/types';
-import { Heart, MessageCircleReply, MoreVertical } from 'lucide-react';
+import { Heart, MessageCircleReply } from 'lucide-react';
 import { useState } from 'react';
 import PostIcon from '../PostHeader/PostIcon';
 
@@ -32,14 +32,9 @@ const PostBottomItems: React.FC<PostBottomItemsProps> = ({
   postAuthorId,
   likes,
 }) => {
-  const [isKebabMenuOpen, setIsKebabMenuOpen] = useState(false);
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
 
   const { likesCount, isLiked, handleToggleLike } = usePostLike(likes, currentUserId);
-
-  const handleToggleKebabMenu = () => {
-    setIsKebabMenuOpen(!isKebabMenuOpen);
-  };
 
   const handleToggleReplyModal = () => {
     setIsReplyModalOpen(!isReplyModalOpen);
@@ -114,7 +109,13 @@ const PostBottomItems: React.FC<PostBottomItemsProps> = ({
           </DialogContent>
         </Dialog>
       </div>
-      <button
+      <KebabMenu
+        currentUserId={currentUserId}
+        authorUserId={postAuthorId}
+        contentId={postId}
+        handleDelete={handleDeletePost}
+      />
+      {/* <button
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -131,7 +132,7 @@ const PostBottomItems: React.FC<PostBottomItemsProps> = ({
           contentId={postId}
           handleDelete={handleDeletePost}
         />
-      )}
+      )} */}
     </div>
   );
 };

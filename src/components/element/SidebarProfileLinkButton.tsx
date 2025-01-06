@@ -27,7 +27,7 @@ const SidebarProfileLinkButton = ({
       <div className='flex size-10 items-center justify-center'>
         <Avatar>
           <AvatarImage src={`${ICON_IMAGE_BASE_URL}${iconUrl}`} alt='icon' />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarFallback>INIAD</AvatarFallback>
         </Avatar>
       </div>
       <span className='hidden xl:ml-3 xl:block'>{label}</span>
