@@ -6,19 +6,25 @@ import ProfileCard from '@/components/profile/ProfileCard';
 import ProfilePost from '@/components/profile/ProfilePost';
 import { cache } from 'react';
 import { Toaster } from 'react-hot-toast';
-
+type PageProps = {
+  params: Promise<{
+    id: string;
+  }>;
+};
 const getUser = cache(async (id: string) => {
   return await getUserInfo(id);
 });
 
-export const generateMetadata = async ({ params }: { params: { id: string } }) => {
+export const generateMetadata = async (props: PageProps) => {
+  const params = await props.params;
   const userInfo = await getUser(params.id);
   return {
     title: `${userInfo?.name} / INIAD`,
   };
 };
 
-const ProfilePage = async ({ params }: { params: { id: string } }) => {
+const ProfilePage = async (props: PageProps) => {
+  const params = await props.params;
   const [session, userInfo] = await Promise.all([getSession(), getUser(params.id)]);
 
   if (!userInfo) {
