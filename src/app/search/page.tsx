@@ -10,9 +10,9 @@ import { getUserInfo } from '../actions/getUserInfo';
 const page = async ({
   searchParams,
 }: {
-  searchParams: { word: string; type: string; tags: string };
+  searchParams: Promise<{ word: string; type: string; tags: string }>;
 }) => {
-  const { word, type, tags } = searchParams;
+  const { word, type, tags } = await searchParams;
   const tagIds = tags ? tags.split('-') : [];
   const hasTags = tagIds.length > 0;
 
