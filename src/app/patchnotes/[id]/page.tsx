@@ -5,13 +5,12 @@ export const metadata = {
   title: 'パッチノート / INIAD',
 };
 
-type PageProps = {
-  params: {
-    id: string;
-  };
-  searchParams: { [key: string]: string | string[] | undefined };
-};
-const page = ({ params, searchParams }: PageProps) => {
+interface PageProps {
+  params: { id: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
+
+export default function Page({ params }: { params: { id: string } }) {
   const patchnote = PATCHNOTE_LIST.find((patchnote) => patchnote.id === params.id);
   return (
     <div className='flex h-screen flex-1 flex-col overflow-hidden bg-gray-100'>
@@ -53,6 +52,4 @@ const page = ({ params, searchParams }: PageProps) => {
       </main>
     </div>
   );
-};
-
-export default page;
+}
