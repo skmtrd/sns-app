@@ -5,7 +5,7 @@ import prisma from '../../lib/prisma';
 import { findSpecificUser } from '../../lib/user/findSpecificUser';
 import { apiRes } from '../../types';
 
-export const POST = async (req: Request, res: NextResponse) =>
+export const POST = async (req: Request) =>
   handleAPIError(async () => {
     const { postReplyId } = await req.json();
 
@@ -31,7 +31,7 @@ export const POST = async (req: Request, res: NextResponse) =>
     return NextResponse.json<apiRes>({ message: 'success', data: newLike }, { status: 200 });
   });
 
-export const DELETE = async (req: Request, res: NextResponse) =>
+export const DELETE = async (req: Request) =>
   handleAPIError(async () => {
     const { postReplyId } = await req.json();
 

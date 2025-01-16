@@ -5,7 +5,7 @@ import { handleAPIError } from '../../lib/handleAPIError';
 import prisma from '../../lib/prisma';
 import { apiRes } from '../../types';
 
-export const PUT = async (req: Request, res: NextResponse) =>
+export const PUT = async (req: Request) =>
   handleAPIError(async () => {
     const { id, tagName } = await req.json();
 

@@ -5,7 +5,7 @@ import { findSpecificUser } from '@/app/api/lib/user/findSpecificUser';
 import { apiRes } from '@/app/api/types';
 import { NextResponse } from 'next/server';
 
-export const POST = async (req: Request, res: NextResponse) =>
+export const POST = async (req: Request) =>
   handleAPIError(async () => {
     const { content, questionId } = await req.json();
 

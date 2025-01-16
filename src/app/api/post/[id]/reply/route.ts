@@ -5,7 +5,7 @@ import { findSpecificUser } from '@/app/api/lib/user/findSpecificUser';
 import { revalidatePath } from 'next/cache';
 import { NextResponse } from 'next/server';
 
-export const POST = async (req: Request, res: NextResponse) =>
+export const POST = async (req: Request) =>
   handleAPIError(async () => {
     const userId = await getUserId();
 

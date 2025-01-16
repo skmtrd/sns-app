@@ -5,7 +5,7 @@ import prisma from '../lib/prisma';
 import { CreateTag } from '../lib/tag/createTag';
 import { apiRes } from '../types';
 
-export const GET = async (req: Request, res: NextResponse) =>
+export const GET = async (req: Request) =>
   handleAPIError(async () => {
     const tags = await prisma.tag.findMany();
     return NextResponse.json<apiRes>({ message: 'success', data: tags }, { status: 200 });

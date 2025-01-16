@@ -3,7 +3,7 @@ import prisma from '@/app/api/lib/prisma';
 import { apiRes } from '@/app/api/types';
 import { NextResponse } from 'next/server';
 
-export const DELETE = async (req: Request, res: NextResponse) =>
+export const DELETE = async (req: Request) =>
   handleAPIError(async () => {
     const replyId = req.url.split('/reply/')[1];
 
