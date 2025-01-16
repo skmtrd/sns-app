@@ -11,7 +11,7 @@ export const GET = async (req: Request) =>
     return NextResponse.json<apiRes>({ message: 'success', data: tags }, { status: 200 });
   });
 
-export const POST = async (req: Request, res: NextResponse) =>
+export const POST = async (req: Request) =>
   handleAPIError(async () => {
     const { tagName } = await req.json();
 
