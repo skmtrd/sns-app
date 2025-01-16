@@ -7,12 +7,12 @@ import { getQuestions } from '../actions/getQuestions';
 import { getSession } from '../actions/getSession';
 import { getUserInfo } from '../actions/getUserInfo';
 
-const page = async ({
-  searchParams,
-}: {
+type PageProps = {
   searchParams: Promise<{ word: string; type: string; tags: string }>;
-}) => {
-  const { word, type, tags } = await searchParams;
+};
+
+const page = async (props: PageProps) => {
+  const { word, type, tags } = await props.searchParams;
   const tagIds = tags ? tags.split('-') : [];
   const hasTags = tagIds.length > 0;
 
