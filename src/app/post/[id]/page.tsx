@@ -2,12 +2,12 @@ import { getSession } from '@/app/actions/getSession';
 import { getSpecificPost } from '@/app/actions/getSpecificPost';
 import SpecificPostPage from '@/components/timeline/ReplyElement/SpecificPostPage';
 type PageProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
-  searchParams: { [key: string]: string | string[] | undefined };
+  }>;
 };
-export const generateMetadata = async ({ params }: PageProps) => {
+export const generateMetadata = async (props: PageProps) => {
+  const params = await props.params;
   const id = params.id;
   const post = await getSpecificPost(id);
   return {
@@ -15,8 +15,10 @@ export const generateMetadata = async ({ params }: PageProps) => {
   };
 };
 
-const TimelineAll = async ({ params }: PageProps) => {
-  const [session, post] = await Promise.all([getSession(), getSpecificPost(params.id)]);
+const TimelineAll = async (props: PageProps) => {
+  const params = await props.params;
+  const id = params.id;
+  const [session, post] = await Promise.all([getSession(), getSpecificPost(id)]);
 
   return <SpecificPostPage currentUserId={session.id} post={post} />;
 };

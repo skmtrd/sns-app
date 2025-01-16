@@ -1,11 +1,15 @@
-'use client';
 import Header from '@/components/element/Header';
 import { PATCHNOTE_LIST } from '@/lib/constants/patchnote';
-import { useParams } from 'next/navigation';
+type PageProps = {
+  params: Promise<{
+    id: string;
+  }>;
+};
 
-export default function Page() {
-  const params = useParams();
-  const patchnote = PATCHNOTE_LIST.find((patchnote) => patchnote.id === params.id);
+export default async function Page(props: PageProps) {
+  const params = await props.params;
+  const id = params.id;
+  const patchnote = PATCHNOTE_LIST.find((patchnote) => patchnote.id === id);
   return (
     <div className='flex h-screen flex-1 flex-col overflow-hidden bg-gray-100'>
       <Header title={patchnote?.title ?? ''} />
