@@ -1,16 +1,10 @@
+'use client';
 import Header from '@/components/element/Header';
 import { PATCHNOTE_LIST } from '@/lib/constants/patchnote';
+import { useParams } from 'next/navigation';
 
-export const metadata = {
-  title: 'パッチノート / INIAD',
-};
-
-interface PageProps {
-  params: { id: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
-}
-
-export default function Page({ params }: { params: { id: string } }) {
+export default function Page() {
+  const params = useParams();
   const patchnote = PATCHNOTE_LIST.find((patchnote) => patchnote.id === params.id);
   return (
     <div className='flex h-screen flex-1 flex-col overflow-hidden bg-gray-100'>
