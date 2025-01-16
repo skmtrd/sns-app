@@ -9,11 +9,6 @@ export const uploadAssignmentImage = async (image: File | null) => {
     .upload(fileName, webpBuffer, {
       contentType: 'image/webp',
     });
-  //   const { data, error: uploadError } = await supabase.storage
-  //     .from('post-images')
-  //     .upload(image.name, image);
-
-  //   const fileName = image.name;
 
   return { fileName };
 };
