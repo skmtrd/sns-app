@@ -1,11 +1,11 @@
+import { getAssignments } from '@/app/actions/getAssignments';
+import { getPosts } from '@/app/actions/getPosts';
+import { getQuestions } from '@/app/actions/getQuestions';
+import { getSession } from '@/app/actions/getSession';
+import { getUserInfo } from '@/app/actions/getUserInfo';
 import AssignmentSharePage from '@/components/assignmentshare/AssignmentSharePage';
 import QuestionPage from '@/components/question/QuestionPage';
 import TimeLinePage from '@/components/timeline/TimeLinePage';
-import { getAssignments } from '../actions/getAssignments';
-import { getPosts } from '../actions/getPosts';
-import { getQuestions } from '../actions/getQuestions';
-import { getSession } from '../actions/getSession';
-import { getUserInfo } from '../actions/getUserInfo';
 
 type PageProps = {
   searchParams: Promise<{ word: string; type: string; tags: string }>;

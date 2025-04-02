@@ -1,8 +1,8 @@
 import { getPosts } from '@/app/actions/getPosts';
+import { getSession } from '@/app/actions/getSession';
+import { getUserInfo } from '@/app/actions/getUserInfo';
 import TimeLinePage from '@/components/timeline/TimeLinePage';
 import { Metadata } from 'next';
-import { getSession } from '../actions/getSession';
-import { getUserInfo } from '../actions/getUserInfo';
 export const metadata: Metadata = {
   title: 'いいねしたポスト / INIAD',
 };

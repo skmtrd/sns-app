@@ -1,8 +1,8 @@
+import { getAssignments } from '@/app/actions/getAssignments';
+import { getSession } from '@/app/actions/getSession';
+import { getUserInfo } from '@/app/actions/getUserInfo';
 import AssignmnetSharePage from '@/components/assignmentshare/AssignmentSharePage';
 import { Metadata } from 'next';
-import { getAssignments } from '../actions/getAssignments';
-import { getSession } from '../actions/getSession';
-import { getUserInfo } from '../actions/getUserInfo';
 export const metadata: Metadata = {
   title: '登録した課題 / INIAD',
 };

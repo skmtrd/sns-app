@@ -1,6 +1,7 @@
 'use server';
 import { ProfileSchema } from '@/lib/schemas';
 import prisma from '../api/lib/prisma';
+
 export const getUserInfo = async (userId: string) => {
   const userInfo = await prisma.user.findUnique({
     where: { id: userId },
@@ -30,6 +31,7 @@ export const getUserInfo = async (userId: string) => {
       },
     },
   });
+
   const parsedUserInfo = ProfileSchema.parse(userInfo);
   return parsedUserInfo;
 };
