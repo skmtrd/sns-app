@@ -1,6 +1,6 @@
 'use client';
 
-import { ICON_IMAGE_BASE_URL } from '@/lib/constants';
+import { ICON_IMAGE_BASE_URL } from '@/lib/constants/baseUrl';
 import { ProfileSchema, tagSchema } from '@/lib/schemas';
 import { Tag } from '@/lib/types';
 import { zodResolver } from '@hookform/resolvers/zod';

@@ -1,14 +1,12 @@
-import { dbConnect } from '@/app/api/lib/dbConnect';
 import { getUserId } from '@/app/api/lib/getUserId';
 import { handleAPIError } from '@/app/api/lib/handleAPIError';
 import prisma from '@/app/api/lib/prisma';
 import { findSpecificUser } from '@/app/api/lib/user/findSpecificUser';
+import { revalidatePath } from 'next/cache';
 import { NextResponse } from 'next/server';
 
-export const POST = async (req: Request, res: NextResponse) =>
+export const POST = async (req: Request) =>
   handleAPIError(async () => {
-    dbConnect();
-
     const userId = await getUserId();
 
     if (!userId) {
@@ -32,5 +30,7 @@ export const POST = async (req: Request, res: NextResponse) =>
         author: true,
       },
     });
+    revalidatePath(`/post/${postId}`);
+    revalidatePath(`/timeline`);
     return NextResponse.json({ message: 'success', data: newReply }, { status: 200 });
   });

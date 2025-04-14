@@ -8,8 +8,6 @@ export const tagSchema = z.object({
 export const userSchema = z.object({
   id: z.string(),
   name: z.string(),
-  // email: z.string().email(),
-  // emailVerified: z.date().nullable(),
   image: z.string().nullable(),
   iconUrl: z.string().nullable(),
 });
@@ -26,6 +24,8 @@ export const ReplySchema = z.object({
   createdAt: z.date(),
   parentReplyId: z.string().nullable(),
   author: authorSchema,
+  authorId: z.string(),
+  // likes: z.array(z.object({ user: userSchema })),
 });
 
 export const LikeSchema = z.object({
@@ -82,5 +82,4 @@ export const SessionSchema = z.object({
   id: z.string(),
   name: z.string(),
   image: z.string().nullable(),
-  iconUrl: z.string().nullable(),
 });

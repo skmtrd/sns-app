@@ -1,6 +1,5 @@
 import UserTag from '@/components/element/UserTag';
 import { Tag } from '@/lib/types';
-import Link from 'next/link';
 
 const PostTags = ({ tags }: { tags: Tag[] }) => {
   return (
@@ -8,9 +7,9 @@ const PostTags = ({ tags }: { tags: Tag[] }) => {
       <div className='flex w-full flex-wrap gap-2 md:w-5/6'>
         {tags &&
           tags.map((tag) => (
-            <Link key={tag.id} href={`/timeline/${tag.id}`} onClick={(e) => e.stopPropagation()}>
+            <div key={tag.id} onClick={(e) => e.stopPropagation()}>
               <UserTag tagName={tag.name} />
-            </Link>
+            </div>
           ))}
       </div>
     </div>

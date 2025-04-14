@@ -1,23 +1,19 @@
+import { auth } from '@/auth';
 import { NextResponse } from 'next/server';
-import { auth } from '../../../../auth';
-import { dbConnect } from '../lib/dbConnect';
 import { handleAPIError } from '../lib/handleAPIError';
 import prisma from '../lib/prisma';
 import { CreateTag } from '../lib/tag/createTag';
 import { apiRes } from '../types';
 
-export const GET = async (req: Request, res: NextResponse) =>
+export const GET = async (req: Request) =>
   handleAPIError(async () => {
-    dbConnect();
     const tags = await prisma.tag.findMany();
     return NextResponse.json<apiRes>({ message: 'success', data: tags }, { status: 200 });
   });
 
-export const POST = async (req: Request, res: NextResponse) =>
+export const POST = async (req: Request) =>
   handleAPIError(async () => {
     const { tagName } = await req.json();
-
-    dbConnect();
 
     CreateTag(tagName);
 
@@ -29,7 +25,6 @@ export const PUT = async (req: Request) =>
     const { tagNames } = await req.json();
     const session = await auth();
     const userId = session?.user?.id;
-    dbConnect();
 
     if (!userId || !Array.isArray(tagNames)) {
       return NextResponse.json(

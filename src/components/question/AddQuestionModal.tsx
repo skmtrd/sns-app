@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 import { X } from 'lucide-react';
 import React, { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useSWRConfig } from 'swr';
+import { mutate } from 'swr';
 
 type AddQuestionProps = {
   closeModal: () => void;
@@ -18,7 +18,6 @@ const MAX_TITLE_LENGTH = 20;
 const MAX_DESCRIPTION_LENGTH = 500;
 
 export const AddQuestion: React.FC<AddQuestionProps> = ({ closeModal }) => {
-  const { mutate } = useSWRConfig();
   const {
     register,
     handleSubmit,
@@ -52,7 +51,7 @@ export const AddQuestion: React.FC<AddQuestionProps> = ({ closeModal }) => {
         throw new Error('質問の投稿に失敗しました');
       }
 
-      mutate('/api/question');
+      mutate('getQuestions');
       closeModal();
     } catch (err: any) {
       setError('root', {

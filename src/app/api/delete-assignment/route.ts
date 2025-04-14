@@ -4,7 +4,7 @@ import { handleAPIError } from '../lib/handleAPIError';
 import prisma from '../lib/prisma';
 import { apiRes } from '../types';
 
-export const GET = async (req: Request, res: NextResponse) =>
+export const GET = async (req: Request) =>
   handleAPIError(async () => {
     revalidatePath('/api/assignment');
     const assignments = await prisma.assignment.findMany({

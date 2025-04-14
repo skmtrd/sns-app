@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { dbConnect } from '../lib/dbConnect';
 
 import { getUserId } from '../lib/getUserId';
 import { handleAPIError } from '../lib/handleAPIError';
@@ -8,7 +7,7 @@ import { uploadPostImage } from '../lib/uploadImage/uploadPostImage';
 import { findSpecificUser } from '../lib/user/findSpecificUser';
 import { apiRes } from '../types';
 
-export const GET = async (req: Request, res: NextResponse) =>
+export const GET = async (req: Request) =>
   handleAPIError(async () => {
     const posts = await prisma.post.findMany({
       include: {
@@ -34,10 +33,8 @@ export const GET = async (req: Request, res: NextResponse) =>
     return NextResponse.json<apiRes>({ message: 'success', data: posts }, { status: 200 });
   });
 
-export const POST = async (req: Request, res: NextResponse) =>
+export const POST = async (req: Request) =>
   handleAPIError(async () => {
-    dbConnect();
-
     const formData = await req.formData();
 
     const content = formData.get('content') as string;

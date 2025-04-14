@@ -4,7 +4,7 @@ import { Image as ImageIcon, X } from 'lucide-react';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useSWRConfig } from 'swr';
+import { mutate } from 'swr';
 
 type AddPostProps = {
   closeModal: () => void;
@@ -26,10 +26,11 @@ const addPost = async (newPost: FormData) => {
   if (!response.ok) {
     throw new Error('投稿に失敗しました');
   }
+
+  mutate('getPosts');
 };
 
 export const AddPost: React.FC<AddPostProps> = ({ closeModal }) => {
-  const { mutate } = useSWRConfig();
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const {
     register,
@@ -66,7 +67,6 @@ export const AddPost: React.FC<AddPostProps> = ({ closeModal }) => {
 
     try {
       await addPost(formData);
-      mutate('/api/post');
       closeModal();
     } catch (error) {
       setError('root', {

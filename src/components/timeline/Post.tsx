@@ -1,12 +1,12 @@
 'use client';
 import { useRelativeTime } from '@/hooks/useRelativeTime';
-import { ICON_IMAGE_BASE_URL, POST_IMAGE_BASE_URL } from '@/lib/constants';
+import { ICON_IMAGE_BASE_URL, POST_IMAGE_BASE_URL } from '@/lib/constants/baseUrl';
 import { Post as PostType } from '@/lib/types';
+import { useRouter } from 'next/navigation';
 import PostBottomItems from './PostElement/PostBottomItems/PostBottomItems';
 import PostHeader from './PostElement/PostHeader/PostHeader';
 import PostMain from './PostElement/PostMain/PostMain';
 import PostTags from './PostElement/PostTags/PostTags';
-
 type PostProps = {
   post: PostType;
   currentUserId: string;
@@ -14,9 +14,14 @@ type PostProps = {
 
 export const Post: React.FC<PostProps> = ({ post, currentUserId }) => {
   const timeAgo = useRelativeTime(post.createdAt);
-
+  const router = useRouter();
   return (
-    <div className='w-11/12 rounded-lg bg-white p-4 shadow hover:bg-slate-50'>
+    <div
+      onClick={() => {
+        router.push(`/post/${post.id}`);
+      }}
+      className='w-11/12 rounded-lg bg-white p-4 shadow hover:bg-slate-50'
+    >
       <PostHeader
         src={
           post.author.iconUrl

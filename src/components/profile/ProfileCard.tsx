@@ -1,6 +1,6 @@
 'use client';
 import { useImageModal } from '@/hooks/useImageModal';
-import { ICON_IMAGE_BASE_URL } from '@/lib/constants';
+import { ICON_IMAGE_BASE_URL } from '@/lib/constants/baseUrl';
 import { ProfileSchema } from '@/lib/schemas';
 import Image from 'next/image';
 import { z } from 'zod';

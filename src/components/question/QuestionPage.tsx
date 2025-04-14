@@ -30,7 +30,8 @@ const QuestionPage: React.FC<QuestionPageProps> = ({
           question.author.tags?.some((tag) => tag.id === currentTagId),
         );
 
-  if (!questions || isLoading) return <QuestionSkeltonLoading title={'質問'} subtitle={'すべて'} />;
+  if (!questions && isLoading) return <QuestionSkeltonLoading title={'質問'} subtitle={'すべて'} />;
+
   return (
     <div
       id='mainContent'

@@ -6,7 +6,7 @@ import { uploadAssignmentImage } from '../lib/uploadImage/uploadAssignmentImage'
 import { findSpecificUser } from '../lib/user/findSpecificUser';
 import { apiRes } from '../types';
 
-export const GET = async (req: Request, res: NextResponse) =>
+export const GET = async (req: Request) =>
   handleAPIError(async () => {
     const assignments = await prisma.assignment.findMany({
       include: {
@@ -33,7 +33,7 @@ export const GET = async (req: Request, res: NextResponse) =>
     return NextResponse.json<apiRes>({ message: 'success', data: assignments }, { status: 200 });
   });
 
-export const POST = async (req: Request, res: NextResponse) =>
+export const POST = async (req: Request) =>
   handleAPIError(async () => {
     const formData = await req.formData();
 

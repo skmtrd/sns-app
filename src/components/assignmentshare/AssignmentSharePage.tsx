@@ -31,7 +31,7 @@ const AssignmnetSharePage: React.FC<AssignmnetSharePageProps> = ({
           assignment.author.tags?.some((tag) => tag.id === currentTagId),
         );
 
-  if (!assignments || isLoading)
+  if (!assignments && isLoading)
     return <QuestionSkeltonLoading title={'課題共有'} subtitle={'すべて'} />;
 
   return (

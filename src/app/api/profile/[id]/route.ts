@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { dbConnect } from '../../lib/dbConnect';
 import { getUserId } from '../../lib/getUserId';
 import { handleAPIError } from '../../lib/handleAPIError';
 import prisma from '../../lib/prisma';
@@ -7,11 +6,10 @@ import { uploadIconImage } from '../../lib/uploadImage/uploadIconImage';
 import { checkUserIdExists } from '../../lib/user/checkUserIdExists';
 import { apiRes } from '../../types';
 
-export const GET = async (req: Request, res: NextResponse) =>
+export const GET = async (req: Request) =>
   handleAPIError(async () => {
     const userId = req.url.split('/profile/')[1];
 
-    await dbConnect();
     const user = await prisma.user.findUnique({
       where: { id: userId },
       include: {
@@ -53,9 +51,8 @@ export const GET = async (req: Request, res: NextResponse) =>
     );
   });
 
-export const PUT = async (req: Request, res: NextResponse) =>
+export const PUT = async (req: Request) =>
   handleAPIError(async () => {
-    await dbConnect();
     const currentUserId = await getUserId();
 
     if (!currentUserId) {

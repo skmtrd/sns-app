@@ -9,6 +9,7 @@ export const ImageDisplayModal: React.FC<ImageDisplayModalProps> = ({ closeModal
   return (
     <div
       onClick={(e) => {
+        e.preventDefault();
         e.stopPropagation();
         closeModal();
       }}

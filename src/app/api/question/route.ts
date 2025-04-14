@@ -1,14 +1,12 @@
 import { NextResponse } from 'next/server';
-import { dbConnect } from '../lib/dbConnect';
 import { getUserId } from '../lib/getUserId';
 import { handleAPIError } from '../lib/handleAPIError';
 import prisma from '../lib/prisma';
 import { findSpecificUser } from '../lib/user/findSpecificUser';
 import { apiRes } from '../types';
 
-export const GET = async (req: Request, res: NextResponse) =>
+export const GET = async (req: Request) =>
   handleAPIError(async () => {
-    await dbConnect();
     const questions = await prisma.question.findMany({
       include: {
         replies: {
@@ -34,10 +32,8 @@ export const GET = async (req: Request, res: NextResponse) =>
     return NextResponse.json<apiRes>({ message: 'success', data: questions }, { status: 200 });
   });
 
-export const POST = async (req: Request, res: NextResponse) =>
+export const POST = async (req: Request) =>
   handleAPIError(async () => {
-    dbConnect();
-
     const { title, description } = await req.json();
 
     const userId = await getUserId();

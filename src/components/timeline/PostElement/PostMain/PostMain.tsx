@@ -10,7 +10,10 @@ const PostMain: React.FC<Props> = ({ textContent, imageUrl }) => {
   return (
     <div className='flex w-full flex-col items-center justify-center'>
       <div
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        }}
         className='flex w-full items-center justify-center md:w-5/6'
       >
         <TextContent textContent={textContent} />
